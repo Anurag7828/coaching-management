@@ -681,15 +681,17 @@
 								<a class="dropdown-item" href="index-2.html">
 									<i class="ti ti-layout-2"></i> Dashboard
 								</a>
-								<a class="dropdown-item" href="<?=base_url() ?>admin_profile">
+								<a class="dropdown-item" href="<?= base_url('update_profile/' . encryptId($admin[0]['admin_id'])) ?> ">
 									<i class="ti ti-user-pin"></i> My Profile
 								</a>
-								<a class="dropdown-item" href="login.html">
+								<a class="dropdown-item" href="<?= base_url('admin/logout') ?>">
 									<i class="ti ti-lock"></i> Logout
 								</a>
 							</div>
 						</div>
 					</li>
+								
+										
 					<!-- /Profile Dropdown -->
 
 				</ul>

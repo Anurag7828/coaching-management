@@ -42,10 +42,10 @@
 					<ul>
 						<li class="clinicdropdown">
 							<a href="profile.html">
-								<img src="assets/img/profiles/avatar-14.jpg" class="img-fluid" alt="Profile">
+								<!-- <img src="assets/img/profiles/avatar-14.jpg" class="img-fluid" alt="Profile"> -->
 								<div class="user-names">
-									<h5>Adrian Davies</h5>
-									<h6>Tech Lead</h6>
+									<h5><?= $admin['0']['name']?></h5>
+									<h6><?= $admin['0']['company_name']?></h6>
 								</div>
 							</a>
 						</li>

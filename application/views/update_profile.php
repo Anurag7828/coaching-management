@@ -6,6 +6,7 @@
 </head>
 
 <body>
+
 	<!-- Main Wrapper -->
 	<div class="main-wrapper">
 
@@ -75,39 +76,9 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="fw-semibold mb-3">Profile Settings</h4>
-										<form action="<?= base_url('Home/update_profile/' . encryptId($admin[0]['admin_id'])) ?>" method="post" enctype="multipart/form-data">
+										<form action="<?= base_url('update_profile/' . encryptId($admin[0]['admin_id'])) ?>" method="post" enctype="multipart/form-data">
 
-                                        <!-- <div class="border-bottom mb-3 pb-3">
-												<h5 class="fw-semibold mb-1">Company Images</h5>
-												<p>Provide the company images</p>
-											</div> -->
-											<!-- <div class="border-bottom mb-3">
-												<div class="row">
-													<div class="col-md-4">
-														<div class="mb-3">
-															<div class="profile-upload">
-																<div class="profile-upload-img">
 
-																	<img src="<?= base_url() ?>uploads/admin/<?= $admin[0]['image'] ?>"
-																		alt="img" class="preview1">
-																	<button type="button" class="profile-remove">
-																		x
-																	</button>
-																</div>
-																<div class="profile-upload-content">
-																	<label class="profile-upload-btn">
-																		<i class="ti ti-file-broken"></i> Upload File
-																		<input type="file" name="image" class="input-img">
-																	</label>
-																	<p>Upload Logo of your company to display in
-																		website. JPG or PNG. Max size of 800K</p>
-																</div>
-															</div>
-														</div>
-													</div>
-											
-												</div>
-											</div> -->
 											<div class="border-bottom mb-3">
 												<div class="row">
 													<div class="col-md-4">
@@ -156,10 +127,49 @@
 															<input type="text" name="password" value="<?= $admin[0]['password'] ?>" class="form-control">
 														</div>
 													</div>
+													<div class="col-md-4">
+														<div class="mb-3">
+															<label class="form-label">
+																Image <span class="text-danger">*</span>
+															</label>
+															<input type="file" name="image"  class="form-control">
+														</div>
+													</div>
 												</div>
 											</div>
 
+											<!-- <div class="border-bottom mb-3 pb-3">
+												<h5 class="fw-semibold mb-1">Company Images</h5>
+												<p>Provide the company images</p>
+											</div> -->
+											<div class="border-bottom mb-3">
+												<div class="row">
+													<!-- <div class="col-md-4">
+														<div class="mb-3">
+															<div class="profile-upload">
+																<div class="profile-upload-img">
+
+																	<img src="<?= base_url() ?>uploads/<?= $admin[0]['image'] ?>"
+																		alt="img" class="preview1">
+																	<button type="button" class="profile-remove">
+																		x
+																	</button>
+																</div>
+																<div class="profile-upload-content">
+																	<label class="profile-upload-btn">
+																		<i class="ti ti-file-broken"></i> Upload File
+																		<input type="file" name="image" class="input-img">
+																	</label>
+																	<p>Upload Logo of your company to display in
+																		website. JPG or PNG. Max size of 800K</p>
+
+																</div>
+															</div>
+														</div>
+													</div> -->
 											
+												</div>
+											</div>
 											<div class="border-bottom mb-3 pb-3">
 												<h5 class="fw-semibold mb-1">Address</h5>
 
@@ -196,17 +206,18 @@
 													</div>
 												</div>
 											</div>
+
+
 									</div>
 								</div>
 								<div>
-								
+									<!-- <a href="#" class="btn btn-light me-2">Cancel</a> -->
 									<button type="submit" class="btn btn-primary">Save Changes</button>
 								</div>
 								</form>
 							</div>
 						</div>
 						<!-- /Settings Info -->
-
 					</div>
 				</div>
 
@@ -215,39 +226,38 @@
 	</div>
 	</div>
 	</div>
-    <script>
-    // Get today's date in YYYY-MM-DD format
-    const today = new Date().toISOString().split('T')[0];
+	<script>
+		// Get today's date in YYYY-MM-DD format
+		const today = new Date().toISOString().split('T')[0];
 
-    // Set the 'min' attribute of the date input field to today's date
-    document.getElementById('nextFollowUpDate').setAttribute('min', today);
+		// Set the 'min' attribute of the date input field to today's date
+		document.getElementById('nextFollowUpDate').setAttribute('min', today);
 
-    document.getElementById('pincode').addEventListener('blur', function () {
-    const pincode = this.value.trim();
-    
-    if (pincode.length === 6) { // Validate pincode length
-        // Display a loading message or spinner here if needed
-        fetch(`https://api.postalpincode.in/pincode/${pincode}`) // Replace with your API URL
-            .then(response => response.json())
-            .then(data => {
-                if (data[0].Status === 'Success') {
-                    const details = data[0].PostOffice[0];
-                    document.getElementById('city').value = details.District || '';
-                    document.getElementById('state').value = details.State || '';
-                    document.getElementById('country').value = 'India'; // Assuming India for this API
-                } else {
-                    alert('Invalid pincode. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching pincode details:', error);
-                alert('Failed to fetch pincode details. Please check your internet connection or try again later.');
-            });
-    } else {
-        alert('Please enter a valid 6-digit pincode.');
-    }
-});
+		document.getElementById('pincode').addEventListener('blur', function() {
+			const pincode = this.value.trim();
 
+			if (pincode.length === 6) { // Validate pincode length
+				// Display a loading message or spinner here if needed
+				fetch(`https://api.postalpincode.in/pincode/${pincode}`) // Replace with your API URL
+					.then(response => response.json())
+					.then(data => {
+						if (data[0].Status === 'Success') {
+							const details = data[0].PostOffice[0];
+							document.getElementById('city').value = details.District || '';
+							document.getElementById('state').value = details.State || '';
+							document.getElementById('country').value = 'India'; // Assuming India for this API
+						} else {
+							alert('Invalid pincode. Please try again.');
+						}
+					})
+					.catch(error => {
+						console.error('Error fetching pincode details:', error);
+						alert('Failed to fetch pincode details. Please check your internet connection or try again later.');
+					});
+			} else {
+				alert('Please enter a valid 6-digit pincode.');
+			}
+		});
 </script>
-	<?php include('includes/footer.php') ?>
-    <?php include('includes/footer-links.php') ?>
+<?php include('includes/footer.php') ?>
+<?php include('includes/footer-links.php') ?>

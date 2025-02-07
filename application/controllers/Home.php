@@ -19,72 +19,66 @@ class Home extends CI_Controller {
     }
 	public function index()
 	{
+        $data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
+
         $data['title'] = "Home";       
         $data['institution'] = $this->CommonModal->getNumRow('institutions');
         $data['active'] = $this->CommonModal->getNumWhereRows('institutions','status',1);
         $data['deactive'] = $this->CommonModal->getNumWhereRows('institutions','status',0);
-        // $data['agent'] = $this->CommonModal->getNumRow('agent');
-        // $data['activeagent'] = $this->CommonModal->getNumWhereRows('agent','status',1);
-        // $data['deactiveagent'] = $this->CommonModal->getNumWhereRows('agent','status',0);
-
-		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
-
+        
+		
 
 		$this->load->view('index',$data);
 
 	}
 
-	public function profile(){
+	public function admin_profile(){
+
         $data['title'] = "Admin Profile";
-
 		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
-
-		// $data['testimonials'] = $this->CommonModal->getAllRows('testimonial');
-
 		$this->load->view('admin_profile',$data);
 	}
-	public function update_profile($id)
+    public function update_profile($id)
     {
-
-    $data['title'] = 'Update';
-    $data['tag'] = 'admin';
-      $tid = $id;
-     $data['admin'] = $this->CommonModal->getRowById('admin', 'admin_id', $tid);
-
-     	 if (count($_POST) > 0) {
-
+        $data['title'] = 'Update';
+        $data['tag'] = 'admin';
+        $tid = decryptId($id);
+        $data['admin'] = $this->CommonModal->getRowById('admin', 'admin_id', $tid);
+    
+        if ($_POST) { // Check if form is submitted
+    
             $post = $this->input->post();
-            $image_url = $post['image'];
-           if ($_FILES['image']['name'] != '') {
-
-                $img = imageUpload('image', 'uploads/admin/');
-
-                $post['image'] = $img;
-
-                if ($image_url != "") {
-
-                    unlink('uploads/admin/' . $image_url);
-
+            $old_image = $data['admin'][0]['image']; // Get old image before updating
+           
+            // Handle Image Upload
+            if (!empty($_FILES['image']['name'])) {
+                $img = $this->imageUpload('image', 'uploads/admin/');
+    
+                if ($img) { 
+                    $post['image'] = $img;
+    
+                    // Delete old image only if it exists
+                    if (!empty($old_image) && file_exists('uploads/admin/' . $old_image)) {
+                        unlink('uploads/admin/' . $old_image);
+                    }
                 }
-
             }
-
-            $category_id = $this->CommonModal->updateRowById('admin', 'admin_id', $tid, $post);
-
-            if ($category_id) {
-                $this->session->set_userdata('msg', '<div class="alert alert-success">member Updated successfully</div>');
+    
+            // Update the database record
+            $update_status = $this->CommonModal->updateRowById('admin', 'admin_id', $tid, $post);
+    
+            if ($update_status) {
+                $this->session->set_flashdata('msg', '<div class="alert alert-success">Profile updated successfully</div>');
             } else {
-                $this->session->set_userdata('msg', '<div class="alert alert-success">member Updated successfully</div>');
+                $this->session->set_flashdata('msg', '<div class="alert alert-danger">Failed to update profile</div>');
             }
-            redirect(base_url('profile'));
-
+    
+            redirect(base_url('admin_profile',$data));
         } else {
-
             $this->load->view('update_profile', $data);
-
         }
-
     }
+    
 	public function view_institution(){
 		$data['title'] = "View institution";
 		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
