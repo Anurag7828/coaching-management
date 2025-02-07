@@ -6,7 +6,12 @@ $route['default_controller'] = 'Home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-// $route['contact'] = 'Home/contact';
+$route['login'] = 'Admin/index';
+$route['registration'] = 'Admin/registration';
+$route['thankyou'] = 'Admin/thankyou';
+$route['payment-page'] = 'Admin/payment';
+
+
 $route['profile'] = 'Home/profile';
 $route['view_institution'] = 'Home/view_institution';
 $route['add_institution'] = 'Home/add_institution';
