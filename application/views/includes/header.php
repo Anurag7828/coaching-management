@@ -681,7 +681,7 @@
 								<a class="dropdown-item" href="index-2.html">
 									<i class="ti ti-layout-2"></i> Dashboard
 								</a>
-								<a class="dropdown-item" href="profile.html">
+								<a class="dropdown-item" href="<?=base_url() ?>admin_profile">
 									<i class="ti ti-user-pin"></i> My Profile
 								</a>
 								<a class="dropdown-item" href="login.html">

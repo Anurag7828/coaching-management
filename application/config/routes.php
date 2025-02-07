@@ -7,7 +7,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // $route['contact'] = 'Home/contact';
-$route['profile'] = 'Home/profile';
+$route['admin_profile'] = 'Home/admin_profile';
 $route['view_institution'] = 'Home/view_institution';
 $route['add_institution'] = 'Home/add_institution';
 $route['update_users/(:any)'] = 'Home/update_users/$1';

@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-$config['base_url'] = 'http://localhost/cms/';
+$config['base_url'] = 'http://localhost/coaching-management/';
 // $config['base_url'] = 'https://arvindevents.com/pesticides/';
 $config['index_page'] = 'index.php';
 $config['uri_protocol']    = 'REQUEST_URI';
