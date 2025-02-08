@@ -12,7 +12,7 @@
 	<meta name="robots" content="index, follow">
 
 	<!-- Title -->
-	<title>Super Admin Dashboard | </title>
+	<title><?= $user[0]['name']?> | <?= $title ?></title>
 
 	<!-- Themescript JS -->
 	<!-- <script src="<?= base_url()?>assets/js/theme-script.js" ></script> -->

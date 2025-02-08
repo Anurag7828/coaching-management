@@ -671,20 +671,21 @@
 						<a href="javascript:void(0);" class="nav-link userset" data-bs-toggle="dropdown">
 							<span class="user-info">
 								<span class="user-letter">
-									<img src="<?= base_url()?>assets/img/profiles/avatar-20.jpg" alt="Profile">
+									<img src="<?= base_url()?>uploads/institution/<?= $user[0]['logo']?>" alt="Profile" style="height: 36px;">
+								
 								</span>
 								<span class="badge badge-success rounded-pill"></span>
 							</span>
 						</a>
 						<div class="dropdown-menu menu-drop-user">
 							<div class="profilename">
-								<a class="dropdown-item" href="index-2.html">
+								<a class="dropdown-item" href="<?= base_url()?>">
 									<i class="ti ti-layout-2"></i> Dashboard
 								</a>
-								<a class="dropdown-item" href="profile.html">
+								<a class="dropdown-item" href="<?= base_url('Admin_Dashboard/profile/'.encryptId($user[0]['id']))?>">
 									<i class="ti ti-user-pin"></i> My Profile
 								</a>
-								<a class="dropdown-item" href="login.html">
+								<a class="dropdown-item" href="<?= base_url('Admin/logout')?>">
 									<i class="ti ti-lock"></i> Logout
 								</a>
 							</div>

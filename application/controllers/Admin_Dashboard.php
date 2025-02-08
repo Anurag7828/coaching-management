@@ -23,63 +23,154 @@ class Admin_Dashboard extends CI_Controller {
         $data['title'] = "Home";       
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
     
-
+        $subscription = $this->CommonModal->getRowById('subscription', 'inst_id', $tid);
+        if ($subscription) {
+            $today = date('Y-m-d');
+            if ($subscription[0]['expire_date'] < $today) {
+                redirect('Admin_Dashboard/plan_choose/'.$id);
+            }
+        }
 
         $this->load->view('user/dashboard', $data);
 
 	}
 
-	public function profile(){
-        $data['title'] = "Admin Profile";
+	public function profile($id){
+        $data['title'] = "Institution Profile";
+        $tid = decryptId($id);
 
-		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
 
-		// $data['testimonials'] = $this->CommonModal->getAllRows('testimonial');
 
-		$this->load->view('admin_profile',$data);
+		$this->load->view('user/profile',$data);
 	}
 	public function update_profile($id)
     {
 
     $data['title'] = 'Update';
-    $data['tag'] = 'admin';
-      $tid = $id;
-     $data['admin'] = $this->CommonModal->getRowById('admin', 'admin_id', $tid);
+    // $data['tag'] = 'admin';
+    $tid = decryptId($id);
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
 
      	 if (count($_POST) > 0) {
 
             $post = $this->input->post();
-            $image_url = $post['image'];
-           if ($_FILES['image']['name'] != '') {
+            $image_url = $post['logo'];
+           if ($_FILES['logo']['name'] != '') {
 
-                $img = imageUpload('image', 'uploads/admin/');
+                $img = imageUpload('logo', 'uploads/institution/');
 
-                $post['image'] = $img;
+                $post['logo'] = $img;
 
                 if ($image_url != "") {
 
-                    unlink('uploads/admin/' . $image_url);
+                    unlink('uploads/institution/' . $image_url);
 
                 }
 
             }
 
-            $category_id = $this->CommonModal->updateRowById('admin', 'admin_id', $tid, $post);
+            $category_id = $this->CommonModal->updateRowById('institutions', 'id', $tid, $post);
 
             if ($category_id) {
+                echo "<script>alert(' Updated successfully');</script>";
+
                 $this->session->set_userdata('msg', '<div class="alert alert-success">member Updated successfully</div>');
             } else {
-                $this->session->set_userdata('msg', '<div class="alert alert-success">member Updated successfully</div>');
+                echo "<script>alert('Error To Updated');</script>";
+
+                $this->session->set_userdata('msg', '<div class="alert alert-success">Error successfully</div>');
             }
-            redirect(base_url('profile'));
+            redirect(base_url('Admin_Dashboard/profile/'.$id));
 
-        } else {
+        } 
 
-            $this->load->view('update_profile', $data);
+    }
+    public function change_password($id)
+    {
+
+    $data['title'] = 'Update Paasword';
+    // $data['tag'] = 'admin';
+    $tid = decryptId($id);
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+
+     	 if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+           
+
+            $category_id = $this->CommonModal->updateRowById('institutions', 'id', $tid, $post);
+
+            if ($category_id) {
+                echo "<script>alert(' Updated successfully');</script>";
+
+                $this->session->set_userdata('msg', '<div class="alert alert-success">member Updated successfully</div>');
+            } else {
+                echo "<script>alert('Error To Updated');</script>";
+
+                $this->session->set_userdata('msg', '<div class="alert alert-success">Error successfully</div>');
+            }
+            redirect(base_url('Admin_Dashboard/profile/'.$id));
+
+        } else{
+        $this->load->view('user/change_password', $data);
 
         }
 
     }
+    public function active_plan($id){
+        $data['title'] = "Membership Plan";
+        $tid = decryptId($id);
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $data['sub'] = $this->CommonModal->getRowById('subscription', 'inst_id', $tid);
+
+
+		$this->load->view('user/active_plan',$data);
+	}
+    public function plan_choose($id){
+        $data['title'] = "Membership Plan";
+        $tid = decryptId($id);
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $data['plan'] = $this->CommonModal->getRowById('plan', 'status', '0');
+
+
+		$this->load->view('user/plan_choose',$data);
+	}
+    public function upgrade_plan($id,$plan_id){
+      
+        $tid = decryptId($id);
+        $p_id = decryptId($plan_id);
+
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $plan = $this->CommonModal->getRowById('plan', 'id', $p_id);
+
+
+        $start_date = date('Y-m-d');
+
+        $expiry_date = date('Y-m-d', strtotime($start_date . ' + ' . $plan[0]['numbers_of_days'] . ' days'));
+        $subscription = [
+                                
+                                'plan_type' => $p_id, 
+                                'start_date' => $start_date , 
+                                'expire_date' =>  $expiry_date ,
+                                'price' => $plan[0]['price']
+
+
+                            ];
+        $active= $this->CommonModal->updateRowById('subscription', 'inst_id', $tid,$subscription);
+
+        if ($active) {
+            $this->session->set_userdata('msg', '<div class="alert alert-success">Updated successfully</div>');
+        } else {
+            $this->session->set_userdata('msg', '<div class="alert alert-success"> Error successfully</div>');
+        }
+
+
+        redirect(base_url('Admin_Dashboard/index/'.$id));
+	}
     private function send_email($to_email, $username, $password) {
         $this->load->library('email');
     
@@ -226,109 +317,7 @@ class Admin_Dashboard extends CI_Controller {
         }
 
     }
-    public function add_institution_direct()
-    {
-
-        $data['title'] = "Add Member";
-        $data['tag'] = "add";
-		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
-        $data['plan'] = $this->CommonModal->getRowById('plan', 'status', '0');
-
-        if (count($_POST) > 0) {
-
-            $post = $this->input->post();
-            $existing_email = $this->CommonModal->getRowById('institutions', 'email', $post['email']);
-
-            if (!empty($existing_email)) {
-                echo "<script>alert('Email is already registered!');</script>";
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                $plan = $this->CommonModal->getRowById('plan', 'id', $post['plan_id']);
-
-                if (!empty($plan) && isset($plan[0])) {
-                    $plan_price = $plan[0]['price'];
-        
-                    if ($plan_price > 0) {
-                        // Redirect user to payment page
-                        $_SESSION['temp_registration'] = $post; // Store user data in session
-                        redirect(base_url('../view/payment-page.php?plan_id='.$post['plan_id']));
-                        exit();
-                    } else{
-            $password = bin2hex(random_bytes(8));
-            // $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-            $post['password'] = $password;
-            $inst_id = $this->CommonModal->insertRowReturnId('institutions', $post);
-      
-
-
-            $start_date = $post['date']; 
-            $expiry_date = date('Y-m-d', strtotime($start_date . ' + ' . $plan[0]['numbers_of_days'] . ' days'));
-            $subscription = [
-                                    'inst_id' => $inst_id,
-                                    'plan_type' => $post['plan_id'], // Ensure 'agent_id' is provided in the form
-                                    'start_date' => $start_date , // Ensure 'agent_id' is provided in the form
-                                    'expire_date' =>  $expiry_date ,// Ensure 'agent_id' is provided in the form
-                                    'price' => $plan[0]['price'] // Ensure 'agent_id' is provided in the form
-
-
-                                ];
-            $this->CommonModal->insertRowReturnId('subscription',$subscription );
-
-//             if ($savedata) {
-//                 $agent_customer_data = [
-//                     'customer_id' => $savedata,
-//                     'agent_id' => $post['agent_id'] // Ensure 'agent_id' is provided in the form
-//                 ];
-    
-//                 // Insert into 'agent_customer' table
-//                 $agent_customer_id = $this->CommonModal->insertRowReturnId('agent_customer', $agent_customer_data);
-//                 if ($agent_customer_id) {
-//             $this->session->set_flashdata('msg', '<div class="alert alert-success">Added Successfully</div>');
-
-//             // Send email to the user
-//             $this->load->library('email');
-
-//             // Email configuration
-//             $config['mailtype'] = 'text';  // Use plain text instead of HTML
-//             $this->email->initialize($config);
-
-//             $this->email->from('venusglamour@krishnawireandcables.com', 'Namami Software');
-//             $this->email->to($post['email']);  // Send to user's email
-//             $this->email->subject('Registration Successful');
-            
-//             // Construct email message in plain text format
-//            $message = "Dear " . htmlspecialchars($post['name']) . ",\n\n";
-// $message .= "We are pleased to inform you that your registration for our software has been successfully completed. Below are your login credentials:\n\n";
-// $message .= "Username: " . htmlspecialchars($post['username']) . "\n";
-// $message .= "Password: " . htmlspecialchars($post['password']) . "\n\n";
-// $message .= "Please keep your login credentials secure and do not share them with anyone.\n\n";
-// $message .= "You can log in to the software using the following link: " . base_url('Admin') . "\n\n";
-// $message .= "If you encounter any issues, please feel free to contact our support team.\n\n";
-// $message .= "Thank you for choosing our software!\n\n";
-// $message .= "Best regards,\n";
-// $message .= "The Namami Software Team";
-            
-//             $this->email->message($message);  // Use plain text message
-
-//             // Check if email was sent successfully
-//             if (!$this->email->send()) {
-//                 log_message('error', 'Email could not be sent to ' . $post['email']);
-//             }
-
-//         } } else {
-//             $this->session->set_flashdata('msg', '<div class="alert alert-danger">Error while saving data</div>');
-//         }
-
-                             }  }else {
-                                echo "<script>alert('Invalid plan selected.');</script>";
-                                redirect($_SERVER['HTTP_REFERER']);
-                            }
-                             redirect(base_url('thankyou'));
-
-        }  }
-
-    }
-    public function thankyou(){
+        public function thankyou(){
 		$data['title'] = "Thankyou";
 		$this->load->view('thankyou');
 	}
