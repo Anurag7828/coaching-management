@@ -78,7 +78,36 @@ class Home extends CI_Controller {
             $this->load->view('update_profile', $data);
         }
     }
+<<<<<<< HEAD
     
+=======
+    private function send_email($to_email, $username, $password) {
+        $this->load->library('email');
+    
+        $this->email->from('noreply@yourdomain.com', 'Your Company');
+        $this->email->to($to_email);
+        $this->email->subject('Your Registration is Successful!');
+        
+        $message = "
+            <p>Dear User,</p>
+            <p>Your registration was successful. Here are your login details:</p>
+            <p><strong>Username:</strong> $username</p>
+            <p><strong>Password:</strong> $password</p>
+            <p>You can now log in to your account.</p>
+            <p>Thank you!</p>
+        ";
+    
+        $this->email->message($message);
+        $this->email->set_mailtype('html');
+    
+        if ($this->email->send()) {
+            return true;
+        } else {
+            log_message('error', 'Email sending failed: ' . $this->email->print_debugger());
+            return false;
+        }
+    }
+>>>>>>> origin/Anurag
 	public function view_institution(){
 		$data['title'] = "View institution";
 		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
@@ -124,6 +153,7 @@ class Home extends CI_Controller {
                 echo "<script>alert('Email is already registered!');</script>";
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
+                
             $password = bin2hex(random_bytes(8));
             // $hashed_password = password_hash($password, PASSWORD_BCRYPT);
             $post['password'] = $password;
@@ -198,7 +228,11 @@ class Home extends CI_Controller {
         }
 
     }
-
+ 
+    public function thankyou(){
+		$data['title'] = "Thankyou";
+		$this->load->view('thankyou');
+	}
 	public function update_institution($id)
     {
 		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');

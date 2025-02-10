@@ -33231,7 +33231,8 @@ td .badge-pill {
   color: #6F6F6F;
 }
 .profile-upload .preview1 {
-  display: none;
+  
+  height:94px
 }
 .profile-upload .it {
   width: 70px;
