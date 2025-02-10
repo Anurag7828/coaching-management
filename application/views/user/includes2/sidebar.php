@@ -33,9 +33,9 @@
 										<i class="ti ti-layout-2"></i><span>Students</span><span class="menu-arrow"></span>
 									</a>
 									<ul>
-										<li><a href="<?= base_url()?>add_institution">Add Students</a></li>
-										<li><a href="<?= base_url('Home/view_institution?tag=active')?>">View Students</a></li>
-										<li><a href="<?= base_url('Home/view_institution?tag=deactive')?>">Student Attendance</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/add_student/'. encryptId($user[0]['id']))?>">Add Students</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_student/'. encryptId($user[0]['id']))?>">View Students</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/add_student/'. encryptId($user[0]['id']))?>">Student Attendance</a></li>
 
 									
 									</ul>
@@ -43,13 +43,31 @@
 								
 								<li class="submenu">
 									<a href="#" >
-										<i class="ti ti-user-star"></i><span>Batch</span>
+										<i class="ti ti-user-star"></i><span>Batchs</span>
 										<span class="menu-arrow"></span>
 									</a>
 									<ul>
-										<li><a href="<?= base_url()?>add_plan" >Add Batch</a></li>
-										<li><a href="<?= base_url('Home/view_plan?tag=active')?>">Active Batch</a></li>
-										<li><a href="<?= base_url('Home/view_plan?tag=deactive')?>">Deactive Batch</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/add_batch/'. encryptId($user[0]['id']))?>">Add Batchs</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_batch/'. encryptId($user[0]['id']))?>">Active Batchs</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_batch/'. encryptId($user[0]['id'].'?tag=deactive'))?>">Deactive Batchs</a></li>
+
+			
+
+									
+									</ul>
+								</li>
+								
+								<li class="submenu">
+									<a href="#" >
+										<i class="ti ti-user-star"></i><span>Courses</span>
+										<span class="menu-arrow"></span>
+									</a>
+									<ul>
+										<li><a href="<?= base_url('Admin_Dashboard/add_Course/'. encryptId($user[0]['id']))?>">Add Courses</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_Course/'. encryptId($user[0]['id']))?>">Active Courses</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_Course/'. encryptId($user[0]['id'].'?tag=deactive'))?>">Deactive Courses</a></li>
+
+			
 
 									
 									</ul>

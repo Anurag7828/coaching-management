@@ -6,11 +6,9 @@ $route['default_controller'] = 'Home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-<<<<<<< HEAD
 // $route['contact'] = 'Home/contact';
 $route['admin_profile'] = 'Home/admin_profile';
 $route['update_profile/(:any)'] = 'Home/update_profile/$1';
-=======
 $route['login'] = 'Admin/index';
 $route['registration'] = 'Admin/registration';
 $route['thankyou'] = 'Admin/thankyou';
@@ -18,7 +16,6 @@ $route['payment-page'] = 'Admin/payment';
 
 
 $route['profile'] = 'Home/profile';
->>>>>>> origin/Anurag
 $route['view_institution'] = 'Home/view_institution';
 $route['add_institution'] = 'Home/add_institution';
 $route['update_users/(:any)'] = 'Home/update_users/$1';

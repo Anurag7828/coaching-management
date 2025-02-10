@@ -20,7 +20,7 @@ class Admin_Dashboard extends CI_Controller {
 	public function index($id)
 	{
         $tid = decryptId($id);
-        $data['title'] = "Home";       
+        $data['title'] = "Admin_Dashboard";       
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
     
         $subscription = $this->CommonModal->getRowById('subscription', 'inst_id', $tid);
@@ -197,46 +197,48 @@ class Admin_Dashboard extends CI_Controller {
             return false;
         }
     }
-	public function view_institution(){
-		$data['title'] = "View institution";
-		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
+	public function view_student($id){
+		$data['title'] = "View student";
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
         $data['tag'] = $this->input->get('tag');
         $tag = $data['tag'];
         $BdID = $this->input->get('BdID');
         $img = $this->input->get('img');
 		
         if ($BdID) {
-            $this->CommonModal->deleteRowById('institutions', array('id' => $BdID));
+            $this->CommonModal->deleteRowById('students', array('id' => $BdID));
             // $this->CommonModal->deleteRowById('agent_customer', array('customer_id' => $BdID));
 
             if ($img) {
-                unlink('./uploads/institution/' . $img);
+                unlink('./uploads/student/' . $img);
             }
             if ($tag == '0') {
-                redirect(base_url('Home/view_institution?tag=active'));
+                redirect(base_url('Admin_Dashboard/view_student?tag=active'));
             } else {
-                redirect(base_url('Home/view_institution?tag=deactive'));
+                redirect(base_url('Admin_Dashboard/view_student?tag=deactive'));
             }
         }
         if ($tag == "deactive") {
-            $data['institution'] = $this->CommonModal->getRowByIdDesc('institutions', 'status', '1','id','DESC');
+            $data['student'] = $this->CommonModal->getRowByIdDesc('students', 'status', '1','id','DESC');
         } else {
-            $data['institution'] = $this->CommonModal->getRowByIdDesc('institutions', 'status', '0','id','DESC');
+            $data['student'] = $this->CommonModal->getRowByIdDesc('students', 'status', '0','id','DESC');
         }
-        $this->load->view('view_institution', $data);
+        $this->load->view('view_student', $data);
 	}
-	public function add_institution()
+	public function add_student($id)
     {
 
         $data['title'] = "Add Member";
         $data['tag'] = "add";
-		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
-        $data['plan'] = $this->CommonModal->getRowById('plan', 'status', '0');
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        // $data['plan'] = $this->CommonModal->getRowById('plan', 'status', '0');
 
         if (count($_POST) > 0) {
 
             $post = $this->input->post();
-            $existing_email = $this->CommonModal->getRowById('institutions', 'email', $post['email']);
+            $existing_email = $this->CommonModal->getRowById('students', 'email', $post['email']);
 
             if (!empty($existing_email)) {
                 echo "<script>alert('Email is already registered!');</script>";
@@ -246,22 +248,22 @@ class Admin_Dashboard extends CI_Controller {
             $password = bin2hex(random_bytes(8));
             // $hashed_password = password_hash($password, PASSWORD_BCRYPT);
             $post['password'] = $password;
-            $inst_id = $this->CommonModal->insertRowReturnId('institutions', $post);
-            $plan = $this->CommonModal->getRowById('plan', 'id', $post['plan_id']);
+            $inst_id = $this->CommonModal->insertRowReturnId('students', $post);
+            // $plan = $this->CommonModal->getRowById('plan', 'id', $post['plan_id']);
 
 
-            $start_date = $post['date']; 
-            $expiry_date = date('Y-m-d', strtotime($start_date . ' + ' . $plan[0]['numbers_of_days'] . ' days'));
-            $subscription = [
-                                    'inst_id' => $inst_id,
-                                    'plan_type' => $post['plan_id'], // Ensure 'agent_id' is provided in the form
-                                    'start_date' => $start_date , // Ensure 'agent_id' is provided in the form
-                                    'expire_date' =>  $expiry_date ,// Ensure 'agent_id' is provided in the form
-                                    'price' => $plan[0]['price'] // Ensure 'agent_id' is provided in the form
+            // $start_date = $post['date']; 
+            // $expiry_date = date('Y-m-d', strtotime($start_date . ' + ' . $plan[0]['numbers_of_days'] . ' days'));
+            // $subscription = [
+            //                         'inst_id' => $inst_id,
+            //                         'plan_type' => $post['plan_id'], // Ensure 'agent_id' is provided in the form
+            //                         'start_date' => $start_date , // Ensure 'agent_id' is provided in the form
+            //                         'expire_date' =>  $expiry_date ,// Ensure 'agent_id' is provided in the form
+            //                         'price' => $plan[0]['price'] // Ensure 'agent_id' is provided in the form
 
 
-                                ];
-            $this->CommonModal->insertRowReturnId('subscription',$subscription );
+            //                     ];
+            // $this->CommonModal->insertRowReturnId('subscription',$subscription );
 
 //             if ($savedata) {
 //                 $agent_customer_data = [
@@ -308,56 +310,54 @@ class Admin_Dashboard extends CI_Controller {
 //             $this->session->set_flashdata('msg', '<div class="alert alert-danger">Error while saving data</div>');
 //         }
 
-            redirect(base_url('view_institution'));
+            redirect(base_url('view_student'));
 
         } } else {
 
-            $this->load->view('add_institution', $data);
+            $this->load->view('user/add_student', $data);
 
         }
 
     }
-        public function thankyou(){
-		$data['title'] = "Thankyou";
-		$this->load->view('thankyou');
-	}
-	public function update_institution($id)
+      
+	public function update_student($id)
     {
-		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
         // $data['agent'] = $this->CommonModal->getAllRows('agent'); 
     $data['title'] = 'Update Member';
     $data['tag'] = 'edit';
       $tid = $id;
-     $data['institution'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+    //  $data['student'] = $this->CommonModal->getRowById('students', 'id', $tid);
      $data['plan'] = $this->CommonModal->getRowById('plan', 'status', '0');
 
      $tag1 = $this->input->get('tag');
      	 if (count($_POST) > 0) {
 
             $post = $this->input->post();
-            $image_url = $post['image'];
+          
          
             // $agent_customer_data = [
                
             //     'agent_id' => $post['agent_id'] // Ensure 'agent_id' is provided in the form
             // ];
-            $category_id = $this->CommonModal->updateRowById('institutions', 'id', $tid, $post);
+            $category_id = $this->CommonModal->updateRowById('students', 'id', $tid, $post);
             // $category_id1 = $this->CommonModal->updateRowById('agent_customer', 'customer_id', $tid, $agent_customer_data);
-            $plan = $this->CommonModal->getRowById('plan', 'id', $post['plan_id']);
+            // $plan = $this->CommonModal->getRowById('plan', 'id', $post['plan_id']);
 
 
-            $start_date = $post['date']; 
-            $expiry_date = date('Y-m-d', strtotime($start_date . ' + ' . $plan[0]['numbers_of_days'] . ' days'));
-            $subscription = [
+            // $start_date = $post['date']; 
+            // $expiry_date = date('Y-m-d', strtotime($start_date . ' + ' . $plan[0]['numbers_of_days'] . ' days'));
+            // $subscription = [
                                     
-                                    'plan_type' => $post['plan_id'], // Ensure 'agent_id' is provided in the form
-                                    'start_date' => $start_date , // Ensure 'agent_id' is provided in the form
-                                    'expire_date' =>  $expiry_date ,// Ensure 'agent_id' is provided in the form
-                                    'price' => $plan[0]['price'] // Ensure 'agent_id' is provided in the form
+            //                         'plan_type' => $post['plan_id'], // Ensure 'agent_id' is provided in the form
+            //                         'start_date' => $start_date , // Ensure 'agent_id' is provided in the form
+            //                         'expire_date' =>  $expiry_date ,// Ensure 'agent_id' is provided in the form
+            //                         'price' => $plan[0]['price'] // Ensure 'agent_id' is provided in the form
 
 
-                                ];
-            $this->CommonModal->updateRowById('subscription', 'inst_id', $tid,$subscription);
+            //                     ];
+            // $this->CommonModal->updateRowById('subscription', 'inst_id', $tid,$subscription);
 
             if ($category_id) {
                 $this->session->set_userdata('msg', '<div class="alert alert-success">Updated successfully</div>');
@@ -365,24 +365,24 @@ class Admin_Dashboard extends CI_Controller {
                 $this->session->set_userdata('msg', '<div class="alert alert-success"> Error successfully</div>');
             }
             if($tag1=='0') {
-                redirect(base_url('Home/view_institution?tag=active'));
+                redirect(base_url('Admin_Dashboard/view_student?tag=active'));
                 } else{
-                redirect(base_url('Home/view_institution?tag=deactive'));
+                redirect(base_url('Admin_Dashboard/view_student?tag=deactive'));
     
                 }
 
         } else {
 
-            $this->load->view('add_institution', $data);
+            $this->load->view('add_student', $data);
 
         }
 
     }
 	
-	public function deactiveinstitution($id){
+	public function deactivestudent($id){
 		$data['status'] = 1   ;
-		$status_id = $this->CommonModal->updateRowById('institutions', 'id', $id, $data);
-	$institution = $this->CommonModal->getRowById('institutions', 'id', $id);
+		$status_id = $this->CommonModal->updateRowById('students', 'id', $id, $data);
+	$student = $this->CommonModal->getRowById('students', 'id', $id);
 	 if ($status_id) {
             $this->session->set_flashdata('msg', '<div class="alert alert-success">Deactive Successfully</div>');
 
@@ -394,11 +394,11 @@ class Admin_Dashboard extends CI_Controller {
             $this->email->initialize($config);
 
             $this->email->from('venusglamour@krishnawireandcables.com', 'Namami Software');
-            $this->email->to($institution[0]['email']);  // Send to user's email
+            $this->email->to($student[0]['email']);  // Send to user's email
             $this->email->subject('Account Deactive');
             
             // Construct email message in plain text format
-           $message = "Dear " . htmlspecialchars($institution[0]['name']) . ",\n\n";
+           $message = "Dear " . htmlspecialchars($student[0]['name']) . ",\n\n";
 $message .= "We would like to inform you that your account associated with our software has been deactivated. This action has been taken due to Payment Issue.\n\n";
 $message .= "If you believe this action was taken in error or wish to reactivate your account, please contact our support team at info@namami.co.in .\n\n";
 $message .= "We appreciate your understanding and are here to assist you with any concerns you may have.\n\n";
@@ -410,20 +410,20 @@ $message .= "The Namami Software Team";
 
             // Check if email was sent successfully
             if (!$this->email->send()) {
-                log_message('error', 'Email could not be sent to ' . $institution[0]['email']);
+                log_message('error', 'Email could not be sent to ' . $student[0]['email']);
             }
 
         } else {
             $this->session->set_flashdata('msg', '<div class="alert alert-danger">Error while saving data</div>');
         }
-		redirect(base_url('Home/view_institution?tag=deactive'));
+		redirect(base_url('Admin_Dashboard/view_student?tag=deactive'));
 	
 	}
-	public function activeinstitution($id){
+	public function activestudent($id){
 		$data['status'] = 0    ;
-		$status_id = $this->CommonModal->updateRowById('institutions', 'id', $id, $data);
-	$data['institution'] = $this->CommonModal->getRowById('institutions', 'id', $id);
-	$institution = $this->CommonModal->getRowById('institutions', 'id', $id);
+		$status_id = $this->CommonModal->updateRowById('students', 'id', $id, $data);
+	$data['student'] = $this->CommonModal->getRowById('students', 'id', $id);
+	$student = $this->CommonModal->getRowById('students', 'id', $id);
 
 		if ($status_id) {
 			$this->session->set_userdata('msg', '<div class="alert alert-success"> Active successfully</div>');
@@ -435,15 +435,15 @@ $message .= "The Namami Software Team";
             $this->email->initialize($config);
 
             $this->email->from('venusglamour@krishnawireandcables.com', 'Namami Software');
-            $this->email->to($institution[0]['email']);  // Send to user's email
+            $this->email->to($student[0]['email']);  // Send to user's email
             $this->email->subject('Account Active');
             
             // Construct email message in plain text format
-           $message = "Dear " . htmlspecialchars($institution[0]['name']) . ",\n\n";
+           $message = "Dear " . htmlspecialchars($student[0]['name']) . ",\n\n";
 $message .= "We are pleased to inform you that your account associated with our software has been successfully activated. You can now log in and start using our services.\n\n";
 $message .= "Below are your login credentials:\n";
-$message .= "Username: " . htmlspecialchars($institution[0]['username']) . "\n";
-$message .= "Password: " . htmlspecialchars($institution[0]['password']) . "\n\n";
+$message .= "Username: " . htmlspecialchars($student[0]['username']) . "\n";
+$message .= "Password: " . htmlspecialchars($student[0]['password']) . "\n\n";
 $message .= "Please keep your login details secure and do not share them with anyone.\n\n";
 $message .= "You can access the software using the following link: " . base_url('Admin') . "\n\n";
 $message .= "If you have any questions or need assistance, feel free to contact our support team at info@namami.co.in.\n\n";
@@ -455,19 +455,361 @@ $message .= "The Namami Software Team";
 
             // Check if email was sent successfully
             if (!$this->email->send()) {
-                log_message('error', 'Email could not be sent to ' . $institution[0]['email']);
+                log_message('error', 'Email could not be sent to ' . $student[0]['email']);
             }
 		} else {
 			$this->session->set_userdata('msg', '<div class="alert alert-success">Error</div>');
 		}
-		redirect(base_url('view_institution'));
+		redirect(base_url('view_student'));
 	
 	}
-    public function view_plan(){
+    public function view_batch($id){
+		$data['title'] = "View batch";
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $data['tag'] = $this->input->get('tag');
+        $tag = $data['tag'];
+        $BdID = $this->input->get('BdID');
+   
+		
+        if ($BdID) {
+            $this->CommonModal->deleteRowById('batchs', array('id' => $BdID));
+          
+            if ($tag == '0') {
+                redirect(base_url('Admin_Dashboard/view_batch/'.$id.'/?tag=active'));
+            } else {
+                redirect(base_url('Admin_Dashboard/view_batch/'.$id.'/?tag=deactive'));
+            }
+        }
+        if ($tag == "deactive") {
+            $data['batch'] = $this->CommonModal->getRowByIdDesc('batchs', 'status', '1','id','DESC');
+        } else {
+            $data['batch'] = $this->CommonModal->getRowByIdDesc('batchs', 'status', '0','id','DESC');
+        }
+        $this->load->view('user/view_batch', $data);
+	}
+	public function add_batch($id)
+    {
+
+        $data['title'] = "Add Batch";
+        $data['tag'] = "add";
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        // $data['plan'] = $this->CommonModal->getRowById('plan', 'status', '0');
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+          
+            $inst_id = $this->CommonModal->insertRowReturnId('batchs', $post);
+            
+            redirect(base_url('Admin_Dashboard/view_batch/'.$id));
+
+        } else {
+
+            $this->load->view('user/add_batch', $data);
+
+        }
+
+    }
+      
+	public function update_batch($id)
+    {
+       
+    $data['title'] = 'Update Batch';
+    $data['tag'] = 'edit';
+     
+      $data['batch'] = $this->CommonModal->getRowById('batchs', 'id', $id);
+   
+
+     $tag1 = $this->input->get('tag');
+     	 if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+
+          
+            $category_id = $this->CommonModal->updateRowById('batchs', 'id', $id, $post);
+           
+            if ($category_id) {
+                $this->session->set_userdata('msg', '<div class="alert alert-success">Updated successfully</div>');
+            } else {
+                $this->session->set_userdata('msg', '<div class="alert alert-success"> Error successfully</div>');
+            }
+            if($tag1=='0') {
+                redirect(base_url('Admin_Dashboard/view_batch/'.encryptId($post['inst_id']).'?tag=active'));
+                } else{
+                redirect(base_url('Admin_Dashboard/view_batch/'.encryptId($post['inst_id']).'?tag=deactive'));
+    
+                }
+
+        } else {
+
+            $this->load->view('user/add_batch', $data);
+
+        }
+
+    }
+	
+	public function deactivebatch($id,$uid){
+		$data['status'] = 1   ;
+		$status_id = $this->CommonModal->updateRowById('batchs', 'id', $id, $data);
+	$batch = $this->CommonModal->getRowById('batchs', 'id', $id);
+	 if ($status_id) {
+            $this->session->set_flashdata('msg', '<div class="alert alert-success">Deactive Successfully</div>');
+
+            // Send email to the user
+            $this->load->library('email');
+
+            // Email configuration
+            $config['mailtype'] = 'text';  // Use plain text instead of HTML
+            $this->email->initialize($config);
+
+            $this->email->from('venusglamour@krishnawireandcables.com', 'Namami Software');
+            $this->email->to($batch[0]['email']);  // Send to user's email
+            $this->email->subject('Account Deactive');
+            
+            // Construct email message in plain text format
+           $message = "Dear " . htmlspecialchars($batch[0]['name']) . ",\n\n";
+$message .= "We would like to inform you that your account associated with our software has been deactivated. This action has been taken due to Payment Issue.\n\n";
+$message .= "If you believe this action was taken in error or wish to reactivate your account, please contact our support team at info@namami.co.in .\n\n";
+$message .= "We appreciate your understanding and are here to assist you with any concerns you may have.\n\n";
+$message .= "Thank you for your time and cooperation.\n\n";
+$message .= "Best regards,\n";
+$message .= "The Namami Software Team";
+            
+            $this->email->message($message);  // Use plain text message
+
+            // Check if email was sent successfully
+            if (!$this->email->send()) {
+                log_message('error', 'Email could not be sent to ' . $batch[0]['email']);
+            }
+
+        } else {
+            $this->session->set_flashdata('msg', '<div class="alert alert-danger">Error while saving data</div>');
+        }
+		redirect(base_url('Admin_Dashboard/view_batch/'.$uid.'?tag=deactive'));
+	
+	}
+	public function activebatch($id,$uid){
+		$data['status'] = 0    ;
+		$status_id = $this->CommonModal->updateRowById('batchs', 'id', $id, $data);
+	$data['batch'] = $this->CommonModal->getRowById('batchs', 'id', $id);
+	$batch = $this->CommonModal->getRowById('batchs', 'id', $id);
+
+		if ($status_id) {
+			$this->session->set_userdata('msg', '<div class="alert alert-success"> Active successfully</div>');
+			 // Send email to the user
+            $this->load->library('email');
+
+            // Email configuration
+            $config['mailtype'] = 'text';  // Use plain text instead of HTML
+            $this->email->initialize($config);
+
+            $this->email->from('venusglamour@krishnawireandcables.com', 'Namami Software');
+            $this->email->to($batch[0]['email']);  // Send to user's email
+            $this->email->subject('Account Active');
+            
+            // Construct email message in plain text format
+           $message = "Dear " . htmlspecialchars($batch[0]['name']) . ",\n\n";
+$message .= "We are pleased to inform you that your account associated with our software has been successfully activated. You can now log in and start using our services.\n\n";
+$message .= "Below are your login credentials:\n";
+$message .= "Username: " . htmlspecialchars($batch[0]['username']) . "\n";
+$message .= "Password: " . htmlspecialchars($batch[0]['password']) . "\n\n";
+$message .= "Please keep your login details secure and do not share them with anyone.\n\n";
+$message .= "You can access the software using the following link: " . base_url('Admin') . "\n\n";
+$message .= "If you have any questions or need assistance, feel free to contact our support team at info@namami.co.in.\n\n";
+$message .= "Thank you for choosing our services. We look forward to serving you!\n\n";
+$message .= "Best regards,\n";
+$message .= "The Namami Software Team";
+            
+            $this->email->message($message);  // Use plain text message
+
+            // Check if email was sent successfully
+            if (!$this->email->send()) {
+                log_message('error', 'Email could not be sent to ' . $batch[0]['email']);
+            }
+		} else {
+			$this->session->set_userdata('msg', '<div class="alert alert-success">Error</div>');
+		}
+		redirect(base_url('Admin_Dashboard/view_batch/'.$uid));
+	
+	}
+    public function view_course($id){
+		$data['title'] = "View course";
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $data['tag'] = $this->input->get('tag');
+        $tag = $data['tag'];
+        $BdID = $this->input->get('BdID');
+   
+		
+        if ($BdID) {
+            $this->CommonModal->deleteRowById('courses', array('id' => $BdID));
+          
+            if ($tag == '0') {
+                redirect(base_url('Admin_Dashboard/view_course/'.$id.'/?tag=active'));
+            } else {
+                redirect(base_url('Admin_Dashboard/view_course/'.$id.'/?tag=deactive'));
+            }
+        }
+        if ($tag == "deactive") {
+            $data['course'] = $this->CommonModal->getRowByIdDesc('courses', 'status', '1','id','DESC');
+        } else {
+            $data['course'] = $this->CommonModal->getRowByIdDesc('courses', 'status', '0','id','DESC');
+        }
+        $this->load->view('user/view_course', $data);
+	}
+	public function add_course($id)
+    {
+
+        $data['title'] = "Add course";
+        $data['tag'] = "add";
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        // $data['plan'] = $this->CommonModal->getRowById('plan', 'status', '0');
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+          
+            $inst_id = $this->CommonModal->insertRowReturnId('courses', $post);
+            
+            redirect(base_url('Admin_Dashboard/view_course/'.$id));
+
+        } else {
+
+            $this->load->view('user/add_course', $data);
+
+        }
+
+    }
+      
+	public function update_course($id)
+    {
+       
+    $data['title'] = 'Update course';
+    $data['tag'] = 'edit';
+     
+      $data['course'] = $this->CommonModal->getRowById('courses', 'id', $id);
+   
+
+     $tag1 = $this->input->get('tag');
+     	 if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+
+          
+            $category_id = $this->CommonModal->updateRowById('courses', 'id', $id, $post);
+           
+            if ($category_id) {
+                $this->session->set_userdata('msg', '<div class="alert alert-success">Updated successfully</div>');
+            } else {
+                $this->session->set_userdata('msg', '<div class="alert alert-success"> Error successfully</div>');
+            }
+            if($tag1=='0') {
+                redirect(base_url('Admin_Dashboard/view_course/'.encryptId($post['inst_id']).'?tag=active'));
+                } else{
+                redirect(base_url('Admin_Dashboard/view_course/'.encryptId($post['inst_id']).'?tag=deactive'));
+    
+                }
+
+        } else {
+
+            $this->load->view('user/add_course', $data);
+
+        }
+
+    }
+	
+	public function deactivecourse($id,$uid){
+		$data['status'] = 1   ;
+		$status_id = $this->CommonModal->updateRowById('courses', 'id', $id, $data);
+	$course = $this->CommonModal->getRowById('courses', 'id', $id);
+	 if ($status_id) {
+            $this->session->set_flashdata('msg', '<div class="alert alert-success">Deactive Successfully</div>');
+
+            // Send email to the user
+            $this->load->library('email');
+
+            // Email configuration
+            $config['mailtype'] = 'text';  // Use plain text instead of HTML
+            $this->email->initialize($config);
+
+            $this->email->from('venusglamour@krishnawireandcables.com', 'Namami Software');
+            $this->email->to($course[0]['email']);  // Send to user's email
+            $this->email->subject('Account Deactive');
+            
+            // Construct email message in plain text format
+           $message = "Dear " . htmlspecialchars($course[0]['name']) . ",\n\n";
+$message .= "We would like to inform you that your account associated with our software has been deactivated. This action has been taken due to Payment Issue.\n\n";
+$message .= "If you believe this action was taken in error or wish to reactivate your account, please contact our support team at info@namami.co.in .\n\n";
+$message .= "We appreciate your understanding and are here to assist you with any concerns you may have.\n\n";
+$message .= "Thank you for your time and cooperation.\n\n";
+$message .= "Best regards,\n";
+$message .= "The Namami Software Team";
+            
+            $this->email->message($message);  // Use plain text message
+
+            // Check if email was sent successfully
+            if (!$this->email->send()) {
+                log_message('error', 'Email could not be sent to ' . $course[0]['email']);
+            }
+
+        } else {
+            $this->session->set_flashdata('msg', '<div class="alert alert-danger">Error while saving data</div>');
+        }
+		redirect(base_url('Admin_Dashboard/view_course/'.$uid.'?tag=deactive'));
+	
+	}
+	public function activecourse($id,$uid){
+		$data['status'] = 0    ;
+		$status_id = $this->CommonModal->updateRowById('courses', 'id', $id, $data);
+	$data['course'] = $this->CommonModal->getRowById('courses', 'id', $id);
+	$course = $this->CommonModal->getRowById('courses', 'id', $id);
+
+		if ($status_id) {
+			$this->session->set_userdata('msg', '<div class="alert alert-success"> Active successfully</div>');
+			 // Send email to the user
+            $this->load->library('email');
+
+            // Email configuration
+            $config['mailtype'] = 'text';  // Use plain text instead of HTML
+            $this->email->initialize($config);
+
+            $this->email->from('venusglamour@krishnawireandcables.com', 'Namami Software');
+            $this->email->to($course[0]['email']);  // Send to user's email
+            $this->email->subject('Account Active');
+            
+            // Construct email message in plain text format
+           $message = "Dear " . htmlspecialchars($course[0]['name']) . ",\n\n";
+$message .= "We are pleased to inform you that your account associated with our software has been successfully activated. You can now log in and start using our services.\n\n";
+$message .= "Below are your login credentials:\n";
+$message .= "Username: " . htmlspecialchars($course[0]['username']) . "\n";
+$message .= "Password: " . htmlspecialchars($course[0]['password']) . "\n\n";
+$message .= "Please keep your login details secure and do not share them with anyone.\n\n";
+$message .= "You can access the software using the following link: " . base_url('Admin') . "\n\n";
+$message .= "If you have any questions or need assistance, feel free to contact our support team at info@namami.co.in.\n\n";
+$message .= "Thank you for choosing our services. We look forward to serving you!\n\n";
+$message .= "Best regards,\n";
+$message .= "The Namami Software Team";
+            
+            $this->email->message($message);  // Use plain text message
+
+            // Check if email was sent successfully
+            if (!$this->email->send()) {
+                log_message('error', 'Email could not be sent to ' . $course[0]['email']);
+            }
+		} else {
+			$this->session->set_userdata('msg', '<div class="alert alert-success">Error</div>');
+		}
+		redirect(base_url('Admin_Dashboard/view_course/'.$uid));
+	
+	}
+    public function view_plan($id){
 		$data['title'] = "View plan";
 	
 
-		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
         $data['tag'] = $this->input->get('tag');
         $tag = $data['tag'];
         $BdID = $this->input->get('BdID');
@@ -479,9 +821,9 @@ $message .= "The Namami Software Team";
 
           
             if ($tag == '0') {
-                redirect(base_url('Home/view_plan?tag=active'));
+                redirect(base_url('Admin_Dashboard/view_plan?tag=active'));
             } else {
-                redirect(base_url('Home/view_plan?tag=deactive'));
+                redirect(base_url('Admin_Dashboard/view_plan?tag=deactive'));
             }
         }
         if ($tag == "deactive") {
@@ -497,7 +839,7 @@ $message .= "The Namami Software Team";
 
         $data['title'] = "Add Member";
         $data['tag'] = "add";
-		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
     
         if (count($_POST) > 0) {
 
@@ -518,7 +860,7 @@ $message .= "The Namami Software Team";
 
 	public function update_plan($id)
     {
-		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
      
     $data['title'] = 'Update plan';
     $data['tag'] = 'edit';
@@ -538,9 +880,9 @@ $message .= "The Namami Software Team";
                 $this->session->set_userdata('msg', '<div class="alert alert-success">member Updated successfully</div>');
             }
             if($tag1=='0') {
-                redirect(base_url('Home/view_plan?tag=active'));
+                redirect(base_url('Admin_Dashboard/view_plan?tag=active'));
                 } else{
-                redirect(base_url('Home/view_plan?tag=deactive'));
+                redirect(base_url('Admin_Dashboard/view_plan?tag=deactive'));
     
                 }
 
@@ -556,7 +898,7 @@ $message .= "The Namami Software Team";
 		$data['status'] = 1    ;
 		$status_id = $this->CommonModal->updateRowById('plan', 'id', $id, $data);
 	
-		redirect(base_url('Home/view_plan?tag=deactive'));
+		redirect(base_url('Admin_Dashboard/view_plan?tag=deactive'));
 	
 	}
 	public function activeplan($id){
@@ -565,7 +907,7 @@ $message .= "The Namami Software Team";
 	$data['plan'] = $this->CommonModal->getRowById('plan', 'id', $id);
 	
 
-    redirect(base_url('Home/view_plan?tag=active'));
+    redirect(base_url('Admin_Dashboard/view_plan?tag=active'));
 	}
 	
 }

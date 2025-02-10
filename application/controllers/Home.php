@@ -78,9 +78,7 @@ class Home extends CI_Controller {
             $this->load->view('update_profile', $data);
         }
     }
-<<<<<<< HEAD
     
-=======
     private function send_email($to_email, $username, $password) {
         $this->load->library('email');
     
@@ -107,7 +105,6 @@ class Home extends CI_Controller {
             return false;
         }
     }
->>>>>>> origin/Anurag
 	public function view_institution(){
 		$data['title'] = "View institution";
 		$data['admin'] = $this->CommonModal->getAllRows('admin', 'admin_id');
