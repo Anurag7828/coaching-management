@@ -45,17 +45,15 @@
 						</div>
 					</div>
 				</div>
-
 				<!-- Welcome Wrap -->
 				<div class="welcome-wrap mb-4">
 					<div class=" d-flex align-items-center justify-content-between flex-wrap">
 						<div class="mb-3">
-							<h2 class="mb-1 text-white">Welcome Back, Adrian</h2>
-							<p class="text-light">14 New Companies Subscribed Today !!!</p>
+							<h2 class="mb-1 text-white">Welcome Back, Admin!!</h2>		
 						</div>
 						<div class="d-flex align-items-center flex-wrap mb-1">
-							<a href="" class="btn btn-dark btn-md me-2 mb-2">Companies</a>
-							<a href="packages.html" class="btn btn-light btn-md mb-2">All Packages</a>
+							<a href="<?= base_url('Home/view_institution?tag=active')?>" class="btn btn-dark btn-md me-2 mb-2">Institutes</a>
+							<a href="<?= base_url('Home/view_plan?tag=active')?>" class="btn btn-light btn-md mb-2">Plans</a>
 						</div>
 					</div>
 				</div>
