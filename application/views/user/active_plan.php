@@ -63,7 +63,11 @@
 											<i class="ti ti-moneybag me-2"></i>Active Plan
 										</a>
 									</li>
-								
+                                    <li class="nav-item me-3">
+										<a href="<?= base_url('Admin_Dashboard/inst_fees/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 " >
+											<i class="ti ti-moneybag me-2"></i>Institution Fees
+										</a>
+									</li>
 								</ul>
 							</div>
 						</div>

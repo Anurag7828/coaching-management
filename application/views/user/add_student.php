@@ -48,6 +48,8 @@
                                                             <label class="col-form-label">Student Name <span
                                                             class="text-danger">*</span></label>
                                                             <input type="text" class="form-control" name="name" value="<?= ($tag == 'edit' && isset($Student[0]['name'])) ? htmlspecialchars($Student[0]['name']) : '' ?>" required>
+                                                            <input type="hidden" class="form-control" name="inst_id" value="<?= ($tag == 'edit' && isset($Student[0]['inst_id'])) ? htmlspecialchars($Student[0]['inst_id']) : $user[0]['id'] ?>" required>
+
                                                         </div>
                                                     </div>
                                                    
@@ -100,7 +102,7 @@
                                                             <?php if (!empty($batch)) : ?>
                                                                 <?php foreach ($batch as $item) : ?>
 
-                                                                <option value="<?= $item['id'] ?>" <?= ($tag == 'edit' && isset($Student[0]['batch_id']) && $Student[0]['batch_id'] == $item['id']) ? 'selected' : '' ?> data-display="Please select"> <?= $item['plan_name'] ?></option>
+                                                                <option value="<?= $item['id'] ?>" <?= ($tag == 'edit' && isset($Student[0]['batch_id']) && $Student[0]['batch_id'] == $item['id']) ? 'selected' : '' ?> data-display="Please select"> <?= $item['name'] ?></option>
                                                                 <?php endforeach; ?>
                                                                 <?php endif; ?>
                                                              
@@ -245,7 +247,7 @@
                                                             <?php if (!empty($course)) : ?>
                                                                 <?php foreach ($course as $item) : ?>
 
-                                                                <option value="<?= $item['id'] ?>" <?= ($tag == 'edit' && isset($Student[0]['course_id']) && $Student[0]['course_id'] == $item['id']) ? 'selected' : '' ?> data-display="Please select"> <?= $item['plan_name'] ?></option>
+                                                                <option value="<?= $item['id'] ?>" <?= ($tag == 'edit' && isset($Student[0]['course_id']) && $Student[0]['course_id'] == $item['id']) ? 'selected' : '' ?> data-display="Please select"> <?= $item['name'] ?></option>
                                                                 <?php endforeach; ?>
                                                                 <?php endif; ?>
                                                              
@@ -258,9 +260,9 @@
             <?php if (!empty($fees)) : ?>
                 <?php foreach ($fees as $item) : ?>
            <div class="form-check">
-									<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+									<input class="form-check-input" name="fees_type[]" type="checkbox" value="<?= $item['id'] ?>" id="flexCheckDefault">
 									<label class="form-check-label" for="flexCheckDefault">
-										
+                                    <?= $item['name'] ?>
 									</label>
 								</div>
                                 <?php endforeach; ?>
@@ -290,7 +292,7 @@
         <div class="col-md-4">
 								<div class="mb-3">
 									<label class="col-form-label">Total Fees (Course Fees + Other Fees)<span class="text-danger"> *</span></label>
-                                    <input type="number"  class="form-control" name="paid" id="paid" value="0" required  oninput="validatePaidAmount()">
+                                    <input type="number"  class="form-control" name="total" id="total" value="0" required  >
 								</div>
 							</div>
         <div class="col-md-4">
@@ -435,7 +437,50 @@ foreach ($account as $account_info) { ?>
     }
 }
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const courseSelect = document.querySelector('select[name="course_id"]');
+    const feeCheckboxes = document.querySelectorAll('.form-check-input');
+    const totalFeesInput = document.querySelector('input[name="total"]');
+
+    // Sample data (Replace this with actual data from PHP)
+        // Fetch course fees from the database and convert them into a JavaScript object
+        const courseFees = <?= json_encode(array_column($course, 'fees', 'id')); ?>;
+    
+    // Fetch additional fees from the database and convert them into a JavaScript object
+    const feeAmounts = <?= json_encode(array_column($fees, 'amount', 'id')); ?>;
+    function calculateTotal() {
+        let total = 0;
+
+        // Get selected course fee
+        const selectedCourse = courseSelect.value;
+        if (courseFees[selectedCourse]) {
+            total += parseFloat(courseFees[selectedCourse]); // Convert to number
+        }
+
+        // Get selected additional fees
+        feeCheckboxes.forEach(checkbox => {
+            if (checkbox.checked && feeAmounts[checkbox.value]) {
+                total += parseFloat(feeAmounts[checkbox.value]); // Convert to number
+            }
+        });
+
+        // Ensure total is updated correctly
+        totalFeesInput.value = total.toFixed(2); // Show as two decimal places
+    }
+
+    // Event Listeners
+    courseSelect.addEventListener("change", calculateTotal);
+    feeCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", calculateTotal);
+    });
+
+    // Initial Calculation on page load (if any selection exists)
+    calculateTotal();
+});
+</script>
     <?php include('includes2/footer.php') ?>
     <?php include('includes2/footer-links.php') ?>
 
-   
+</body>
+</html>

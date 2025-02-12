@@ -378,22 +378,37 @@ public function getRowsBeforeId($table, $column, $id, $column1, $id1)
 		}
 
 	}
-	public function getRowByMultitpleId($table, $column1, $value1, $column2 = null, $value2 = null, $column3 = null, $value3 = null) {
+	public function getRowByMultitpleId($table, $column1, $value1, $column2 = null, $value2 = null, $columnid,$order) {
     $this->db->select('*'); // Select all columns
     $this->db->from($table); // Table name
-    $this->db->where($column1, $value1); // First condition
+    $this->db->where($column1, $value1);
+    $this->db->order_by($columnid, $order); // First condition
 
     // Add second condition if provided
     if ($column2 !== null && $value2 !== null) {
         $this->db->where($column2, $value2);
         
     }
-    if (!empty($column3) && !empty($value3)) {
-        $this->db->where($column3, $value3);
-    }
+  
     $query = $this->db->get(); // Execute the query
     return $query->result_array(); // Return the result as an array
 }
+public function insertBatch($table, $data)
+{
+    if (!empty($data)) {
+        return $this->db->insert_batch($table, $data);
+    }
+    return false;
+}
+public function updateBatch($table, $data, $where_key)
+{
+    if (!empty($data) && !empty($where_key)) {
+        $this->db->update_batch($table, $data, $where_key);
+        return $this->db->affected_rows(); // Returns the number of updated rows
+    }
+    return false;
+}
+
 	public function getRowByIdSum($table, $column1, $value1, $column2 = null, $value2 = null, $sum_column = null)
 {
     // Start the query

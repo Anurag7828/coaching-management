@@ -25,7 +25,7 @@
                         <div class="page-header">
                             <div class="row align-items-center">
                                 <div class="col-8">
-                                    <h4 class="page-title">Institutions</h4>
+                                    <h4 class="page-title">Studends</h4>
                                 </div>
                                 <div class="col-4 text-end">
                                     <div class="head-icons">
@@ -72,8 +72,8 @@
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <a href="<?= base_url() ?>add_institution" class="btn btn-primary"><i
-                                                    class="ti ti-square-rounded-plus me-2"></i>Add Institution</a>
+                                            <a href="<?= base_url('Admin_Dashboard/add_student/'. encryptId($user[0]['id'])) ?>" class="btn btn-primary"><i
+                                                    class="ti ti-square-rounded-plus me-2"></i>Add Student</a>
                                         </div>
                                     </div>
                                 </div>
@@ -126,12 +126,12 @@
     <thead class="thead-light">
         <tr>
             <th class="no-sort">S No.</th>
-            <th>Name</th>
+            <th>Student Name</th>
             
             <th>Contact No.</th>
            
-            <th>Email</th>
-            <th>Plan</th>
+            <th>Gender</th>
+            <th>Branch</th>
             <!-- <th>Paid</th> -->
           
             <th>Status</th>
@@ -141,17 +141,17 @@
         </tr>
     </thead>
     <tbody>
-        <?php if (!empty($institution)) : ?>
-            <?php $i = 1; foreach ($institution as $row) : ?>
+        <?php if (!empty($student)) : ?>
+            <?php $i = 1; foreach ($student as $row) : ?>
                 <tr>
                     <td><?= $i++; ?></td>
                     <td><a href="" class="title-name"><?= $row['name']; ?></a></td>
                   
                     <td><?= $row['phone']; ?></td>
-                    <td><?= $row['email']; ?></td>
-        <?php $plan = $this->CommonModal->getRowById('plan', 'id', $row['plan_id']); ?>
+                    <td><?= $row['gender']; ?></td>
+        <?php $batch = $this->CommonModal->getRowById('batchs', 'id', $row['batch_id']); ?>
                     
-                    <td><?= $plan[0]['plan_name']; ?></td>
+                    <td><?= $batch[0]['name']; ?></td>
                 
 
                     <td> <?php if($row['status'] == '0') { ?>
@@ -178,18 +178,18 @@
 
                                 
                             <a class="dropdown-item" href="
-<?= base_url('Home/deactiveinstitution/' . $row['id']); ?>"><i
+<?= base_url('Admin_Dashboard/deactivestudent/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
                                                                             class="ti ti-eye text-danger"></i>Deactive</a>
                                                                             <?php } else{ ?>
                                                                                 <a class="dropdown-item" href="
-<?= base_url('Home/activeinstitution/' . $row['id']); ?>"><i
+<?= base_url('Admin_Dashboard/activestudent/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
                                                                             class="ti ti-eye text-success"></i>Active</a>
                                                                             <?php } ?>
                                                                     <a class="dropdown-item"
-                                                                        href="<?php echo base_url() . 'Home/update_institution/' . $row['id']. '?tag='. $row['status']; ?>"><i
+                                                                        href="<?php echo base_url() . 'Admin_Dashboard/update_student/' . $row['id']. '?tag='. $row['status']; ?>"><i
                                                                             class="ti ti-edit text-blue"></i> Edit</a>
                                                                     <a class="dropdown-item" href="
-<?php echo base_url() . 'view_institution?BdID=' . $row['id'] . '&tag=' .  $row['status'];?>"><i
+<?php echo base_url() . 'Admin_Dashbaord/view_student/'.encryptId($user[0]['id']).'?BdID=' . $row['id'] . '&tag=' .  $row['status'];?>"><i
                                                                             class="ti ti-trash text-danger"></i>Delete</a>
   </div>
                         </div>
