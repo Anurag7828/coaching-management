@@ -127,14 +127,7 @@
 															<input type="text" name="password" value="<?= $admin[0]['password'] ?>" class="form-control">
 														</div>
 													</div>
-													<div class="col-md-4">
-														<div class="mb-3">
-															<label class="form-label">
-																Image <span class="text-danger">*</span>
-															</label>
-															<input type="file" name="image"  class="form-control">
-														</div>
-													</div>
+													
 												</div>
 											</div>
 
