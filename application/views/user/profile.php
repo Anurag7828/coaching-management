@@ -68,6 +68,11 @@
 											<i class="ti ti-moneybag me-2"></i>Institution Fees
 										</a>
 									</li>
+									<li class="nav-item me-3">
+										<a href="<?= base_url('Admin_Dashboard/account/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0">
+											<i class="ti ti-moneybag me-2"></i>Bank Account
+										</a>
+									</li>
 								</ul>
 							</div>
 						</div>

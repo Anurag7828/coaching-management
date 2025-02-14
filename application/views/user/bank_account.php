@@ -42,7 +42,7 @@
 						<div class="card">
 							<div class="card-body pb-0 pt-2">
 								<ul class="nav nav-tabs nav-tabs-bottom">
-                                <li class="nav-item me-3">
+								<li class="nav-item me-3">
 										<a href="<?= base_url('Admin_Dashboard/profile/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 ">
 											<i class="ti ti-settings-cog me-2"></i>General Settings
 										</a>
@@ -53,7 +53,7 @@
 										</a>
 									</li> -->
 									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/change_password/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 ">
+										<a href="<?= base_url('Admin_Dashboard/change_password/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 active">
 											<i class="ti ti-apps me-2"></i>Change Password
 										</a>
 									</li>
@@ -63,8 +63,8 @@
 											<i class="ti ti-moneybag me-2"></i>Active Plan
 										</a>
 									</li>
-									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/inst_fees/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 active" >
+                                    <li class="nav-item me-3">
+										<a href="<?= base_url('Admin_Dashboard/inst_fees/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 " >
 											<i class="ti ti-moneybag me-2"></i>Institution Fees
 										</a>
 									</li>
@@ -73,6 +73,7 @@
 											<i class="ti ti-moneybag me-2"></i>Bank Account
 										</a>
 									</li>
+								
 								</ul>
 							</div>
 						</div>
@@ -87,57 +88,38 @@
 <div class="card">
     <div class="card-body pb-0">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="fs-20">Institution Fees</h4>
+            <h4 class="fs-20">Bank Accounts</h4>
             <a href="javascript:void(0)" class="btn btn-sm btn-icon rounded border"
                 data-bs-toggle="modal" data-bs-target="#add_bank"><i
                     class="ti ti-plus"></i></a>
         </div>
         <div class="row">
-        <?php if (!empty($fees)) : ?>
-            <?php $i = 1; foreach ($fees as $row) : ?>
+        <?php if (!empty($account)) : ?>
+            <?php $i = 1; foreach ($account as $row) : ?>
             <!-- Bank Account -->
             <div class="col-xxl-4 col-sm-6">
                 <div class="bank-box active">
                     <div class="mb-4">
-                        <h5 class="fw-semibold mb-1"><?= $row['name']?></h5>
-                        <p class="fw-medium"><?= $row['amount']?></p>
+                        <h5 class="fw-semibold mb-1"><?= $row['bank_name']?></h5>
+                        <p class="fw-medium"><?= $row['account_no']?></p>
                       
 
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            
-                            <?php if($row['status'] == '0') { ?>
-                            <p class="fs-12">      <span class="badge badge-pill badge-status  bg-success">
-    Active
-</span></p>
-                            <?php } else{ ?>
-                                <p class="fs-12">       <span class="badge badge-pill badge-status  bg-danger">
-    Dective
-</span></p>
-                            <?php } ?>
+                            <h6 class="fw-medium mb-1">Holder Name</h6>
+                            <p class="fs-12"><?= $row['holder']?></p>
                         </div>
                         <div class="dropdown table-action">
                             <a href="#" class="action-icon" data-bs-toggle="dropdown"
                                 aria-expanded="false"><i
                                     class="fa fa-ellipsis-v"></i></a>
                             <div class="dropdown-menu dropdown-menu-right">
-                            <?php if($row['status'] == '0') { ?>
-
-                                
-<a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/deactivefees/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
-                                                class="ti ti-eye text-danger"></i>Deactive</a>
-                                                <?php } else{ ?>
-                                                    <a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/activefees/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
-                                                class="ti ti-eye text-success"></i>Active</a>
-                                                <?php } ?>
                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                     data-bs-target="#edit_bank<?= $row['id']?>"><i
                                         class="fa-solid fa-pencil text-blue"></i>
                                     Edit</a>
-                                <a class="dropdown-item" href="<?= base_url('Admin_Dashboard/inst_fees/'.encryptId($user[0]['id']).'?BdID='.encryptId($row['id']))?>" ><i
+                                <a class="dropdown-item" href="<?= base_url('Home/account?BdID='.$row['id'])?>" ><i
                                         class="fa-regular fa-trash-can text-danger"></i>
                                     Delete</a>
                             </div>
@@ -147,7 +129,7 @@
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Edit Fees</h5>
+						<h5 class="modal-title">Edit Bank Account</h5>
 						<div class="d-flex align-items-center">
 							
 							<button class="btn-close custom-btn-close border p-1 me-0 text-dark" data-bs-dismiss="modal"
@@ -156,19 +138,32 @@
 							</button>
 						</div>
 					</div>
-                    <form action="<?= base_url('Admin_Dashboard/edit_fees/'.$row['id'])?>" method="post" enctype="multipart/form-data">
+                    <form action="<?= base_url('Home/edit_account/'.$row['id'])?>" method="post" enctype="multipart/form-data">
 						<div class="modal-body">
 							<div class="mb-3">
-								<label class="col-form-label">Fees Name <span class="text-danger">*</span></label>
-								<input type="text" class="form-control" name="name" value="<?= $row['name']?>" required>
-								<input type="hidden" class="form-control" name="inst_id" value="<?=$user[0]['id']?>" required>
-
+								<label class="col-form-label">Account Holder Name <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="holder" value="<?= $row['holder']?>" required>
 							</div>
 							<div class="mb-3">
-								<label class="col-form-label">Amount<span class="text-danger">*</span></label>
-								<input type="text" class="form-control" name="amount" value="<?= $row['amount']?>" required>
+								<label class="col-form-label">Bank Name<span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="bank_name" value="<?= $row['bank_name']?>" required>
 							</div>
-							
+							<div class="mb-3">
+								<label class="col-form-label">Branch Name<span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="branch_name" value="<?= $row['branch_name']?>">
+							</div>
+							<div class="mb-3">
+								<label class="col-form-label">Account Number <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="account_no" value="<?= $row['account_no']?>" >
+							</div>
+							<div class="mb-0">
+								<label class="col-form-label">IFSC Code <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="ifsc_code" value="<?= $row['ifsc_code']?>">
+							</div>
+                            <div class="mb-0">
+								<label class="col-form-label">Swift Number </label>
+								<input type="text" class="form-control" name="swift" value="<?= $row['swift']?>">
+							</div>
 						</div>
 						<div class="modal-footer">
 							<div class="d-flex align-items-center justify-content-end m-0">
@@ -191,7 +186,7 @@
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Add Fees</h5>
+						<h5 class="modal-title">Add Bank Account</h5>
 						<div class="d-flex align-items-center">
 							
 							<button class="btn-close custom-btn-close border p-1 me-0 text-dark" data-bs-dismiss="modal"
@@ -200,19 +195,32 @@
 							</button>
 						</div>
 					</div>
-                    <form action="<?= base_url('Admin_Dashboard/add_fees/'.encryptId($user[0]['id']))?>" method="post" enctype="multipart/form-data">
+                    <form action="<?= base_url('Home/add_account')?>" method="post" enctype="multipart/form-data">
 						<div class="modal-body">
 							<div class="mb-3">
-								<label class="col-form-label">Fees Name <span class="text-danger">*</span></label>
-								<input type="text" class="form-control" name="name" required>
-								<input type="hidden" class="form-control" name="inst_id" value="<?=$user[0]['id']?>" required>
-
+								<label class="col-form-label">Account Holder Name <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="holder" required>
 							</div>
 							<div class="mb-3">
-								<label class="col-form-label">Amount<span class="text-danger">*</span></label>
-								<input type="text" class="form-control" name="amount" required>
+								<label class="col-form-label">Bank Name<span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="bank_name" required>
 							</div>
-							
+							<div class="mb-3">
+								<label class="col-form-label">Branch Name<span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="branch_name" required>
+							</div>
+							<div class="mb-3">
+								<label class="col-form-label">Account Number <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="account_no">
+							</div>
+							<div class="mb-0">
+								<label class="col-form-label">IFSC Code <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" name="ifsc_code">
+							</div>
+                            <div class="mb-0">
+								<label class="col-form-label">Swift Number </label>
+								<input type="text" class="form-control" name="swift" >
+							</div>
 						</div>
 						<div class="modal-footer">
 							<div class="d-flex align-items-center justify-content-end m-0">
@@ -236,16 +244,44 @@
 
 </div>
 						</div>
-						</div>
 
 					</div>
 				</div>
 			</div>
 		</div>
     </div>
-   
-    <?php include('includes2/footer.php') ?>
-    <?php include('includes2/footer-links.php') ?>
+    <script>
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
 
-    </body>
-    </html>
+    // Set the 'min' attribute of the date input field to today's date
+    document.getElementById('nextFollowUpDate').setAttribute('min', today);
+
+    document.getElementById('pincode').addEventListener('blur', function () {
+    const pincode = this.value.trim();
+    
+    if (pincode.length === 6) { // Validate pincode length
+        // Display a loading message or spinner here if needed
+        fetch(`https://api.postalpincode.in/pincode/${pincode}`) // Replace with your API URL
+            .then(response => response.json())
+            .then(data => {
+                if (data[0].Status === 'Success') {
+                    const details = data[0].PostOffice[0];
+                    document.getElementById('city').value = details.District || '';
+                    document.getElementById('state').value = details.State || '';
+                    document.getElementById('country').value = 'India'; // Assuming India for this API
+                } else {
+                    alert('Invalid pincode. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching pincode details:', error);
+                alert('Failed to fetch pincode details. Please check your internet connection or try again later.');
+            });
+    } else {
+        alert('Please enter a valid 6-digit pincode.');
+    }
+});
+
+</script>
+    <?php include('includes2/footer.php') ?>

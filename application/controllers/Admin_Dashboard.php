@@ -206,6 +206,66 @@ class Admin_Dashboard extends CI_Controller {
 		redirect(base_url('Admin_Dashboard/inst_fees/'.$uid));
 	
 	}
+    public function account($id)
+    {
+        $data['title'] = "Bank Account";
+        $tid = decryptId($id);
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $data['account'] = $this->CommonModal->getRowByIdDesc('account', 'inst_id',$tid,'id','DESC');
+
+        $BdID = $this->input->get('BdID');
+        
+        if ($BdID) {
+            $this->CommonModal->deleteRowById('account', array('id' => $BdID));
+            redirect('account');
+        }
+        $this->load->view('bank_account', $data);
+    }
+    public function add_account($id)
+    {
+
+       
+        $tid = decryptId($id);
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $data['account'] = $this->CommonModal->getRowByIdDesc('account', 'inst_id',$tid,'id','DESC');
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+
+            $savedata = $this->CommonModal->insertRowReturnId('account', $post);
+
+            if ($savedata) {
+                $this->session->set_flashdata('msg', '<div class="alert alert-success">Added Successfully</div>');
+            } else {
+                $this->session->set_flashdata('msg', '<div class="alert alert-danger">Error while saving data</div>');
+            }
+
+            redirect($_SERVER['HTTP_REFERER']);
+        } 
+    }
+    public function edit_account($id)
+    {
+
+      
+        $tid = $id;
+        
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+            $category_id = $this->CommonModal->updateRowById('account', 'id', $tid, $post);
+
+            if ($category_id) {
+                $this->session->set_userdata('msg', '<div class="alert alert-success">account of Lead Updated successfully</div>');
+            } else {
+                $this->session->set_userdata('msg', '<div class="alert alert-success">account of Lead Updated successfully</div>');
+            }
+            redirect($_SERVER['HTTP_REFERER']);
+        } 
+    }
     public function active_plan($id){
         $data['title'] = "Membership Plan";
         $tid = decryptId($id);
@@ -259,31 +319,44 @@ class Admin_Dashboard extends CI_Controller {
 
         redirect(base_url('Admin_Dashboard/index/'.$id));
 	}
-    private function send_email($to_email, $username, $password) {
-        $this->load->library('email');
-    
-        $this->email->from('noreply@yourdomain.com', 'Your Company');
-        $this->email->to($to_email);
-        $this->email->subject('Your Registration is Successful!');
+    public function send_email($id, $sid) {
+        $tid = decryptId($id);
+        $ssid = decryptId($sid);
+        $user = $this->CommonModal->getRowById('institutions', 'id', $tid);
+       
         
-        $message = "
-            <p>Dear User,</p>
-            <p>Your registration was successful. Here are your login details:</p>
-            <p><strong>Username:</strong> $username</p>
-            <p><strong>Password:</strong> $password</p>
-            <p>You can now log in to your account.</p>
-            <p>Thank you!</p>
-        ";
+        $student = $this->CommonModal->getRowByMultitpleId('students','id',$ssid,'inst_id',$tid,'id','DESC');
+
+  if ($this->input->post()) {
+        $post = $this->input->post();
+        $email_to_insert = [
+            'inst_id' => $tid,
+            'student_id' => $ssid, // ✅ Fix student_id issue
+            'from' => $user[0]['email'],
+            'to' => $student[0]['email'],
+            'subject' => $post['subject'],
+            'message' => $post['message'],
+          
+        ];
+        $student_email = $this->CommonModal->insertRowReturnId('student_email', $email_to_insert);
+// if($student_email) {
+//         $this->email->from($user[0]['email'], $user[0]['name']);
+//         $this->email->to($student[0]['email']);
+//         $this->email->subject($post['subject']);
+//         $message =$post['message'];
     
-        $this->email->message($message);
-        $this->email->set_mailtype('html');
+//         $this->email->message($message);
+//         $this->email->set_mailtype('html');
     
-        if ($this->email->send()) {
-            return true;
-        } else {
-            log_message('error', 'Email sending failed: ' . $this->email->print_debugger());
-            return false;
-        }
+//         if ($this->email->send()) {
+//             return true;
+//         } else {
+//             log_message('error', 'Email sending failed: ' . $this->email->print_debugger());
+//             return false;
+//         }
+//     }
+    redirect($_SERVER['HTTP_REFERER']);
+}
     }
     public function student($id,$uid){
 		$data['title'] = "View student";
@@ -461,7 +534,8 @@ public function update_student($id, $uuid)
                 'total' => $total,
                 'due' => $due,
                 'account_id' => $account_id,
-                'cheque_no' => $cheque_no
+                'cheque_no' => $cheque_no,
+                'date' => $post['join_date']
             ];
             $this->CommonModal->updateRowById('fees_payment', 'id', $pid, $pay_to_insert);
         } else {
@@ -512,6 +586,79 @@ public function update_student($id, $uuid)
         $this->CommonModal-> deleteRowByuserId('student_fees', array('fees_type' => $tid),array('student_id' => $uid));
         redirect($_SERVER['HTTP_REFERER']);
     } else {
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+}
+public function add_fees_type($id)
+{
+    $tid = decryptId($id);
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+
+    if ($this->input->post()) {
+        $post = $this->input->post();
+        $fees_type = isset($post['fees_type']) ? $post['fees_type'] : [];
+        $pid = $post['p_id'];
+        $student_id = $post['student_id'];
+
+        // **Insert student fees**
+        $items = [];
+        $total_new_fees = 0;
+
+        if (!empty($fees_type) && is_array($fees_type)) {
+            foreach ($fees_type as $item) {
+                // Get fee amount
+                $fee_data = $this->CommonModal->getRowById('fees', 'id', $item);
+                $fee_amount = !empty($fee_data) ? $fee_data[0]['amount'] : 0;
+                $total_new_fees += $fee_amount; // Add fee amount to total
+
+                $items[] = [
+                    'inst_id' => $tid,
+                    'student_id' => $student_id,
+                    'fees_type' => $item
+                ];
+            }
+        }
+
+        if (!empty($items)) {
+            $this->CommonModal->insertBatch('student_fees', $items);
+        }
+
+        // Get old total amount
+        $old_payment = $this->CommonModal->getRowById('fees_payment', 'id', $pid);
+        $old_total = !empty($old_payment) ? $old_payment[0]['total'] : 0;
+
+        // Update total amount
+        $new_total = $old_total + $total_new_fees;
+
+        if (!empty($pid)) {
+            $pay_to_insert = [
+                'total' => $new_total
+            ];
+            $this->CommonModal->updateRowById('fees_payment', 'id', $pid, $pay_to_insert);
+        } else {
+            log_message('error', 'Skipping fees_payment update: pid is missing.');
+        }
+
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+}
+public function pay_fees_payment($id)
+{
+    $tid = decryptId($id);
+   
+
+    if ($this->input->post()) {
+        $post = $this->input->post();
+        
+        $post['due']= $post['due']-$post['paid'];
+
+            
+
+
+
+                $savedata = $this->CommonModal->insertRowReturnId('fees_payment', $post);
+     
+
         redirect($_SERVER['HTTP_REFERER']);
     }
 }

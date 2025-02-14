@@ -9,7 +9,7 @@
 				<div id="sidebar-menu" class="sidebar-menu">
 					<ul>
 						<li class="clinicdropdown">
-							<a href="profile.html">
+							<a href="<?= base_url()?>">
 								<img src="<?= base_url()?>uploads/institution/<?= $user[0]['logo']?>" class="img-fluid" alt="Profile">
 								<div class="user-names">
 									<h5><?= $user[0]['name']?></h5>
@@ -23,7 +23,7 @@
 							<h6 class="submenu-hdr">Main Menu</h6>
 							<ul>
 							<li >
-									<a href="<?= base_url()?>index" >
+									<a href="<?= base_url()?>" >
 										<i class="ti ti-layout-2"></i><span>Dashboard</span>
 									</a>
 									

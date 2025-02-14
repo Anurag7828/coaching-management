@@ -327,7 +327,11 @@
         <div class="form-check">
             <?php if (!empty($selected_fees) && in_array($item['id'], $selected_fees)): ?>
                 <!-- Agar fee already selected hai, toh sirf remove button dikhao -->
-                <label class="form-check-label">
+                <input class="form-check-input fee-checkbox" readonly 
+                type="hidden" value="<?= $item['id'] ?>"
+                id="flexCheck<?= $item['id'] ?>" 
+                <?= ($tag == 'edit' && in_array($item['id'], $selected_fees)) ? 'checked' : '' ?>>
+                <label class="form-check-label" >
                     <?= $item['name'] ?>
                 </label>
                 <a href="<?= base_url('Admin_Dashboard/remove_student_fee/' . encryptId($item['id']) . '/' . encryptId($Student[0]['id'])) ?>" 
