@@ -23,12 +23,15 @@ class Home extends CI_Controller {
 
         $data['title'] = "Home";       
         $data['institution'] = $this->CommonModal->getNumRow('institutions');
-        $data['active'] = $this->CommonModal->getNumWhereRows('institutions','status',1);
-        $data['deactive'] = $this->CommonModal->getNumWhereRows('institutions','status',0);
-        
-		
-
-		$this->load->view('index',$data);
+        $data['deactive'] = $this->CommonModal->getNumWhereRows('institutions','status',1);
+        $data['active'] = $this->CommonModal->getNumWhereRows('institutions','status',0);
+        $data['active_plan'] = $this->CommonModal->getNumRow('plan');
+        $data['deactive_plan'] = $this->CommonModal->getNumWhereRows('plan','status',1);
+        $data['deactive_inst'] = $this->CommonModal->getRowById('institutions','status',1);
+        $data['active_inst'] = $this->CommonModal->getRowById('institutions','status',0);
+        $data['active_plan'] = $this->CommonModal->getRowById('plan','status',0);
+        $data['deactive_plan'] = $this->CommonModal->getRowById('plan','status',1);
+        $this->load->view('index',$data);
 
 	}
 

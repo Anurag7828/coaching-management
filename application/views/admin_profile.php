@@ -67,10 +67,7 @@
 						<!-- /Settings Menu -->
 
 						<div class="row">
-
-
 							<div class="col-xl-12 col-lg-12">
-
 								<!-- Settings Info -->
 								<div class="card">
 									<div class="card-body">

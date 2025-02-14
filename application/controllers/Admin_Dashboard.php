@@ -89,8 +89,7 @@ class Admin_Dashboard extends CI_Controller {
     public function change_password($id)
     {
 
-    $data['title'] = 'Update Paasword';
-    // $data['tag'] = 'admin';
+    $data['title'] = 'Update Paasword';  
     $tid = decryptId($id);
     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
 
@@ -122,7 +121,6 @@ class Admin_Dashboard extends CI_Controller {
     public function inst_fees($id){
         $data['title'] = "Institution Fees";
         $tid = decryptId($id);
-
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
         $data['fees'] = $this->CommonModal->getRowByIdDesc('fees', 'inst_id',$tid,'id','DESC');
         $BdID = decryptId($this->input->get('BdID'));

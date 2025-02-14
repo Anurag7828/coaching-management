@@ -122,84 +122,85 @@
 
                                 <!-- Contact List -->
                                 <div class="table-responsive custom-table">
-                                <table class="table datatable">
-    <thead class="thead-light">
-        <tr>
-            <th class="no-sort">S No.</th>
-            <th>Name</th>
-            
-            <th>Contact No.</th>
-           
-            <th>Email</th>
-            <th>Plan</th>
-            <!-- <th>Paid</th> -->
-          
-            <th>Status</th>
-            <!-- <th>Add By</th> -->
+                                    <table class="table datatable">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th class="no-sort">S No.</th>
+                                                <th>Name</th>
 
-            <th class="text-end">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if (!empty($institution)) : ?>
-            <?php $i = 1; foreach ($institution as $row) : ?>
-                <tr>
-                    <td><?= $i++; ?></td>
-                    <td><a href="" class="title-name"><?= $row['name']; ?></a></td>
-                  
-                    <td><?= $row['phone']; ?></td>
-                    <td><?= $row['email']; ?></td>
-        <?php $plan = $this->CommonModal->getRowById('plan', 'id', $row['plan_id']); ?>
-                    
-                    <td><?= $plan[0]['plan_name']; ?></td>
-                
+                                                <th>Contact No.</th>
 
-                    <td> <?php if($row['status'] == '0') { ?>
-                    <span class="badge badge-pill badge-status  bg-success">
-    Active
-</span>
-<?php } else{
-    ?>
-                <span class="badge badge-pill badge-status  bg-danger">
-    Dective
-</span>
-<?php } ?>
-</td>
+                                                <th>Email</th>
+                                                <th>Plan</th>
+                                                <!-- <th>Paid</th> -->
+
+                                                <th>Status</th>
+                                                <!-- <th>Add By</th> -->
+
+                                                <th class="text-end">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (!empty($institution)) : ?>
+                                                <?php $i = 1;
+                                                foreach ($institution as $row) : ?>
+                                                    <tr>
+                                                        <td><?= $i++; ?></td>
+                                                        <td><a href="" class="title-name"><?= $row['name']; ?></a></td>
+
+                                                        <td><?= $row['phone']; ?></td>
+                                                        <td><?= $row['email']; ?></td>
+                                                        <?php $plan = $this->CommonModal->getRowById('plan', 'id', $row['plan_id']); ?>
+
+                                                        <td><?= $plan[0]['plan_name']; ?></td>
 
 
+                                                        <td> <?php if ($row['status'] == '0') { ?>
+                                                                <span class="badge badge-pill badge-status  bg-success">
+                                                                    Active
+                                                                </span>
+                                                            <?php } else {
+                                                            ?>
+                                                                <span class="badge badge-pill badge-status  bg-danger">
+                                                                    Dective
+                                                                </span>
+                                                            <?php } ?>
+                                                        </td>
 
-                    <td>
-                        <div class="dropdown table-action">
-                            <a href="#" class="action-icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-ellipsis-v"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <?php if($row['status'] == '0') { ?>
 
-                                
-                            <a class="dropdown-item" href="
+
+                                                        <td>
+                                                            <div class="dropdown table-action">
+                                                                <a href="#" class="action-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="fa fa-ellipsis-v"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right">
+                                                                    <?php if ($row['status'] == '0') { ?>
+
+
+                                                                        <a class="dropdown-item" href="
 <?= base_url('Home/deactiveinstitution/' . $row['id']); ?>"><i
-                                                                            class="ti ti-eye text-danger"></i>Deactive</a>
-                                                                            <?php } else{ ?>
-                                                                                <a class="dropdown-item" href="
+                                                                                class="ti ti-eye text-danger"></i>Deactive</a>
+                                                                    <?php } else { ?>
+                                                                        <a class="dropdown-item" href="
 <?= base_url('Home/activeinstitution/' . $row['id']); ?>"><i
-                                                                            class="ti ti-eye text-success"></i>Active</a>
-                                                                            <?php } ?>
+                                                                                class="ti ti-eye text-success"></i>Active</a>
+                                                                    <?php } ?>
                                                                     <a class="dropdown-item"
-                                                                        href="<?php echo base_url() . 'Home/update_institution/' . $row['id']. '?tag='. $row['status']; ?>"><i
+                                                                        href="<?php echo base_url() . 'Home/update_institution/' . $row['id'] . '?tag=' . $row['status']; ?>"><i
                                                                             class="ti ti-edit text-blue"></i> Edit</a>
                                                                     <a class="dropdown-item" href="
-<?php echo base_url() . 'view_institution?BdID=' . $row['id'] . '&tag=' .  $row['status'];?>"><i
+<?php echo base_url() . 'view_institution?BdID=' . $row['id'] . '&tag=' .  $row['status']; ?>"><i
                                                                             class="ti ti-trash text-danger"></i>Delete</a>
-  </div>
-                        </div>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-       
-        <?php endif; ?>
-    </tbody>
-</table>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
 
                                 </div>
                                 <div class="row align-items-center">
