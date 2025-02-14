@@ -72,7 +72,8 @@
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <a href="<?= base_url('Admin_Dashboard/add_student/'. encryptId($user[0]['id'])) ?>" class="btn btn-primary"><i
+                                            <a href="<?= base_url('Admin_Dashboard/add_student/' . encryptId($user[0]['id'])) ?>"
+                                                class="btn btn-primary"><i
                                                     class="ti ti-square-rounded-plus me-2"></i>Add Student</a>
                                         </div>
                                     </div>
@@ -122,84 +123,97 @@
 
                                 <!-- Contact List -->
                                 <div class="table-responsive custom-table">
-                                <table class="table datatable">
-    <thead class="thead-light">
-        <tr>
-            <th class="no-sort">S No.</th>
-            <th>Student Name</th>
-            
-            <th>Contact No.</th>
-           
-            <th>Gender</th>
-            <th>Branch</th>
-            <!-- <th>Paid</th> -->
-          
-            <th>Status</th>
-            <!-- <th>Add By</th> -->
+                                    <table class="table datatable">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th class="no-sort">S No.</th>
+                                                <th>Student Name</th>
 
-            <th class="text-end">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if (!empty($student)) : ?>
-            <?php $i = 1; foreach ($student as $row) : ?>
-                <tr>
-                    <td><?= $i++; ?></td>
-                    <td><a href="" class="title-name"><?= $row['name']; ?></a></td>
-                  
-                    <td><?= $row['phone']; ?></td>
-                    <td><?= $row['gender']; ?></td>
-        <?php $batch = $this->CommonModal->getRowById('batchs', 'id', $row['batch_id']); ?>
-                    
-                    <td><?= $batch[0]['name']; ?></td>
-                
+                                                <th>Contact No.</th>
 
-                    <td> <?php if($row['status'] == '0') { ?>
-                    <span class="badge badge-pill badge-status  bg-success">
-    Active
-</span>
-<?php } else{
-    ?>
-                <span class="badge badge-pill badge-status  bg-danger">
-    Dective
-</span>
-<?php } ?>
-</td>
+                                                <th>Gender</th>
+                                                <th>Branch</th>
+                                                <th>Batch</th>
+
+                                                <th>Status</th>
+                                                <!-- <th>Add By</th> -->
+
+                                                <th class="text-end">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (!empty($student)): ?>
+                                                <?php $i = 1;
+                                                foreach ($student as $row): ?>
+                                                    <tr>
+                                                        <td><?= $i++; ?></td>
+                                                        <td><a href="" class="title-name"><?= $row['name']; ?></a></td>
+
+                                                        <td><?= $row['phone']; ?></td>
+                                                        <td><?= $row['gender']; ?></td>
+                                                        <?php if ($row['branch_id'] == '0') { ?>
+                                                            <td>Main</td>
+                                                        <?php } else { ?>
+                                                            <td>Other</td>
+
+                                                        <?php } ?>
+
+                                                        <?php $batch = $this->CommonModal->getRowById('batchs', 'id', $row['batch_id']); ?>
+
+                                                        <td><?= $batch[0]['name']; ?></td>
 
 
+                                                        <td> <?php if ($row['status'] == '0') { ?>
+                                                                <span class="badge badge-pill badge-status  bg-success">
+                                                                    Active
+                                                                </span>
+                                                            <?php } else {
+                                                            ?>
+                                                                <span class="badge badge-pill badge-status  bg-danger">
+                                                                    Dective
+                                                                </span>
+                                                            <?php } ?>
+                                                        </td>
 
-                    <td>
-                        <div class="dropdown table-action">
-                            <a href="#" class="action-icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-ellipsis-v"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <?php if($row['status'] == '0') { ?>
 
-                                
-                            <a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/deactivestudent/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
-                                                                            class="ti ti-eye text-danger"></i>Deactive</a>
-                                                                            <?php } else{ ?>
-                                                                                <a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/activestudent/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
-                                                                            class="ti ti-eye text-success"></i>Active</a>
-                                                                            <?php } ?>
+
+                                                        <td>
+                                                            <div class="dropdown table-action">
+                                                                <a href="#" class="action-icon" data-bs-toggle="dropdown"
+                                                                    aria-expanded="false">
+                                                                    <i class="fa fa-ellipsis-v"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right">
                                                                     <a class="dropdown-item"
-                                                                        href="<?php echo base_url() . 'Admin_Dashboard/update_student/' . $row['id']. '?tag='. $row['status']; ?>"><i
+                                                                        href="<?php echo base_url() . 'Admin_Dashboard/student/' . encryptId($row['id']) . '/' . encryptId($user[0]['id']) . '?tag=' . $row['status']; ?>"><i
+                                                                            class="ti ti-eye text-blue"></i> View Student</a>
+                                                                    <?php if ($row['status'] == '0') { ?>
+
+
+                                                                        <a class="dropdown-item" href="
+<?= base_url('Admin_Dashboard/deactivestudent/' . $row['id'] . '/' . encryptId($user[0]['id'])); ?>"><i
+                                                                                class="ti ti-eye text-danger"></i>Deactive</a>
+                                                                    <?php } else { ?>
+                                                                        <a class="dropdown-item" href="
+<?= base_url('Admin_Dashboard/activestudent/' . $row['id'] . '/' . encryptId($user[0]['id'])); ?>"><i
+                                                                                class="ti ti-eye text-success"></i>Active</a>
+                                                                    <?php } ?>
+                                                                    <a class="dropdown-item"
+                                                                        href="<?php echo base_url() . 'Admin_Dashboard/update_student/' . encryptId($row['id']) . '/' . encryptId($user[0]['id']) . '?tag=' . $row['status']; ?>"><i
                                                                             class="ti ti-edit text-blue"></i> Edit</a>
-                                                                    <a class="dropdown-item" href="
-<?php echo base_url() . 'Admin_Dashbaord/view_student/'.encryptId($user[0]['id']).'?BdID=' . $row['id'] . '&tag=' .  $row['status'];?>"><i
+                                                                    <a class="dropdown-item"
+                                                                        href="
+<?php echo base_url() . 'Admin_Dashbaord/view_student/' . encryptId($user[0]['id']) . '?BdID=' . $row['id'] . '&tag=' . $row['status']; ?>"><i
                                                                             class="ti ti-trash text-danger"></i>Delete</a>
-  </div>
-                        </div>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-       
-        <?php endif; ?>
-    </tbody>
-</table>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
 
                                 </div>
                                 <div class="row align-items-center">

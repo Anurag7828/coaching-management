@@ -285,6 +285,18 @@ class Admin_Dashboard extends CI_Controller {
             return false;
         }
     }
+    public function student($id,$uid){
+		$data['title'] = "View student";
+        $tid = decryptId($id);
+        $uid = decryptId($uid);
+
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $uid);
+       
+        
+            $data['student'] = $this->CommonModal->getRowByMultitpleId('students','id',$tid,'inst_id',$uid,'id','DESC');
+       
+        $this->load->view('user/student', $data);
+	}
 	public function view_student($id){
 		$data['title'] = "View student";
         $tid = decryptId($id);
@@ -307,11 +319,9 @@ class Admin_Dashboard extends CI_Controller {
                 redirect(base_url('Admin_Dashboard/view_student?tag=deactive'));
             }
         }
-        if ($tag == "deactive") {
-            $data['student'] = $this->CommonModal->getRowByMultitpleId('students', 'status', '1','inst_id',$tid,'id','DESC');
-        } else {
-            $data['student'] = $this->CommonModal->getRowByMultitpleId('students', 'status', '0','inst_id',$tid,'id','DESC');
-        }
+        
+            $data['student'] = $this->CommonModal->getRowByIdDesc('students','inst_id',$tid,'id','DESC');
+       
         $this->load->view('user/view_student', $data);
 	}
 	public function add_student($id)
@@ -349,7 +359,7 @@ class Admin_Dashboard extends CI_Controller {
         $due = $total - $paid;
 
         // **Unset fields from main insert**
-        unset($post['fees_type'], $post['paid'], $post['account_id'], $post['cheque_no'], $post['mode'], $post['total']);
+        unset($post['fees_type'], $post['paid'], $post['account_id'], $post['cheque_no'], $post['mode'], $post['total'],$post['p_id']);
 
         // **Insert student and get ID**
         $student_id = $this->CommonModal->insertRowReturnId('students', $post);
@@ -390,71 +400,97 @@ class Admin_Dashboard extends CI_Controller {
     }
 }
 
-	public function update_student($id)
-    {
-        $tid = decryptId($id);
-		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
-        // $data['agent'] = $this->CommonModal->getAllRows('agent'); 
+public function update_student($id, $uuid)
+{
+    $tid = decryptId($id);
+    $uid = decryptId($uuid);
+
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $uid);
     $data['title'] = 'Update Member';
     $data['tag'] = 'edit';
-      $tid = $id;
-     $data['Student'] = $this->CommonModal->getRowById('students', 'id', $tid);
-     $data['plan'] = $this->CommonModal->getRowById('plan', 'status', '0');
+    $data['Student'] = $this->CommonModal->getRowById('students', 'id', $tid);
+    $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status', '0', 'inst_id', $uid, 'id', 'DESC');
+    $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status', '0', 'inst_id', $uid, 'id', 'DESC');
+    $data['fees'] = $this->CommonModal->getRowByMultitpleId('fees', 'status', '0', 'inst_id', $uid, 'id', 'DESC');
+    $tag1 = $this->input->get('tag');
 
-     $tag1 = $this->input->get('tag');
-     	 if (count($_POST) > 0) {
+    if (count($_POST) > 0) {
+        $post = $this->input->post();
+        $fees_type = isset($post['fees_type']) ? $post['fees_type'] : [];
+        $paid = $post['paid'] ?? 0;
+        $account_id = $post['account_id'] ?? null;
+        $cheque_no = $post['cheque_no'] ?? null;
+        $mode = $post['mode'] ?? null;
+        $total = $post['total'] ?? 0;
+        $pid = $post['p_id'] ?? 0;
 
-            $post = $this->input->post();
-          
-         
-            // $agent_customer_data = [
-               
-            //     'agent_id' => $post['agent_id'] // Ensure 'agent_id' is provided in the form
-            // ];
-            $category_id = $this->CommonModal->updateRowById('students', 'id', $tid, $post);
-            // $category_id1 = $this->CommonModal->updateRowById('agent_customer', 'customer_id', $tid, $agent_customer_data);
-            // $plan = $this->CommonModal->getRowById('plan', 'id', $post['plan_id']);
+        $due = $total - $paid;
 
+        // Remove unused fields before update
+        unset($post['fees_type'], $post['paid'], $post['account_id'], $post['cheque_no'], $post['mode'], $post['total'], $post['p_id']);
 
-            // $start_date = $post['date']; 
-            // $expiry_date = date('Y-m-d', strtotime($start_date . ' + ' . $plan[0]['numbers_of_days'] . ' days'));
-            // $subscription = [
-                                    
-            //                         'plan_type' => $post['plan_id'], // Ensure 'agent_id' is provided in the form
-            //                         'start_date' => $start_date , // Ensure 'agent_id' is provided in the form
-            //                         'expire_date' =>  $expiry_date ,// Ensure 'agent_id' is provided in the form
-            //                         'price' => $plan[0]['price'] // Ensure 'agent_id' is provided in the form
+        // Update student data
+        $category_id = $this->CommonModal->updateRowById('students', 'id', $tid, $post);
 
-
-            //                     ];
-            // $this->CommonModal->updateRowById('subscription', 'inst_id', $tid,$subscription);
-
-            if ($category_id) {
-                $this->session->set_userdata('msg', '<div class="alert alert-success">Updated successfully</div>');
-            } else {
-                $this->session->set_userdata('msg', '<div class="alert alert-success"> Error successfully</div>');
+        // Prepare fees data
+        $items = [];
+        if (!empty($fees_type) && is_array($fees_type)) {
+            foreach ($fees_type as $item) {
+                $items[] = [
+                    'inst_id' => $uid,
+                    'student_id' => $tid,
+                    'fees_type' => $item
+                ];
             }
-            if($tag1=='0') {
-                redirect(base_url('Admin_Dashboard/view_student?tag=active'));
-                } else{
-                redirect(base_url('Admin_Dashboard/view_student?tag=deactive'));
-    
-                }
-
-        } else {
-
-            $this->load->view('user/add_student', $data);
-
         }
 
+        // Insert fees data only if valid
+        if (!empty($items) && isset($items[0]['fees_type'])) {
+            $this->CommonModal->insertBatch('student_fees', $items);
+        } else {
+            log_message('error', 'Batch insert failed: Missing required fields.');
+        }
+
+        // Prepare and update payment record
+        if (!empty($pid)) {
+            $pay_to_insert = [
+                'inst_id' => $uid,
+                'student_id' => $tid,
+                'paid' => $paid,
+                'mode' => $mode,
+                'total' => $total,
+                'due' => $due,
+                'account_id' => $account_id,
+                'cheque_no' => $cheque_no
+            ];
+            $this->CommonModal->updateRowById('fees_payment', 'id', $pid, $pay_to_insert);
+        } else {
+            log_message('error', 'Skipping fees_payment update: pid is missing.');
+        }
+
+        // Set session message before redirecting
+        if ($category_id) {
+            $this->session->set_userdata('msg', '<div class="alert alert-success">Updated successfully</div>');
+        } else {
+            $this->session->set_userdata('msg', '<div class="alert alert-danger">Error updating record</div>');
+        }
+
+        // Redirect after processing
+      
+            redirect(base_url('Admin_Dashboard/view_student/'.$uuid));
+       
+    } else {
+        $this->load->view('user/add_student', $data);
     }
+}
+
 	
     public function deactivestudent($id,$uid){
 		$data['status'] = 1   ;
 		$status_id = $this->CommonModal->updateRowById('students', 'id', $id, $data);
 	$student = $this->CommonModal->getRowById('students', 'id', $id);
 	
-		redirect(base_url('Admin_Dashboard/view_student/'.$uid.'?tag=deactive'));
+		 redirect($_SERVER['HTTP_REFERER']);
 	
 	}
 	public function activestudent($id,$uid){
@@ -464,9 +500,21 @@ class Admin_Dashboard extends CI_Controller {
 	$student = $this->CommonModal->getRowById('students', 'id', $id);
 
 		
-		redirect(base_url('Admin_Dashboard/view_student/'.$uid));
+		 redirect($_SERVER['HTTP_REFERER']);
 	
 	}
+    public function remove_student_fee($id,$sid)
+{
+    $tid = decryptId($id);
+    $uid = decryptId($sid);
+
+    if ($tid && $uid) {
+        $this->CommonModal-> deleteRowByuserId('student_fees', array('fees_type' => $tid),array('student_id' => $uid));
+        redirect($_SERVER['HTTP_REFERER']);
+    } else {
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+}
     public function view_batch($id){
 		$data['title'] = "View batch";
         $tid = decryptId($id);
