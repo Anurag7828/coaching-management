@@ -1251,12 +1251,14 @@ public function get_invoicess($table, $invoice, $countcoloumn, $usercloumn, $use
     
     return $query->result_array();
 }
-public function get_expense($table,  $usercloumn, $user_id, $datecoloumn, $start_date, $end_date) {
+public function get_attendence($table,  $usercloumn, $user_id, $batchcloumn, $batch_id,$datecoloumn, $start_date, $end_date) {
     $this->db->select("*");
     $this->db->from($table);
     
     // Apply conditions
     $this->db->where($usercloumn, $user_id);
+   
+    $this->db->where($batchcloumn, $batch_id);
  
     $this->db->where("$datecoloumn >=", $start_date);
     $this->db->where("$datecoloumn <=", $end_date);

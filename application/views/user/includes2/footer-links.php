@@ -1,3 +1,4 @@
+<script src="<?= base_url()?>assets/js/custom.js" ></script>
 
 	<!-- jQuery -->
 	<script src="<?= base_url()?>assets/js/jquery-3.7.1.min.js" ></script>
@@ -14,7 +15,10 @@
 	<!-- Datatable JS -->
 	<script src="<?= base_url()?>assets/js/jquery.dataTables.min.js" ></script>
 	<script src="<?= base_url()?>assets/js/dataTables.bootstrap5.min.js" ></script>
-
+   <!-- Include jsPDF and SheetJS -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 	<!-- Daterangepicker JS -->
 	<script src="<?= base_url()?>assets/js/moment.min.js" ></script>
 	<script src="<?= base_url()?>assets/plugins/daterangepicker/daterangepicker.js" ></script>

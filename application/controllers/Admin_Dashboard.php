@@ -218,9 +218,9 @@ class Admin_Dashboard extends CI_Controller {
         
         if ($BdID) {
             $this->CommonModal->deleteRowById('account', array('id' => $BdID));
-            redirect('account');
+            redirect($_SERVER['HTTP_REFERER']);
         }
-        $this->load->view('bank_account', $data);
+        $this->load->view('user/bank_account', $data);
     }
     public function add_account($id)
     {
@@ -358,11 +358,21 @@ class Admin_Dashboard extends CI_Controller {
     redirect($_SERVER['HTTP_REFERER']);
 }
     }
+    public function delete_mail($id) {
+        $tid = decryptId($id);
+      
+        
+        
+            $this->CommonModal->deleteRowById('student_email', array('id' => $tid));
+           
+    redirect($_SERVER['HTTP_REFERER']);
+}
+    
     public function student($id,$uid){
 		$data['title'] = "View student";
         $tid = decryptId($id);
         $uid = decryptId($uid);
-
+        $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $uid);
 		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $uid);
        
         
@@ -403,6 +413,7 @@ class Admin_Dashboard extends CI_Controller {
     $data['tag'] = "add";
     $tid = decryptId($id);
     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+    $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $tid);
     $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
     $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
     $data['fees'] = $this->CommonModal->getRowByMultitpleId('fees', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
@@ -462,7 +473,8 @@ class Admin_Dashboard extends CI_Controller {
             'total' => $total,
             'due' => $due,
             'account_id' => $account_id,
-            'cheque_no' => $cheque_no
+            'cheque_no' => $cheque_no,
+            'date' => $post['join_date']
         ];
         $this->CommonModal->insertRowReturnId('fees_payment', $pay_to_insert);
 
@@ -482,6 +494,7 @@ public function update_student($id, $uuid)
     $data['title'] = 'Update Member';
     $data['tag'] = 'edit';
     $data['Student'] = $this->CommonModal->getRowById('students', 'id', $tid);
+    $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $uid);
     $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status', '0', 'inst_id', $uid, 'id', 'DESC');
     $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status', '0', 'inst_id', $uid, 'id', 'DESC');
     $data['fees'] = $this->CommonModal->getRowByMultitpleId('fees', 'status', '0', 'inst_id', $uid, 'id', 'DESC');
@@ -577,6 +590,170 @@ public function update_student($id, $uuid)
 		 redirect($_SERVER['HTTP_REFERER']);
 	
 	}
+    public function get_students_by_batch($batch_id,$id)
+    {
+        $students  = $this->CommonModal->getRowByMultitpleId('students', 'inst_id', $id, 'batch_id', $batch_id, 'id', 'DESC');
+        if (!empty($students)) {
+            ?>
+            <form action="<?= base_url('Admin_Dashboard/submit_bulk_attendance') ?>" method="POST">
+                <input type="hidden" name="batch_id" value="<?= $batch_id; ?>">
+                <input type="hidden" name="inst_id" value="<?= $id; ?>">
+
+    
+                <div class="table-responsive custom-table pb-3">
+    <table class="table datatable" id="attendenceTable">
+        <thead class="thead-light">
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                            <th>Late</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($students as $student): ?>
+                            <tr>
+                                <td><?= $student['name'] ?></td>
+                                <td><input type="radio" name="attendance[<?= $student['id'] ?>]" value="Present" checked></td>
+                                <td><input type="radio" name="attendance[<?= $student['id'] ?>]" value="Absent"></td>
+                                <td><input type="radio" name="attendance[<?= $student['id'] ?>]" value="Late"></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+    </div>
+                <button type="submit" class="btn btn-primary">Submit Attendance</button>
+            </form>
+    
+            <?php
+        } else {
+            echo "<p>No students found for this batch.</p>";
+        }
+    }
+    public function submit_bulk_attendance()
+{
+    $batch_id = $this->input->post('batch_id');
+    $inst_id = $this->input->post('inst_id');
+
+    $attendance = $this->input->post('attendance');
+    $date = date('Y-m-d'); // Auto-fetch today's date
+
+    $bulk_data = [];
+    foreach ($attendance as $student_id => $status) {
+        $bulk_data[] = [
+            'inst_id' => $inst_id,
+            'student_id' => $student_id,
+            'batch_id' => $batch_id,
+            'date' => $date,
+            'status' => $status
+        ];
+    }
+
+    // Insert all records at once
+    if (!empty($bulk_data)) {
+        $this->CommonModal->insertBatch('student_attendance', $bulk_data);
+    }
+
+    $this->session->set_flashdata('success', 'Attendance recorded successfully.');
+    redirect('Admin_Dashboard/view_attendance/'.encryptId($inst_id));
+}
+public function add_attendance($id)
+{
+    $data['title'] = "Today Attendance";
+    $data['tag'] = "add";
+    $tid = decryptId($id);
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+    
+    $data['batches'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
+    
+
+        $this->load->view('user/add_attendance', $data);
+    
+}
+
+public function View_attendance($id)
+{
+    $data['title'] = "View Attendance";
+    $tid = decryptId($id);
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+    $data['batches'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
+
+    // Default values
+    $start_date = date('Y-m-d', strtotime('-1 day')); // Yesterday
+    $end_date = date('Y-m-d'); // Today
+    $batch_id = "all";
+
+    if ($this->input->post()) {
+        $batch_id = $this->input->post('batch_id');
+
+        if (!empty($this->input->post('from'))) {
+            $start_date = date('Y-m-d', strtotime($this->input->post('from')));
+        }
+
+        if (!empty($this->input->post('to'))) {
+            $end_date = date('Y-m-d', strtotime($this->input->post('to')));
+        }
+    }
+
+    // ✅ Corrected Condition for Fetching Attendance
+    if ($batch_id == "all") {
+        $data['attendence'] = $this->CommonModal->get_attendence(
+            'student_attendance',
+            'inst_id', $tid,
+            'date', $end_date,
+            'date', $start_date,
+             $end_date
+        );
+    } else {
+        $data['attendence'] = $this->CommonModal->get_attendence(
+            'student_attendance',
+            'inst_id', $tid,
+            'batch_id', $batch_id,
+            'date', $start_date,
+            $end_date
+        );
+    }
+
+    // Passing Filtered Data to View
+    $data['start'] = $start_date;
+    $data['end'] = $end_date;
+    $data['selected_batch'] = $batch_id;
+
+    $this->load->view('user/view_attendence', $data);
+}
+public function export_attendance_sheet()
+{
+    $this->load->library('PHPExcel');
+    $students = $this->CommonModal->getAllRows('students');
+
+    // Create new PHPExcel object
+    $objPHPExcel = new PHPExcel();
+    $objPHPExcel->setActiveSheetIndex(0);
+
+    // Set headers
+    $objPHPExcel->getActiveSheet()->setCellValue('A1', 'Student ID');
+    $objPHPExcel->getActiveSheet()->setCellValue('B1', 'Student Name');
+    $objPHPExcel->getActiveSheet()->setCellValue('C1', 'Date');
+    $objPHPExcel->getActiveSheet()->setCellValue('D1', 'Status (Present/Absent/Late)');
+
+    // Populate data
+    $row = 2;
+    foreach ($students as $student) {
+        $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $student['id']);
+        $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $student['name']);
+        $row++;
+    }
+
+    // Output Excel file
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment;filename="attendance_template.xlsx"');
+    header('Cache-Control: max-age=0');
+
+    $writer = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+    $writer->save('php://output');
+}
+
+
     public function remove_student_fee($id,$sid)
 {
     $tid = decryptId($id);

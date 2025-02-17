@@ -53,7 +53,7 @@
 										</a>
 									</li> -->
 									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/change_password/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 active">
+										<a href="<?= base_url('Admin_Dashboard/change_password/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 ">
 											<i class="ti ti-apps me-2"></i>Change Password
 										</a>
 									</li>
@@ -69,7 +69,7 @@
 										</a>
 									</li>
 									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/account/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0">
+										<a href="<?= base_url('Admin_Dashboard/account/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 active">
 											<i class="ti ti-moneybag me-2"></i>Bank Account
 										</a>
 									</li>
@@ -119,7 +119,7 @@
                                     data-bs-target="#edit_bank<?= $row['id']?>"><i
                                         class="fa-solid fa-pencil text-blue"></i>
                                     Edit</a>
-                                <a class="dropdown-item" href="<?= base_url('Home/account?BdID='.$row['id'])?>" ><i
+                                <a class="dropdown-item" href="<?= base_url('Admin_Dashboard/account/'.encryptId($user[0]['id']).'?BdID='.$row['id'])?>" ><i
                                         class="fa-regular fa-trash-can text-danger"></i>
                                     Delete</a>
                             </div>
@@ -138,11 +138,12 @@
 							</button>
 						</div>
 					</div>
-                    <form action="<?= base_url('Home/edit_account/'.$row['id'])?>" method="post" enctype="multipart/form-data">
+                    <form action="<?= base_url('Admin_Dashboard/edit_account/'.$row['id'])?>" method="post" enctype="multipart/form-data">
 						<div class="modal-body">
 							<div class="mb-3">
 								<label class="col-form-label">Account Holder Name <span class="text-danger">*</span></label>
 								<input type="text" class="form-control" name="holder" value="<?= $row['holder']?>" required>
+								<input type="hidden" class="form-control" name="inst_id" value="<?=$user[0]['id']?>" required>
 							</div>
 							<div class="mb-3">
 								<label class="col-form-label">Bank Name<span class="text-danger">*</span></label>
@@ -195,11 +196,13 @@
 							</button>
 						</div>
 					</div>
-                    <form action="<?= base_url('Home/add_account')?>" method="post" enctype="multipart/form-data">
+                    <form action="<?= base_url('Admin_Dashboard/add_account/'.encryptId($user[0]['id']))?>" method="post" enctype="multipart/form-data">
 						<div class="modal-body">
 							<div class="mb-3">
 								<label class="col-form-label">Account Holder Name <span class="text-danger">*</span></label>
 								<input type="text" class="form-control" name="holder" required>
+								<input type="hidden" class="form-control" name="inst_id" value="<?=$user[0]['id']?>" required>
+
 							</div>
 							<div class="mb-3">
 								<label class="col-form-label">Bank Name<span class="text-danger">*</span></label>
@@ -250,38 +253,8 @@
 			</div>
 		</div>
     </div>
-    <script>
-    // Get today's date in YYYY-MM-DD format
-    const today = new Date().toISOString().split('T')[0];
-
-    // Set the 'min' attribute of the date input field to today's date
-    document.getElementById('nextFollowUpDate').setAttribute('min', today);
-
-    document.getElementById('pincode').addEventListener('blur', function () {
-    const pincode = this.value.trim();
-    
-    if (pincode.length === 6) { // Validate pincode length
-        // Display a loading message or spinner here if needed
-        fetch(`https://api.postalpincode.in/pincode/${pincode}`) // Replace with your API URL
-            .then(response => response.json())
-            .then(data => {
-                if (data[0].Status === 'Success') {
-                    const details = data[0].PostOffice[0];
-                    document.getElementById('city').value = details.District || '';
-                    document.getElementById('state').value = details.State || '';
-                    document.getElementById('country').value = 'India'; // Assuming India for this API
-                } else {
-                    alert('Invalid pincode. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching pincode details:', error);
-                alert('Failed to fetch pincode details. Please check your internet connection or try again later.');
-            });
-    } else {
-        alert('Please enter a valid 6-digit pincode.');
-    }
-});
-
-</script>
+   
     <?php include('includes2/footer.php') ?>
+    <?php include('includes2/footer-links.php') ?>
+	</body>
+	</html>

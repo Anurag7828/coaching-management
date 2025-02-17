@@ -447,7 +447,7 @@
 														</thead>
 														<tbody>
 															<?php
-															$paymentall = $this->CommonModal->getRowByMultitpleId('fees_payment', 'student_id', $student[0]['id'], 'inst_id', $user[0]['id'],'id','DESC');
+															$paymentall = $this->CommonModal->getRowByMultitpleId('fees_payment', 'student_id', $student[0]['id'], 'inst_id',$user[0]['id'],'id','DESC');
 															$i = 0;
 
 															if (!empty($paymentall)) {
@@ -463,7 +463,7 @@
 																		<?php
 																		$bank_name = "-"; // Default value agar koi bank info na mile
 																		if (!empty($row1['account_id'])) {
-																			$bank = $this->CommonModal->getRowByMultitpleId('account', 'id', $row1['account_id'], 'inst_id', $user[0]['id']);
+																			$bank = $this->CommonModal->getRowByMultitpleId('account', 'id', $row1['account_id'], 'inst_id', $user[0]['id'],'id','DESC');
 																			if (!empty($bank)) {
 																				$bank_name = $bank[0]['bank_name'];
 																			}
@@ -511,21 +511,28 @@
 									<div class="card-body">
 										<div class="card border mb-0">
 											<div class="card-body pb-0">
+												<?php $emails = $this->CommonModal->getRowByMultitpleId('student_email', 'student_id', $student[0]['id'], 'inst_id',$user[0]['id'],'id','DESC');
+	if (!empty($emails)) {
+	foreach ($emails as $email) {
+		$i++;
+		?>
 												<div class="row align-items-center">
 													<div class="col-md-8">
 														<div class="mb-3">
-															<h4 class="fw-medium mb-1">Manage Emails</h4>
-															<p>You can send and reply to emails directly via this
-																section.</p>
+															<h4 class="fw-medium mb-1"><?= $email['subject']?></h4>
+															<p><?= $email['message']?></p>
 														</div>
 													</div>
 													<div class="col-md-4 text-md-end">
 														<div class="mb-3">
-															<a href="#" class="btn btn-primary" data-bs-toggle="modal"
-																data-bs-target="#create_email">Connect Account</a>
+															<a href="<?= base_url('Admin_Dashboard/delete_mail/'.encryptId($email['id']))?>" class="btn btn-primary" >Delete</a>
 														</div>
 													</div>
 												</div>
+												<?php
+																}
+															}
+															?>
 											</div>
 										</div>
 									</div>

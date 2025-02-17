@@ -27,7 +27,7 @@
                         </div>
                         <div class="offcanvas-body">
                             <form
-                                action="<?= ($tag == 'edit' && isset($Student[0]['id'])) ? base_url('Admin_Dashboard/update_student/' . encryptId($Student[0]['id']) . '/' . encryptId($user[0]['id'])) : base_url('Admin_Dashboard/update_student/' . encryptId($user[0]['id'])) ?>"
+                                action="<?= ($tag == 'edit' && isset($Student[0]['id'])) ? base_url('Admin_Dashboard/update_student/' . encryptId($Student[0]['id']) . '/' . encryptId($user[0]['id'])) : base_url('Admin_Dashboard/add_student/' . encryptId($user[0]['id'])) ?>"
                                 method="Post">
                                 <div class="accordion" id="main_accordion">
                                     <!-- Basic Info -->

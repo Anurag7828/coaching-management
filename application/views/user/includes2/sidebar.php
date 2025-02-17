@@ -35,7 +35,9 @@
 									<ul>
 										<li><a href="<?= base_url('Admin_Dashboard/add_student/'. encryptId($user[0]['id']))?>">Add Students</a></li>
 										<li><a href="<?= base_url('Admin_Dashboard/view_student/'. encryptId($user[0]['id']))?>">View Students</a></li>
-										<li><a href="<?= base_url('Admin_Dashboard/add_student/'. encryptId($user[0]['id']))?>">Student Attendance</a></li>
+									
+										<li><a href="<?= base_url('Admin_Dashboard/view_attendance/'. encryptId($user[0]['id']))?>">Student Attendance</a></li>
+
 
 									
 									</ul>
