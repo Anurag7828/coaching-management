@@ -721,36 +721,113 @@ public function View_attendance($id)
 
     $this->load->view('user/view_attendence', $data);
 }
-public function export_attendance_sheet()
+// In your Controller (e.g., StudentController.php)
+public function get_students()
 {
-    $this->load->library('PHPExcel');
-    $students = $this->CommonModal->getAllRows('students');
+    // ✅ Debugging - Check if function runs
+    error_log("get_students() function called!");
 
-    // Create new PHPExcel object
-    $objPHPExcel = new PHPExcel();
-    $objPHPExcel->setActiveSheetIndex(0);
+    // Allow CORS
+    header("Access-Control-Allow-Origin: *");
+    header("Content-Type: application/json; charset=UTF-8");
+    $user_id = $this->input->get('user_id');
 
-    // Set headers
-    $objPHPExcel->getActiveSheet()->setCellValue('A1', 'Student ID');
-    $objPHPExcel->getActiveSheet()->setCellValue('B1', 'Student Name');
-    $objPHPExcel->getActiveSheet()->setCellValue('C1', 'Date');
-    $objPHPExcel->getActiveSheet()->setCellValue('D1', 'Status (Present/Absent/Late)');
+    // ✅ Debugging - Check if Database Query Runs
+    $this->db->select('students.id as student_id, students.name as student_name, students.inst_id, batchs.id as batch_id, batchs.name as batch_name');
+    $this->db->from('students');
+    $this->db->join('batchs', 'batchs.id = students.batch_id', 'left');
+    $this->db->where('students.inst_id', $user_id); // ✅ students table se inst_id filter karein
+    $query = $this->db->get();
+    
 
-    // Populate data
-    $row = 2;
-    foreach ($students as $student) {
-        $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $student['id']);
-        $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $student['name']);
-        $row++;
+    if (!$query) {
+        error_log("SQL Error: " . $this->db->last_query());
+        echo json_encode(["error" => "Database query failed"]);
+        return;
     }
 
-    // Output Excel file
-    header('Content-Type: application/vnd.ms-excel');
-    header('Content-Disposition: attachment;filename="attendance_template.xlsx"');
-    header('Cache-Control: max-age=0');
+    $students = $query->result_array();
 
-    $writer = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-    $writer->save('php://output');
+    // ✅ Debugging - Check Data
+    error_log("Total Students Found: " . count($students));
+
+    // Add date and blank status
+    foreach ($students as &$student) {
+        $student['date'] = date('Y-m-d');
+        $student['status'] = 'present';
+    }
+
+    // ✅ Debugging - Check JSON Response Before Sending
+    $response = json_encode([
+        'status' => !empty($students),
+        'data'   => $students ?: [],
+        'message' => !empty($students) ? 'Students fetched successfully' : 'No students found'
+    ]);
+
+    error_log("JSON Response: " . $response);
+
+    echo $response;
+}
+
+public function upload_students_attendance_csv()
+{
+    // Allow CORS & JSON Response
+    header("Access-Control-Allow-Origin: *");
+    header("Content-Type: application/json; charset=UTF-8");
+
+    // Check if file is uploaded
+    if (!isset($_FILES['csv_file']['tmp_name'])) {
+        echo json_encode(["status" => false, "message" => "No file uploaded."]);
+        return;
+    }
+
+    $filePath = $_FILES['csv_file']['tmp_name'];
+
+    // Read CSV File
+    $file = fopen($filePath, "r");
+
+    if (!$file) {
+        echo json_encode(["status" => false, "message" => "Failed to read the CSV file."]);
+        return;
+    }
+
+    $insertData = [];
+    $rowNumber = 0;
+
+    while (($row = fgetcsv($file, 1000, ",")) !== FALSE) {
+        if ($rowNumber == 0) {
+            $rowNumber++; // Skip Header Row
+            continue;
+        }
+
+        if (count($row) < 6) continue; // Skip if data is incomplete
+
+        $insertData[] = [
+            'inst_id'    => $row[2], // Column C: inst_id
+            'student_id' => $row[0], // Column A: student_id
+            'batch_id'   => $row[3], // Column D: batch_id
+            'date'       => $row[4], // Column E: date
+            'status'     => $row[5], // Column F: status
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+    }
+
+    fclose($file);
+
+    if (!empty($insertData)) {
+        $this->db->insert_batch('student_attendance', $insertData);
+        echo json_encode(["status" => true, "message" => "Attendance uploaded successfully."]);
+    } else {
+        echo json_encode(["status" => false, "message" => "No valid data found in CSV."]);
+    }
+}
+
+public function upload_excel_formate($id){
+    $data['title'] = "View batch";
+    $tid = decryptId($id);
+         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+   
+    $this->load->view('user/upload_excel_formate', $data);
 }
 
 

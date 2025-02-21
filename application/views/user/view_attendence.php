@@ -55,10 +55,9 @@
 											<a href="javascript:void(0);" class="btn btn-primary" id="exportPdf" data-bs-toggle="modal"
 												data-bs-target="#download_report"><i
 													class="ti ti-file-download me-2"></i>Download Report</a>
-                                                    <a href="<?= base_url('Admin_Dashboard/export_attendance_sheet') ?>" class="btn btn-success">
-    <i class="ti ti-file-download me-2"></i> Download Excel Template
-</a>
-
+                                                  
+                                                    <a href="<?= base_url('Admin_Dashboard/upload_excel_formate/'. encryptId($user[0]['id']))?>" class="btn btn-primary" ><i
+													class="ti ti-file-download me-2"></i>Upload Excel File</a>
                                                     <a href="<?= base_url('Admin_Dashboard/add_attendance/'. encryptId($user[0]['id']))?>" class="btn btn-primary" ><i
 													class="ti ti-file-download me-2"></i>Today Attendance</a>
 										</div>
@@ -174,83 +173,11 @@
 	
   
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <script>
    
 
-document.getElementById("removeFilter").addEventListener("click", function() {
-    document.getElementById("student-name").value = "all";
-    document.getElementById("fromDate").value = "";
-    document.getElementById("toDate").value = "";
-    document.getElementById("filterForm").submit(); // Auto-submit form
-});
-
-</script>
 
 
-<script>
-document.getElementById('exportExcel').addEventListener('click', function () {
-    // Sample student data (You can fetch this from the backend using AJAX)
-    let students = <?= json_encode($students); ?>;  // PHP array of students
 
-    let wb = XLSX.utils.book_new();
-    let ws_data = [['Student ID', 'Student Name', 'Date', 'Status (Present/Absent/Late)']];
-
-    students.forEach(student => {
-        ws_data.push([student.id, student.name, '', '']); // Empty Date & Status for input
-    });
-
-    let ws = XLSX.utils.aoa_to_sheet(ws_data);
-    XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-    XLSX.writeFile(wb, "attendance_template.xlsx");
-});
-
-// Upload & Process Excel File
-document.getElementById('uploadExcel').addEventListener('change', function (event) {
-    let file = event.target.files[0];
-    let reader = new FileReader();
-
-    reader.onload = function (e) {
-        let data = new Uint8Array(e.target.result);
-        let workbook = XLSX.read(data, { type: 'array' });
-
-        let sheet = workbook.Sheets[workbook.SheetNames[0]];
-        let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-        let tableBody = document.querySelector('#previewTable tbody');
-        tableBody.innerHTML = '';
-
-        let attendanceData = [];
-
-        jsonData.slice(1).forEach(row => {
-            if (row.length > 0) {
-                let student = {
-                    student_id: row[0],
-                    date: row[2],
-                    status: row[3]
-                };
-                attendanceData.push(student);
-
-                let tr = document.createElement('tr');
-                tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td>`;
-                tableBody.appendChild(tr);
-            }
-        });
-
-        // Send to PHP via AJAX
-        fetch('<?= base_url("Admin_Dashboard/upload_attendance") ?>', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ attendance: attendanceData })
-        })
-        .then(response => response.json())
-        .then(data => alert("Attendance Uploaded Successfully!"))
-        .catch(error => console.error('Error:', error));
-    };
-
-    reader.readAsArrayBuffer(file);
-});
-</script>
 
 <?php include('includes2/footer.php') ?>
 <?php include('includes2/footer-links.php') ?>
