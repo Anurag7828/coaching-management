@@ -405,6 +405,8 @@ class Admin_Dashboard extends CI_Controller {
        
         $this->load->view('user/view_student', $data);
 	}
+  
+    
 	public function add_student($id)
 {
     $data['title'] = "Add Student";
@@ -427,6 +429,7 @@ class Admin_Dashboard extends CI_Controller {
             exit;
         }
 
+        $post['roll_no'] = $this->CommonModal->generate_roll_no($tid, $post['batch_id'], $post['branch_id']);
         // Generate random password
         $password = bin2hex(random_bytes(8));
         $post['password'] = $password;
@@ -602,6 +605,7 @@ public function update_student($id, $uuid)
     <table class="table datatable" id="attendenceTable">
         <thead class="thead-light">
                         <tr>
+                        <th>Roll No</th>
                             <th>Student Name</th>
                             <th>Present</th>
                             <th>Absent</th>
@@ -611,11 +615,15 @@ public function update_student($id, $uuid)
                     <tbody>
                         <?php foreach ($students as $student): ?>
                             <tr>
-                                <td><?= $student['name'] ?></td>
-                                <td><input type="radio" name="attendance[<?= $student['id'] ?>]" value="Present" checked></td>
-                                <td><input type="radio" name="attendance[<?= $student['id'] ?>]" value="Absent"></td>
-                                <td><input type="radio" name="attendance[<?= $student['id'] ?>]" value="Late"></td>
-                            </tr>
+                        <td>
+                            <?= $student['roll_no'] ?>
+                            <input type="hidden" name="attendance[<?= $student['id'] ?>][roll_no]" value="<?= $student['roll_no'] ?>">
+                        </td>
+                        <td><?= $student['name'] ?></td>
+                        <td><input type="radio" name="attendance[<?= $student['id'] ?>][status]" value="Present" checked></td>
+                        <td><input type="radio" name="attendance[<?= $student['id'] ?>][status]" value="Absent"></td>
+                        <td><input type="radio" name="attendance[<?= $student['id'] ?>][status]" value="Late"></td>
+                    </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -632,29 +640,58 @@ public function update_student($id, $uuid)
 {
     $batch_id = $this->input->post('batch_id');
     $inst_id = $this->input->post('inst_id');
-
     $attendance = $this->input->post('attendance');
     $date = date('Y-m-d'); // Auto-fetch today's date
 
-    $bulk_data = [];
-    foreach ($attendance as $student_id => $status) {
-        $bulk_data[] = [
+    if (!is_array($attendance) || empty($attendance)) {
+        $this->session->set_flashdata('error', 'No attendance data received.');
+        redirect('Admin_Dashboard/view_attendance/' . encryptId($inst_id));
+        return;
+    }
+
+    foreach ($attendance as $student_id => $data) {
+        if (!is_array($data) || !isset($data['roll_no']) || !isset($data['status'])) {
+            continue; // Skip invalid entries
+        }
+
+        $student_roll_no = $data['roll_no'];
+        $status = $data['status'];
+
+        // Check if attendance already exists for this student on this date
+        $existing_attendance = $this->CommonModal->getRowByCondition('student_attendance', [
             'inst_id' => $inst_id,
             'student_id' => $student_id,
             'batch_id' => $batch_id,
-            'date' => $date,
-            'status' => $status
-        ];
-    }
+            'date' => $date
+        ]);
 
-    // Insert all records at once
-    if (!empty($bulk_data)) {
-        $this->CommonModal->insertBatch('student_attendance', $bulk_data);
+        if ($existing_attendance) {
+            // Update existing attendance record
+            $this->CommonModal->updateRowByCondition('student_attendance', [
+                'inst_id' => $inst_id,
+                'student_id' => $student_id,
+                'batch_id' => $batch_id,
+                'date' => $date
+            ], [
+                'status' => $status
+            ]);
+        } else {
+            // Insert new attendance record
+            $this->CommonModal->insertRow('student_attendance', [
+                'inst_id' => $inst_id,
+                'student_id' => $student_id,
+                'student_roll_no' => $student_roll_no,
+                'batch_id' => $batch_id,
+                'date' => $date,
+                'status' => $status
+            ]);
+        }
     }
 
     $this->session->set_flashdata('success', 'Attendance recorded successfully.');
-    redirect('Admin_Dashboard/view_attendance/'.encryptId($inst_id));
+    redirect('Admin_Dashboard/view_attendance/' . encryptId($inst_id));
 }
+
 public function add_attendance($id)
 {
     $data['title'] = "Today Attendance";
@@ -719,6 +756,70 @@ public function View_attendance($id)
 
     $this->load->view('user/view_attendence', $data);
 }
+public function attendence_report($id, $sid)
+{
+    $data['title'] = "View Attendance Report";
+    $tid = decryptId($id);
+    $tsid = decryptId($sid);
+
+    // Fetch institution and student details
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+    $data['student'] = $this->CommonModal->getRowById('students', 'id', $tsid);
+
+    // ✅ Set default date range (Last 30 Days)
+    $start_date = date('Y-m-01');
+    $end_date = date('Y-m-d'); // Today
+
+    if ($this->input->post()) {
+        if (!empty($this->input->post('from'))) {
+            $start_date = date('Y-m-d', strtotime($this->input->post('from')));
+        }
+
+        if (!empty($this->input->post('to'))) {
+            $end_date = date('Y-m-d', strtotime($this->input->post('to')));
+        }
+    }
+
+    // ✅ Fetch Attendance Data for the Given Date Range
+    $this->db->where('inst_id', $tid);
+    $this->db->where('student_id', $tsid);
+    $this->db->where("date BETWEEN '$start_date' AND '$end_date'");
+    $query = $this->db->get('student_attendance');
+    $data['attendence'] = $query->result_array();
+
+    // ✅ Count Attendance Status
+    $this->db->select("COUNT(*) as total_present");
+    $this->db->where("inst_id", $tid);
+    $this->db->where("student_id", $tsid);
+    $this->db->where("status", "Present");
+    $this->db->where("date BETWEEN '$start_date' AND '$end_date'");
+    $present = $this->db->get("student_attendance")->row_array();
+    $data['total_present'] = $present['total_present'];
+
+    $this->db->select("COUNT(*) as total_absent");
+    $this->db->where("inst_id", $tid);
+    $this->db->where("student_id", $tsid);
+    $this->db->where("status", "Absent");
+    $this->db->where("date BETWEEN '$start_date' AND '$end_date'");
+    $absent = $this->db->get("student_attendance")->row_array();
+    $data['total_absent'] = $absent['total_absent'];
+
+    $this->db->select("COUNT(*) as total_late");
+    $this->db->where("inst_id", $tid);
+    $this->db->where("student_id", $tsid);
+    $this->db->where("status", "Late");
+    $this->db->where("date BETWEEN '$start_date' AND '$end_date'");
+    $late = $this->db->get("student_attendance")->row_array();
+    $data['total_late'] = $late['total_late'];
+
+    // Pass filter data to view
+    $data['start'] = $start_date;
+    $data['end'] = $end_date;
+
+    $this->load->view('user/student_attendence_report', $data);
+}
+
+
 // In your Controller (e.g., StudentController.php)
 public function get_students()
 {
@@ -731,7 +832,7 @@ public function get_students()
     $user_id = $this->input->get('user_id');
 
     // ✅ Debugging - Check if Database Query Runs
-    $this->db->select('students.id as student_id, students.name as student_name, students.inst_id, batchs.id as batch_id, batchs.name as batch_name');
+    $this->db->select('students.id as student_id,students.roll_no as student_roll_no, students.name as student_name, students.inst_id, batchs.id as batch_id, batchs.name as batch_name');
     $this->db->from('students');
     $this->db->join('batchs', 'batchs.id = students.batch_id', 'left');
     $this->db->where('students.inst_id', $user_id); // ✅ students table se inst_id filter karein
@@ -801,11 +902,12 @@ public function upload_students_attendance_csv()
         if (count($row) < 6) continue; // Skip if data is incomplete
 
         $insertData[] = [
-            'inst_id'    => $row[2], // Column C: inst_id
-            'student_id' => $row[0], // Column A: student_id
-            'batch_id'   => $row[3], // Column D: batch_id
-            'date'       => $row[4], // Column E: date
-            'status'     => $row[5], // Column F: status
+            'inst_id'    => $row[3], // Column C: inst_id
+            'student_id' => $row[0],
+            'student_roll_no'   => $row[1], // Column A: student_id
+            'batch_id'   => $row[4], // Column D: batch_id
+            'date'       => $row[5], // Column E: date
+            'status'     => $row[6], // Column F: status
             'created_at' => date('Y-m-d H:i:s')
         ];
     }

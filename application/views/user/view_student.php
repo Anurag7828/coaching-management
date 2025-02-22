@@ -127,6 +127,8 @@
                                         <thead class="thead-light">
                                             <tr>
                                                 <th class="no-sort">S No.</th>
+                                                <th >Roll No.</th>
+
                                                 <th>Student Name</th>
 
                                                 <th>Contact No.</th>
@@ -147,8 +149,9 @@
                                                 foreach ($student as $row): ?>
                                                     <tr>
                                                         <td><?= $i++; ?></td>
-                                                        <td><a href="" class="title-name"><?= $row['name']; ?></a></td>
-
+                                                        <td><?= $row['roll_no']; ?></td>
+                                                        <td><a href="<?php echo base_url() . 'Admin_Dashboard/student/' . encryptId($row['id']) . '/' . encryptId($user[0]['id']) . '?tag=' . $row['status']; ?>" class="title-name"><?= $row['name']; ?></a></td>
+                                                       
                                                         <td><?= $row['phone']; ?></td>
                                                         <td><?= $row['gender']; ?></td>
                                                         <?php if ($row['branch_id'] == '0') { ?>

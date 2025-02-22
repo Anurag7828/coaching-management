@@ -156,12 +156,13 @@ fetch(base_url + 'Admin_Dashboard/get_students?user_id=' + user_id)
             let csvContent = "data:text/csv;charset=utf-8,";
 
             // Add CSV Header
-            csvContent += "Student ID,Student Name,Inst ID,Batch ID, Batch Name ,Date,Status\n";
+            csvContent += "Student ID,Roll No.,Student Name,Inst ID,Batch ID, Batch Name ,Date,Status\n";
 
             // Add Data Rows
             data.data.forEach(row => {
                 let rowData = [
                     row.student_id,
+                    row.student_roll_no,
                     row.student_name,
                     row.inst_id,
                     row.batch_id,

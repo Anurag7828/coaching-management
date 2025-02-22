@@ -23,7 +23,7 @@
 							<h6 class="submenu-hdr">Main Menu</h6>
 							<ul>
 							<li >
-									<a href="<?= base_url()?>" >
+									<a href="<?= base_url('Admin_Dashboard/index/'. encryptId($user[0]['id']))?>" >
 										<i class="ti ti-layout-2"></i><span>Dashboard</span>
 									</a>
 									

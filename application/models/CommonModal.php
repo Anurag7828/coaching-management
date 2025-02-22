@@ -45,7 +45,10 @@ public function getStockByPlaceAndProduct($stockPlaceId, $productId)
 
 	}
 
-
+    public function updateRowByCondition($table, $where, $data)
+    {
+        return $this->db->where($where)->update($table, $data);
+    }
 
 	function insertRowReturnId($table, $post)
 
@@ -392,6 +395,33 @@ public function getRowsBeforeId($table, $column, $id, $column1, $id1)
   
     $query = $this->db->get(); // Execute the query
     return $query->result_array(); // Return the result as an array
+}
+public function generate_roll_no($institution_code, $batch_id, $branch_id) {
+    $yearMonth = date('ym'); // Get YYMM format
+
+    // Construct roll number prefix
+    $prefix = $institution_code.$batch_id.$branch_id.$yearMonth;
+
+    // Get the last roll number for the same Institution + Batch + Branch + Year/Month
+    $this->db->select('roll_no');
+    $this->db->from('students');
+    $this->db->where('inst_id', $institution_code);
+    $this->db->where('batch_id', $batch_id);
+    $this->db->where('branch_id', $branch_id);
+    $this->db->like('roll_no', $prefix, 'after');
+    $this->db->order_by('id', 'DESC');
+    $this->db->limit(1);
+    $query = $this->db->get();
+
+    if ($query->num_rows() > 0) {
+        $last_roll = $query->row()->roll_no;
+        $last_number = intval(substr($last_roll, -4)); // Extract last 4 digits
+        $new_number = str_pad($last_number + 1, 4, '0', STR_PAD_LEFT);
+    } else {
+        $new_number = '0001'; // Start from 0001 for each institution-batch-branch
+    }
+
+    return $prefix . $new_number;
 }
 public function insertBatch($table, $data)
 {

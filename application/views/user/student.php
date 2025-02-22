@@ -5,7 +5,14 @@
 <head>
 
 	<?php include('includes2/header-links.php') ?>
-
+	<style>
+.email-wrap {
+    word-break: break-word; /* Break words if needed */
+    overflow-wrap: break-word; /* Ensure wrapping */
+    display: inline-block; /* Prevent overflow */
+    max-width: 100%; /* Ensure it fits within container */
+}
+</style>
 </head>
 
 <body>
@@ -72,7 +79,7 @@
 										<div>
 											<h5 class="mb-1"><?= $student[0]['name'] ?> (<?= $student[0]['gender'] ?>)
 											</h5>
-
+											<p class="mb-2">Roll No. :- <?= $student[0]['roll_no'] ?> </p>
 
 											<p class="mb-2">Student Id :- <?= $student[0]['student_id'] ?> </p>
 											<p class="d-inline-flex align-items-center mb-0">Student Code :-
@@ -136,9 +143,12 @@
 											class="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
 											<i class="ti ti-mail"></i>
 										</span>
-										<p><a href="" class="__cf_email__"
-												data-cfemail="97d9f8e1f6c0d7f2eff6fae7fbf2b9f4f8fa">
-												<?= $student[0]['email'] ?></a></p>
+										<p>
+    <a href="" class="__cf_email__ email-wrap"
+       data-cfemail="97d9f8e1f6c0d7f2eff6fae7fbf2b9f4f8fa">
+        <?= $student[0]['email'] ?>
+    </a>
+</p>
 									</div>
 									<div class="d-flex align-items-center mb-3">
 										<span
@@ -221,6 +231,10 @@
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#email" class="nav-link"><i
 												class="ti ti-mail-check me-1"></i>Email</a>
+									</li>
+									<li class="nav-item" role="presentation">
+										<a href="#" data-bs-toggle="tab" data-bs-target="#attendence" class="nav-link"><i
+										class="ti ti-notes me-1"></i>Attendance Report</a>
 									</li>
 								</ul>
 							</div>
@@ -539,6 +553,59 @@
 								</div>
 							</div>
 							<!-- /Email -->
+							<div class="tab-pane fade" id="attendence">
+								<div class="card">
+								<div
+										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+										<h4 class="fw-semibold">View Attendence</h4>
+										<div class="d-inline-flex align-items-center">
+											<a href="<?= base_url('Admin_Dashboard/attendence_report/'.encryptId($user[0]['id']).'/'.encryptId($student[0]['id'])); ?>"  class="com-add"><i
+													class="ti ti-circle-plus me-1"></i>View Detail</a>
+										</div>
+									</div>
+									<div class="card-body">
+									<div class="card mb-3">
+											<div class="card-body">
+											<div class="border-bottom mb-3">
+												<?php
+											$this->db->select("status, COUNT(*) as count");
+$this->db->where('inst_id', $user[0]['id']);
+$this->db->where('student_id', $student[0]['id']);
+
+$this->db->group_by("status");
+$count_query = $this->db->get('student_attendance')->result_array();
+
+// Initialize counts
+$attendance_count = ['Present' => 0, 'Absent' => 0, 'Late' => 0];
+
+foreach ($count_query as $row) {
+    $attendance_count[$row['status']] = $row['count'];
+}
+
+// Pass data to view
+$data['attendance_count'] = $attendance_count;
+?>
+    <div class="row align-items-center">
+        <div class="col-md-4">
+            <div class="mb-3">
+                <p class="fs-12 mb-0">Total Present</p>
+                <p class="text-gray-9"><?= isset($attendance_count['Present']) ? $attendance_count['Present'] : '0' ?></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-3">
+                <p class="fs-12 mb-0">Total Absent</p>
+                <p class="text-gray-9"><?= isset($attendance_count['Absent']) ? $attendance_count['Absent'] : '0' ?></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-3">
+                <p class="fs-12 mb-0">Total Late</p>
+                <p class="text-gray-9"><?= isset($attendance_count['Late']) ? $attendance_count['Late'] : '0' ?></p>
+            </div>
+        </div>
+    </div>
+</div>
 
 						</div>
 						<!-- /Tab Content -->

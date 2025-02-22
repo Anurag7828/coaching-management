@@ -26,7 +26,7 @@
 						<div class="page-header">
 							<div class="row align-items-center">
 								<div class="col-sm-8">
-									<h4 class="page-title">Attendence </h4>
+									<h4 class="page-title"> Attendence Report </h4>
 								</div>
                                 
 								<div class="col-sm-4 text-sm-end">
@@ -67,11 +67,7 @@
 											<a href="javascript:void(0);" class="btn btn-primary" id="exportPdf" data-bs-toggle="modal"
 												data-bs-target="#download_report"><i
 													class="ti ti-file-download me-2"></i>Download Report</a>
-                                                  
-                                                    <a href="<?= base_url('Admin_Dashboard/upload_excel_formate/'. encryptId($user[0]['id']))?>" class="btn btn-primary" ><i
-													class="ti ti-file-download me-2"></i>Upload Excel File</a>
-                                                    <a href="<?= base_url('Admin_Dashboard/add_attendance/'. encryptId($user[0]['id']))?>" class="btn btn-primary" ><i
-													class="ti ti-file-download me-2"></i>Today Attendance</a>
+                                            
 										</div>
                                      
 									</div>
@@ -83,24 +79,11 @@
 						<div class="card-body">
 							
 								<!-- Filter Form -->
-<form method="post" action="<?= base_url('Admin_Dashboard/view_attendance/'.encryptId($user[0]['id'])); ?>" id="filterForm">
+<form method="post" action="<?= base_url('Admin_Dashboard/attendence_report/'.encryptId($user[0]['id']).'/'.encryptId($student[0]['id'])); ?>" id="filterForm">
     <div class="align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
         <div class="align-items-center flex-wrap row-gap-2">
         <div class="row">
-            <!-- Select Customer -->
-            <div class="col-sm-4">
-                <div class="w-full mb-3">
-                    <label class="text-dark text-[13px] mb-2">Select Batch</label>
-                    <select name="batch_id" id="student-name" class="form-control select2  text-[13px] border rounded-md py-1.5 px-3 w-full" required>
-                        <option value="all" <?= ($selected_batch == "all") ? "selected" : "" ?>>All Sales Report</option>
-                        <?php foreach ($batches as $batch_info) { ?>
-                           <option value="<?= $batch_info['id']; ?>" selected>
-    <?= $batch_info['name']; ?>
-</option>
-                        <?php } ?>
-                    </select>
-                </div>
-            </div>
+           
 
             <!-- Date From -->
             <div class="col-sm-2">
@@ -134,6 +117,28 @@
     </div>
 </form>
 
+<div class="border-bottom mb-3">
+    <div class="row align-items-center">
+        <div class="col-md-4">
+            <div class="mb-3">
+                <p class="fs-12 mb-0">Total Present</p>
+                <p class="text-gray-9"><?= isset($total_present) ? $total_present : '0' ?></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-3">
+                <p class="fs-12 mb-0">Total Absent</p>
+                <p class="text-gray-9"><?= isset($total_absent) ? $total_absent : '0' ?></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-3">
+                <p class="fs-12 mb-0">Total Late</p>
+                <p class="text-gray-9"><?= isset($total_late) ? $total_late : '0' ?></p>
+            </div>
+        </div>
+    </div>
+</div>
 
 								<!-- Table -->
 						<div class="table-responsive custom-table">
