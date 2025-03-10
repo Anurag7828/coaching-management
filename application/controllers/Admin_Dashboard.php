@@ -22,7 +22,15 @@ class Admin_Dashboard extends CI_Controller {
         $tid = decryptId($id);
         $data['title'] = "Admin_Dashboard";       
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
-    
+        $data['payment'] = $this->CommonModal->getRowByIdOrderByLimit('fees_payment', 'inst_id', $tid,'','','id','DESC',6);
+        $data['rec_student'] = $this->CommonModal->getRowByIdOrderByLimit('students', 'inst_id', $tid,'','','id','DESC',6);
+
+
+        $data['student'] = $this->CommonModal->getNumWhereMultipleRows('students','status',0,'inst_id',$tid);
+        $data['batch'] = $this->CommonModal->getNumWhereMultipleRows('batchs','status',0,'inst_id',$tid);
+        $data['course'] = $this->CommonModal->getNumWhereMultipleRows('courses','status',0,'inst_id',$tid);
+        $data['present'] = $this->CommonModal->get_today_present_count('student_attendance','Present','inst_id',$tid);
+
         $subscription = $this->CommonModal->getRowById('subscription', 'inst_id', $tid);
         if ($subscription) {
             $today = date('Y-m-d');
@@ -448,7 +456,7 @@ class Admin_Dashboard extends CI_Controller {
 
         // **Insert student and get ID**
         $student_id = $this->CommonModal->insertRowReturnId('students', $post);
-
+       
         // **Insert student fees**
         $items = [];
         if (!empty($fees_type) && is_array($fees_type)) {
@@ -464,7 +472,7 @@ class Admin_Dashboard extends CI_Controller {
         if (!empty($items)) {
             $this->CommonModal->insertBatch('student_fees', $items);
         }
-
+        $transaction_id = $this->CommonModal->generate_transaction_id($tid, $student_id);
         // **Insert payment record**
         $pay_to_insert = [
             'inst_id' => $tid,
@@ -1006,7 +1014,7 @@ public function pay_fees_payment($id)
         
         $post['due']= $post['due']-$post['paid'];
 
-            
+        $post['transaction_id'] = $this->CommonModal->generate_transaction_id( $post['inst_id'], $post['student_id']);
 
 
 
@@ -1331,4 +1339,263 @@ public function pay_fees_payment($id)
     redirect(base_url('Admin_Dashboard/view_plan?tag=active'));
 	}
 	
+
+    //Employee Section
+
+
+    public function view_shift($id){
+		$data['title'] = "View shift";
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $data['tag'] = $this->input->get('tag');
+        $tag = $data['tag'];
+        $BdID = $this->input->get('BdID');
+   
+		
+        if ($BdID) {
+            $this->CommonModal->deleteRowById('shifts', array('id' => $BdID));
+          
+            if ($tag == '0') {
+                redirect(base_url('Admin_Dashboard/view_shift/'.$id.'/?tag=active'));
+            } else {
+                redirect(base_url('Admin_Dashboard/view_shift/'.$id.'/?tag=deactive'));
+            }
+        }
+        if ($tag == "deactive") {
+            $data['shift'] = $this->CommonModal->getRowByMultitpleId('shifts', 'status', '1','inst_id',$tid,'id','DESC');
+        } else {
+            $data['shift'] = $this->CommonModal->getRowByMultitpleId('shifts', 'status', '0','inst_id',$tid,'id','DESC');
+        }
+        $this->load->view('user/view_shift', $data);
+	}
+	public function add_shift($id)
+    {
+
+        $data['title'] = "Add shift";
+        $data['tag'] = "add";
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        // $data['plan'] = $this->CommonModal->getRowById('plan', 'status', '0');
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+          
+            $inst_id = $this->CommonModal->insertRowReturnId('shifts', $post);
+            
+            redirect(base_url('Admin_Dashboard/view_shift/'.$id));
+
+        } else {
+
+            $this->load->view('user/add_shift', $data);
+
+        }
+
+    }
+      
+	public function update_shift($id)
+    {
+       
+    $data['title'] = 'Update shift';
+    $data['tag'] = 'edit';
+     
+      $data['shift'] = $this->CommonModal->getRowById('shifts', 'id', $id);
+   
+
+     $tag1 = $this->input->get('tag');
+     	 if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+
+          
+            $category_id = $this->CommonModal->updateRowById('shifts', 'id', $id, $post);
+           
+            if ($category_id) {
+                $this->session->set_userdata('msg', '<div class="alert alert-success">Updated successfully</div>');
+            } else {
+                $this->session->set_userdata('msg', '<div class="alert alert-success"> Error successfully</div>');
+            }
+            if($tag1=='0') {
+                redirect(base_url('Admin_Dashboard/view_shift/'.encryptId($post['inst_id']).'?tag=active'));
+                } else{
+                redirect(base_url('Admin_Dashboard/view_shift/'.encryptId($post['inst_id']).'?tag=deactive'));
+    
+                }
+
+        } else {
+
+            $this->load->view('user/add_shift', $data);
+
+        }
+
+    }
+	
+	public function deactiveshift($id,$uid){
+		$data['status'] = 1   ;
+		$status_id = $this->CommonModal->updateRowById('shifts', 'id', $id, $data);
+	$shift = $this->CommonModal->getRowById('shifts', 'id', $id);
+	
+		redirect(base_url('Admin_Dashboard/view_shift/'.$uid.'?tag=deactive'));
+	
+	}
+	public function activeshift($id,$uid){
+		$data['status'] = 0    ;
+		$status_id = $this->CommonModal->updateRowById('shifts', 'id', $id, $data);
+	$data['shift'] = $this->CommonModal->getRowById('shifts', 'id', $id);
+	$shift = $this->CommonModal->getRowById('shifts', 'id', $id);
+
+		
+		redirect(base_url('Admin_Dashboard/view_shift/'.$uid));
+	
+	}
+    public function employee($id,$uid){
+		$data['title'] = "View employee";
+        $tid = decryptId($id);
+        $uid = decryptId($uid);
+        $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $uid);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $uid);
+       
+        
+            $data['employee'] = $this->CommonModal->getRowByMultitpleId('employees','id',$tid,'inst_id',$uid,'id','DESC');
+       
+        $this->load->view('user/employee', $data);
+	}
+    public function view_employee($id){
+		$data['title'] = "View employee";
+        $tid = decryptId($id);
+		     $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $data['tag'] = $this->input->get('tag');
+        $tag = $data['tag'];
+        $BdID = $this->input->get('BdID');
+        $img = $this->input->get('img');
+		
+        if ($BdID) {
+            $this->CommonModal->deleteRowById('employees', array('id' => $BdID));
+            // $this->CommonModal->deleteRowById('agent_customer', array('customer_id' => $BdID));
+
+            if ($img) {
+                unlink('./uploads/employee/' . $img);
+            }
+            if ($tag == '0') {
+                redirect(base_url('Admin_Dashboard/view_employee?tag=active'));
+            } else {
+                redirect(base_url('Admin_Dashboard/view_employee?tag=deactive'));
+            }
+        }
+        
+            $data['employee'] = $this->CommonModal->getRowByIdDesc('employees','inst_id',$tid,'id','DESC');
+       
+        $this->load->view('user/view_employee', $data);
+	}
+  
+    
+	public function add_employee($id)
+{
+    $data['title'] = "Add employee";
+    $data['tag'] = "add";
+    $tid = decryptId($id);
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+    
+    $data['shift'] = $this->CommonModal->getRowByMultitpleId('shifts', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
+   
+
+    if ($this->input->post()) {
+        $post = $this->input->post();
+
+        // Check if email is already registered
+        $existing_email = $this->CommonModal->getRowById('employees', 'email', $post['email']);
+        if (!empty($existing_email)) {
+            echo "<script>alert('Email is already registered!');</script>";
+            redirect($_SERVER['HTTP_REFERER']);
+            exit;
+        }
+
+        $post['emp_code'] = $this->CommonModal->generate_emp_code($tid, $post['shift_id'], $post['branch_id']);
+        // Generate random password
+        $password = bin2hex(random_bytes(8));
+        $post['password'] = $password;
+        $post['image'] = imageUpload('image', 'uploads/employee/');
+      
+        // **Insert employee and get ID**
+        $employee_id = $this->CommonModal->insertRowReturnId('employees', $post);
+       
+        redirect(base_url('Admin_Dashboard/view_employee/' . $id));
+    } else {
+        $this->load->view('user/add_employee', $data);
+    }
+}
+
+public function update_employee($id, $uuid)
+{
+    $tid = decryptId($id);
+    $uid = decryptId($uuid);
+
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $uid);
+    $data['title'] = 'Update Member';
+    $data['tag'] = 'edit';
+    $data['employee'] = $this->CommonModal->getRowById('employees', 'id', $tid);
+
+    $data['shift'] = $this->CommonModal->getRowByMultitpleId('shifts', 'status', '0', 'inst_id', $uid, 'id', 'DESC');
+    
+    $tag1 = $this->input->get('tag');
+
+    if (count($_POST) > 0) {
+        $post = $this->input->post();
+        
+
+        $image_url = $post['image'];
+           if ($_FILES['image']['name'] != '') {
+
+                $img = imageUpload('image', 'uploads/employee/');
+
+                $post['image'] = $img;
+
+                if ($image_url != "") {
+
+                    unlink('uploads/employee/' . $image_url);
+
+                }
+
+            }
+        // Update employee data
+        $category_id = $this->CommonModal->updateRowById('employees', 'id', $tid, $post);
+
+       
+       
+
+        // Set session message before redirecting
+        if ($category_id) {
+            $this->session->set_userdata('msg', '<div class="alert alert-success">Updated successfully</div>');
+        } else {
+            $this->session->set_userdata('msg', '<div class="alert alert-danger">Error updating record</div>');
+        }
+
+        // Redirect after processing
+      
+            redirect(base_url('Admin_Dashboard/view_employee/'.$uuid));
+       
+    } else {
+        $this->load->view('user/add_employee', $data);
+    }
+}
+
+	
+    public function deactiveemployee($id,$uid){
+		$data['status'] = 1   ;
+		$status_id = $this->CommonModal->updateRowById('employees', 'id', $id, $data);
+	$employee = $this->CommonModal->getRowById('employees', 'id', $id);
+	
+		 redirect($_SERVER['HTTP_REFERER']);
+	
+	}
+	public function activeemployee($id,$uid){
+		$data['status'] = 0    ;
+		$status_id = $this->CommonModal->updateRowById('employees', 'id', $id, $data);
+	$data['employee'] = $this->CommonModal->getRowById('employees', 'id', $id);
+	$employee = $this->CommonModal->getRowById('employees', 'id', $id);
+
+		
+		 redirect($_SERVER['HTTP_REFERER']);
+	
+	}
 }

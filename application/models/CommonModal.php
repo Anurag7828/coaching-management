@@ -49,7 +49,12 @@ public function getStockByPlaceAndProduct($stockPlaceId, $productId)
     {
         return $this->db->where($where)->update($table, $data);
     }
-
+    public function get_today_present_count($table,$status,$column,$id) {
+        $this->db->where('date', date('Y-m-d'));
+        $this->db->where('status',$status);
+        $this->db->where($column,$id); 
+        return $this->db->count_all_results($table);
+    }
 	function insertRowReturnId($table, $post)
 
 	{
@@ -423,6 +428,63 @@ public function generate_roll_no($institution_code, $batch_id, $branch_id) {
 
     return $prefix . $new_number;
 }
+public function generate_emp_code($institution_code, $shift_id, $branch_id) {
+    $yearMonth = date('ym'); // Get YYMM format
+
+    // Construct roll number prefix
+    $prefix = $institution_code.$shift_id.$branch_id.$yearMonth;
+
+    // Get the last roll number for the same Institution + shift + Branch + Year/Month
+    $this->db->select('emp_code');
+    $this->db->from('employees');
+    $this->db->where('inst_id', $institution_code);
+    $this->db->where('shift_id', $shift_id);
+    $this->db->where('branch_id', $branch_id);
+    $this->db->like('emp_code', $prefix, 'after');
+    $this->db->order_by('id', 'DESC');
+    $this->db->limit(1);
+    $query = $this->db->get();
+
+    if ($query->num_rows() > 0) {
+        $last_roll = $query->row()->emp_code;
+        $last_number = intval(substr($last_roll, -4)); // Extract last 4 digits
+        $new_number = str_pad($last_number + 1, 4, '0', STR_PAD_LEFT);
+    } else {
+        $new_number = '0001'; // Start from 0001 for each institution-shift-branch
+    }
+
+    return $prefix . $new_number;
+}
+public function generate_transaction_id($institution_code, $student_id) {
+    $yearMonth = date('ym'); // Get YYMM format
+
+    // Construct transaction ID prefix
+    $prefix = $institution_code . $student_id . $yearMonth;
+
+    // Get the last transaction ID for the same Institution + Student + Year/Month
+    $this->db->select('transaction_id');
+    $this->db->from('fees_payment');
+    $this->db->where('inst_id', $institution_code);
+    $this->db->where('student_id', $student_id);
+    $this->db->like('transaction_id', $prefix, 'after');
+    $this->db->order_by('id', 'DESC'); // Ensure latest entry is fetched
+    $this->db->limit(1);
+    
+    $query = $this->db->get();
+
+    if ($query->num_rows() > 0) {
+        $last_transaction_id = $query->row()->transaction_id; // Correct column name
+        $last_number = intval(substr($last_transaction_id, -4)); // Extract last 4 digits correctly
+        $new_number = str_pad($last_number + 1, 4, '0', STR_PAD_LEFT);
+    } else {
+        $new_number = '0001'; // Start from 0001 for each new prefix
+    }
+
+    return $prefix . $new_number;
+}
+
+
+
 public function insertBatch($table, $data)
 {
     if (!empty($data)) {
@@ -882,7 +944,14 @@ public function getLastRow($table, $field, $coloumn,$user_id) {
 		$this->db->where($column, $status); // Filter by status
 		return $this->db->count_all_results(); // Get count of rows
 	}
-
+    public function getNumWhereMultipleRows($table, $column,$status, $column1,$status1)
+	{
+		// Assuming you are using CodeIgniter's Query Builder
+		$this->db->from($table);
+		$this->db->where($column, $status);
+        $this->db->where($column1, $status1); // Filter by status
+		return $this->db->count_all_results(); // Get count of rows
+	}
 	public function getRowByIdDesc($table, $column, $value, $column2 = null, $order = 'ASC') {
 		$this->db->where($column, $value);
 		if ($column2) {

@@ -25,7 +25,7 @@
                         <div class="page-header">
                             <div class="row align-items-center">
                                 <div class="col-8">
-                                    <h4 class="page-title">Batchs</h4>
+                                    <h4 class="page-title">Shifts</h4>
                                 </div>
                                 <div class="col-4 text-end">
                                     <div class="head-icons">
@@ -72,8 +72,8 @@
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <a href="<?= base_url('Admin_Dashboard/add_batch/'. encryptId($user[0]['id']))?>" class="btn btn-primary"><i
-                                                    class="ti ti-square-rounded-plus me-2"></i>Add Batch</a>
+                                            <a href="<?= base_url('Admin_Dashboard/add_shift/'. encryptId($user[0]['id']))?>" class="btn btn-primary"><i
+                                                    class="ti ti-square-rounded-plus me-2"></i>Add shift</a>
                                         </div>
                                     </div>
                                 </div>
@@ -128,11 +128,11 @@
             <th class="no-sort">S No.</th>
             <th>Name</th>
             
-            <th>Starting Date</th>
+            
            
             <th>Starting Time</th>
             <th>Ending Time</th>
-            <!-- <th>Paid</th> -->
+            <th>week Off</th>
           
             <th>Status</th>
             <!-- <th>Add By</th> -->
@@ -141,16 +141,15 @@
         </tr>
     </thead>
     <tbody>
-        <?php if (!empty($batch)) : ?>
-            <?php $i = 1; foreach ($batch as $row) : ?>
+        <?php if (!empty($shift)) : ?>
+            <?php $i = 1; foreach ($shift as $row) : ?>
                 <tr>
                     <td><?= $i++; ?></td>
                     <td><a href="" class="title-name"><?= $row['name']; ?></a></td>
                   
-                    <td><?= $row['starting_date']; ?></td>
                     <td><?= date("h:i A", strtotime($row['starting_time'])); ?></td>
                     <td><?= date("h:i A", strtotime($row['ending_time'])); ?></td>
-
+                    <td><?= $row['weekend']; ?></td>
                 
 
                     <td> <?php if($row['status'] == '0') { ?>
@@ -177,18 +176,18 @@
 
                                 
                             <a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/deactivebatch/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
+<?= base_url('Admin_Dashboard/deactiveshift/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
                                                                             class="ti ti-eye text-danger"></i>Deactive</a>
                                                                             <?php } else{ ?>
                                                                                 <a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/activebatch/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
+<?= base_url('Admin_Dashboard/activeshift/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
                                                                             class="ti ti-eye text-success"></i>Active</a>
                                                                             <?php } ?>
                                                                     <a class="dropdown-item"
-                                                                        href="<?php echo base_url() . 'Admin_Dashboard/update_batch/' . $row['id'].'/'.encryptId($user[0]['id']) .'?tag='. $row['status']; ?>"><i
+                                                                        href="<?php echo base_url() . 'Admin_Dashboard/update_shift/' . $row['id'].'/'.encryptId($user[0]['id']) .'?tag='. $row['status']; ?>"><i
                                                                             class="ti ti-edit text-blue"></i> Edit</a>
                                                                     <a class="dropdown-item" href="
-<?php echo base_url() . 'Admin_Dashboard/view_batch/'.encryptId($user[0]['id']).'?BdID=' . $row['id'] . '&tag=' .  $row['status'];?>"><i
+<?php echo base_url() . 'Admin_Dashboard/view_shift/'.encryptId($user[0]['id']).'?BdID=' . $row['id'] . '&tag=' .  $row['status'];?>"><i
                                                                             class="ti ti-trash text-danger"></i>Delete</a>
   </div>
                         </div>

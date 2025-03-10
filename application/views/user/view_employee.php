@@ -25,7 +25,7 @@
                         <div class="page-header">
                             <div class="row align-items-center">
                                 <div class="col-8">
-                                    <h4 class="page-title">Batchs</h4>
+                                    <h4 class="page-title">Employees</h4>
                                 </div>
                                 <div class="col-4 text-end">
                                     <div class="head-icons">
@@ -72,8 +72,9 @@
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <a href="<?= base_url('Admin_Dashboard/add_batch/'. encryptId($user[0]['id']))?>" class="btn btn-primary"><i
-                                                    class="ti ti-square-rounded-plus me-2"></i>Add Batch</a>
+                                            <a href="<?= base_url('Admin_Dashboard/add_employee/' . encryptId($user[0]['id'])) ?>"
+                                                class="btn btn-primary"><i
+                                                    class="ti ti-square-rounded-plus me-2"></i>Add employee</a>
                                         </div>
                                     </div>
                                 </div>
@@ -122,83 +123,100 @@
 
                                 <!-- Contact List -->
                                 <div class="table-responsive custom-table">
-                                <table class="table datatable">
-    <thead class="thead-light">
-        <tr>
-            <th class="no-sort">S No.</th>
-            <th>Name</th>
-            
-            <th>Starting Date</th>
-           
-            <th>Starting Time</th>
-            <th>Ending Time</th>
-            <!-- <th>Paid</th> -->
-          
-            <th>Status</th>
-            <!-- <th>Add By</th> -->
+                                    <table class="table datatable">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th class="no-sort">S No.</th>
+                                                <th >Emp Code.</th>
 
-            <th class="text-end">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if (!empty($batch)) : ?>
-            <?php $i = 1; foreach ($batch as $row) : ?>
-                <tr>
-                    <td><?= $i++; ?></td>
-                    <td><a href="" class="title-name"><?= $row['name']; ?></a></td>
-                  
-                    <td><?= $row['starting_date']; ?></td>
-                    <td><?= date("h:i A", strtotime($row['starting_time'])); ?></td>
-                    <td><?= date("h:i A", strtotime($row['ending_time'])); ?></td>
+                                                <th>Employee Name</th>
 
-                
+                                                <th>Contact No.</th>
 
-                    <td> <?php if($row['status'] == '0') { ?>
-                    <span class="badge badge-pill badge-status  bg-success">
-    Active
-</span>
-<?php } else{
-    ?>
-                <span class="badge badge-pill badge-status  bg-danger">
-    Dective
-</span>
-<?php } ?>
-</td>
+                                                <th>Gender</th>
+                                                <th>Branch</th>
+                                                <th>Shift</th>
 
+                                                <th>Status</th>
+                                                <!-- <th>Add By</th> -->
+
+                                                <th class="text-end">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (!empty($employee)): ?>
+                                                <?php $i = 1;
+                                                foreach ($employee as $row): ?>
+                                                    <tr>
+                                                        <td><?= $i++; ?></td>
+                                                        <td><?= $row['emp_code']; ?></td>
+                                                        <td><a href="<?php echo base_url() . 'Admin_Dashboard/employee/' . encryptId($row['id']) . '/' . encryptId($user[0]['id']) . '?tag=' . $row['status']; ?>" class="title-name"><?= $row['name']; ?></a></td>
+                                                       
+                                                        <td><?= $row['phone']; ?></td>
+                                                        <td><?= $row['gender']; ?></td>
+                                                        <?php if ($row['branch_id'] == '0') { ?>
+                                                            <td>Main</td>
+                                                        <?php } else { ?>
+                                                            <td>Other</td>
+
+                                                        <?php } ?>
+
+                                                        <?php $shift = $this->CommonModal->getRowById('shifts', 'id', $row['shift_id']); ?>
+
+                                                        <td><?= $shift[0]['name']; ?></td>
 
 
-                    <td>
-                        <div class="dropdown table-action">
-                            <a href="#" class="action-icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-ellipsis-v"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <?php if($row['status'] == '0') { ?>
+                                                        <td> <?php if ($row['status'] == '0') { ?>
+                                                                <span class="badge badge-pill badge-status  bg-success">
+                                                                    Active
+                                                                </span>
+                                                            <?php } else {
+                                                            ?>
+                                                                <span class="badge badge-pill badge-status  bg-danger">
+                                                                    Dective
+                                                                </span>
+                                                            <?php } ?>
+                                                        </td>
 
-                                
-                            <a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/deactivebatch/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
-                                                                            class="ti ti-eye text-danger"></i>Deactive</a>
-                                                                            <?php } else{ ?>
-                                                                                <a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/activebatch/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
-                                                                            class="ti ti-eye text-success"></i>Active</a>
-                                                                            <?php } ?>
+
+
+                                                        <td>
+                                                            <div class="dropdown table-action">
+                                                                <a href="#" class="action-icon" data-bs-toggle="dropdown"
+                                                                    aria-expanded="false">
+                                                                    <i class="fa fa-ellipsis-v"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right">
                                                                     <a class="dropdown-item"
-                                                                        href="<?php echo base_url() . 'Admin_Dashboard/update_batch/' . $row['id'].'/'.encryptId($user[0]['id']) .'?tag='. $row['status']; ?>"><i
+                                                                        href="<?php echo base_url() . 'Admin_Dashboard/employee/' . encryptId($row['id']) . '/' . encryptId($user[0]['id']) . '?tag=' . $row['status']; ?>"><i
+                                                                            class="ti ti-eye text-blue"></i> View employee</a>
+                                                                    <?php if ($row['status'] == '0') { ?>
+
+
+                                                                        <a class="dropdown-item" href="
+<?= base_url('Admin_Dashboard/deactiveemployee/' . $row['id'] . '/' . encryptId($user[0]['id'])); ?>"><i
+                                                                                class="ti ti-eye text-danger"></i>Deactive</a>
+                                                                    <?php } else { ?>
+                                                                        <a class="dropdown-item" href="
+<?= base_url('Admin_Dashboard/activeemployee/' . $row['id'] . '/' . encryptId($user[0]['id'])); ?>"><i
+                                                                                class="ti ti-eye text-success"></i>Active</a>
+                                                                    <?php } ?>
+                                                                    <a class="dropdown-item"
+                                                                        href="<?php echo base_url() . 'Admin_Dashboard/update_employee/' . encryptId($row['id']) . '/' . encryptId($user[0]['id']) . '?tag=' . $row['status']; ?>"><i
                                                                             class="ti ti-edit text-blue"></i> Edit</a>
-                                                                    <a class="dropdown-item" href="
-<?php echo base_url() . 'Admin_Dashboard/view_batch/'.encryptId($user[0]['id']).'?BdID=' . $row['id'] . '&tag=' .  $row['status'];?>"><i
+                                                                    <a class="dropdown-item"
+                                                                        href="
+<?php echo base_url() . 'Admin_Dashbaord/view_employee/' . encryptId($user[0]['id']) . '?BdID=' . $row['id'] . '&tag=' . $row['status']; ?>"><i
                                                                             class="ti ti-trash text-danger"></i>Delete</a>
-  </div>
-                        </div>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-       
-        <?php endif; ?>
-    </tbody>
-</table>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
 
                                 </div>
                                 <div class="row align-items-center">

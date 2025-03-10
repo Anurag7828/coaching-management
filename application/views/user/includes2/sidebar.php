@@ -51,7 +51,7 @@
 									<ul>
 										<li><a href="<?= base_url('Admin_Dashboard/add_batch/'. encryptId($user[0]['id']))?>">Add Batchs</a></li>
 										<li><a href="<?= base_url('Admin_Dashboard/view_batch/'. encryptId($user[0]['id']))?>">Active Batchs</a></li>
-										<li><a href="<?= base_url('Admin_Dashboard/view_batch/'. encryptId($user[0]['id'].'?tag=deactive'))?>">Deactive Batchs</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_batch/'. encryptId($user[0]['id']).'?tag=deactive')?>">Deactive Batchs</a></li>
 
 			
 
@@ -67,9 +67,40 @@
 									<ul>
 										<li><a href="<?= base_url('Admin_Dashboard/add_Course/'. encryptId($user[0]['id']))?>">Add Courses</a></li>
 										<li><a href="<?= base_url('Admin_Dashboard/view_Course/'. encryptId($user[0]['id']))?>">Active Courses</a></li>
-										<li><a href="<?= base_url('Admin_Dashboard/view_Course/'. encryptId($user[0]['id'].'?tag=deactive'))?>">Deactive Courses</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_Course/'. encryptId($user[0]['id']).'?tag=deactive')?>">Deactive Courses</a></li>
 
 			
+
+									
+									</ul>
+								</li>
+								<br>
+								<h6 class="submenu-hdr">Employee Section</h6>
+								<li class="submenu">
+									<a href="javascript:void(0);">
+										<i class="ti ti-layout-2"></i><span>Employee</span><span class="menu-arrow"></span>
+									</a>
+									<ul>
+										<li><a href="<?= base_url('Admin_Dashboard/add_employee/'. encryptId($user[0]['id']))?>">Add Employee</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_employee/'. encryptId($user[0]['id']))?>">View Employee</a></li>
+									
+										<li><a href="<?= base_url('Admin_Dashboard/view_employee_attendance/'. encryptId($user[0]['id']))?>">Employee Attendance</a></li>
+
+
+									
+									</ul>
+								</li>
+								<li class="submenu">
+									<a href="javascript:void(0);">
+										<i class="ti ti-layout-2"></i><span>Shift</span><span class="menu-arrow"></span>
+									</a>
+									<ul>
+										<li><a href="<?= base_url('Admin_Dashboard/add_shift/'. encryptId($user[0]['id']))?>">Add Shift</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_shift/'. encryptId($user[0]['id']))?>">Active Shift</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_shift/'. encryptId($user[0]['id']).'?tag=deactive')?>">Deactive Shift</a></li>
+
+									
+
 
 									
 									</ul>

@@ -451,6 +451,8 @@
 																<th class="">S.No</th>
 
 																<th class="">Payment Date</th>
+																<th class="">Tran. Id</th>
+
 																<th class="">Paid Amount</th>
 																<th class="">Payment Mode</th>
 																<th class="">Bank/Cheque</th>
@@ -471,6 +473,8 @@
 																	<tr>
 																		<td><?= $i ?></td>
 																		<td><?= $row1['date'] ?></td>
+																		<td><?= $row1['transaction_id'] ?></td>
+
 																		<td><?= $row1['paid'] ?> Rs</td>
 																		<td><?= $row1['mode'] ?></td>
 
