@@ -543,7 +543,7 @@
 													</div>
 													<div class="col-md-4 text-md-end">
 														<div class="mb-3">
-															<a href="<?= base_url('Admin_Dashboard/delete_mail/'.encryptId($email['id']))?>" class="btn btn-primary" >Delete</a>
+															<a href="<?= base_url('Admin_Dashboard/delete_mail/'.encryptId($email['id']).'/student_email')?>" class="btn btn-primary" >Delete</a>
 														</div>
 													</div>
 												</div>
@@ -818,7 +818,7 @@ $data['attendance_count'] = $attendance_count;
 						</button>
 					</div>
 					<div class="modal-body">
-						<form action="<?= base_url('Admin_Dashboard/send_email/' . encryptId($user[0]['id']).'/'.encryptId($student[0]['id'])) ?>" method="post">
+						<form action="<?= base_url('Admin_Dashboard/send_email/' . encryptId($user[0]['id']).'/'.encryptId($student[0]['id']).'/1') ?>" method="post">
 							
 							<div class="mb-3">
 								<input type="text" name="subject" placeholder="Subject" class="form-control">

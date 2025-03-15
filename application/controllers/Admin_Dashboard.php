@@ -330,7 +330,7 @@ class Admin_Dashboard extends CI_Controller {
         $ssid = decryptId($sid);
         $user = $this->CommonModal->getRowById('institutions', 'id', $tid);
        
-        
+       
         $student = $this->CommonModal->getRowByMultitpleId('students','id',$ssid,'inst_id',$tid,'id','DESC');
 
   if ($this->input->post()) {
@@ -361,15 +361,57 @@ class Admin_Dashboard extends CI_Controller {
 //             return false;
 //         }
 //     }
+    
+    }
     redirect($_SERVER['HTTP_REFERER']);
 }
+    
+    public function send_emp_email($id, $sid,$table) {
+        $tid = decryptId($id);
+        $ssid = decryptId($sid);
+        $user = $this->CommonModal->getRowById('institutions', 'id', $tid);
+       
+   
+        $employee = $this->CommonModal->getRowByMultitpleId('employees','id',$ssid,'inst_id',$tid,'id','DESC');
+
+        if ($this->input->post()) {
+              $post = $this->input->post();
+              $email_to_insert = [
+                  'inst_id' => $tid,
+                  'emp_id' => $ssid, // ✅ Fix employee_id issue
+                  'from' => $user[0]['email'],
+                  'to' => $employee[0]['email'],
+                  'subject' => $post['subject'],
+                  'message' => $post['message'],
+                
+              ];
+              $employee_email = $this->CommonModal->insertRowReturnId('employee_email', $email_to_insert);
+      // if($student_email) {
+      //         $this->email->from($user[0]['email'], $user[0]['name']);
+      //         $this->email->to($student[0]['email']);
+      //         $this->email->subject($post['subject']);
+      //         $message =$post['message'];
+          
+      //         $this->email->message($message);
+      //         $this->email->set_mailtype('html');
+          
+      //         if ($this->email->send()) {
+      //             return true;
+      //         } else {
+      //             log_message('error', 'Email sending failed: ' . $this->email->print_debugger());
+      //             return false;
+      //         }
+      //     }
     }
-    public function delete_mail($id) {
+    redirect($_SERVER['HTTP_REFERER']);
+}
+    
+    public function delete_mail($id,$table) {
         $tid = decryptId($id);
       
         
         
-            $this->CommonModal->deleteRowById('student_email', array('id' => $tid));
+            $this->CommonModal->deleteRowById($table, array('id' => $tid));
            
     redirect($_SERVER['HTTP_REFERER']);
 }
