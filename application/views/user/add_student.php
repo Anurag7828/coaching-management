@@ -116,7 +116,9 @@
                                                     <div class="col-md-6">
                                                         <div class="mb-3">
                                                             <label class="col-form-label">Batch <span
-                                                                    class="text-danger">*</span></label>
+                                                                    class="text-danger">*</span></label>	<a href="javascript:void(0);" data-bs-toggle="modal"
+												data-bs-target="#add_batch" class="com-add"><i
+													class="ti ti-circle-plus me-1"></i>Add New</a>
                                                             <select class="select2 form-control" name="batch_id"
                                                                 required>
                                                                 <option value="N/A" <?= ($tag == 'edit' && isset($Student[0]['batch_id']) && $Student[0]['batch_id'] == 'N/A') ? 'selected' : '' ?>
@@ -292,7 +294,9 @@
                                                     <div class="col-md-6">
                                                         <div class="mb-3">
                                                             <label class="col-form-label">Course <span
-                                                                    class="text-danger">*</span></label>
+                                                                    class="text-danger">*</span></label>	<a href="javascript:void(0);" data-bs-toggle="modal"
+												data-bs-target="#add_course" class="com-add"><i
+													class="ti ti-circle-plus me-1"></i>Add New</a>
                                                             <select class="select2 form-control" name="course_id"
                                                                 required>
                                                                 <option value="N/A" <?= ($tag == 'edit' && isset($Student[0]['course_id']) && $Student[0]['course_id'] == 'N/A') ? 'selected' : '' ?> data-display="Please select">Choose</option>
@@ -488,7 +492,160 @@
 
 
     </div>
+    <div class="modal custom-modal fade modal-padding" id="add_batch" role="dialog">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add New Batch</h5>
+						<button type="button" class="btn-close position-static" data-bs-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+                    <form action="<?= base_url('Admin_Dashboard/add_batch/' . encryptId($user[0]['id']).'/1') ?>" method="Post">
+                                <div class="accordion" id="main_accordion">
+                                    <!-- Basic Info -->
+                                    <div class="accordion-item rounded mb-3">
+                                    
+                                        <div class="accordion-collapse collapse show" id="basic" data-bs-parent="#main_accordion">
+                                            <div class="accordion-body border-top">
+                                            <div class="row">
 
+<div class="col-md-6">
+    <div class="mb-3">
+        <label class="col-form-label">Batch Name <span
+        class="text-danger">*</span></label>
+        <input type="text" class="form-control" name="name" value="<?= ($tag == 'edit' && isset($batch[0]['name'])) ? htmlspecialchars($batch[0]['name']) : '' ?>" required>
+        <input type="hidden" class="form-control" name="inst_id" value="<?= ($tag == 'edit' && isset($batch[0]['inst_id'])) ? htmlspecialchars($batch[0]['inst_id']) : $user[0]['id'] ?>" required>
+
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="mb-3">
+        <label class="col-form-label">Starting Date <span
+                class="text-danger">*</span></label>
+        <input type="date" class="form-control" name="starting_date" value="<?= ($tag == 'edit' && isset($batch[0]['starting_date'])) ? htmlspecialchars($batch[0]['starting_date']) : '' ?>" required>
+    </div>
+</div>
+
+
+<div class="col-md-6">
+    <div class="mb-3">
+        <label class="col-form-label">Start Timing<span
+        class="text-danger">*</span></label>
+        <input type="time" class="form-control" name="starting_time" value="<?= ($tag == 'edit' && isset($batch[0]['starting_time'])) ? htmlspecialchars($batch[0]['starting_time']) : '' ?>" required>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="mb-3">
+        <label class="col-form-label">End Timing<span
+        class="text-danger">*</span></label>
+        <input type="time" class="form-control" name="ending_time" value="<?= ($tag == 'edit' && isset($batch[0]['ending_time'])) ? htmlspecialchars($batch[0]['ending_time']) : '' ?>" required>
+    </div>
+</div>
+
+
+
+
+
+</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <!-- /Basic Info -->
+                                  
+                                <div class="d-flex align-items-center justify-content-end">
+
+                                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#create_success">Save</button>
+                                </div>
+                            </form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <div class="modal custom-modal fade modal-padding" id="add_course" role="dialog">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add New Course</h5>
+						<button type="button" class="btn-close position-static" data-bs-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+                    <form action="<?= base_url('Admin_Dashboard/add_course/' . encryptId($user[0]['id']).'/1') ?>" method="Post">
+                                <div class="accordion" id="main_accordion">
+                                    <!-- Basic Info -->
+                                    <div class="accordion-item rounded mb-3">
+                                    
+                                        <div class="accordion-collapse collapse show" id="basic" data-bs-parent="#main_accordion">
+                                            <div class="accordion-body border-top">
+                                            <div class="row">
+
+<div class="col-md-6">
+    <div class="mb-3">
+        <label class="col-form-label">Course Name <span
+        class="text-danger">*</span></label>
+        <input type="text" class="form-control" name="name" value="<?= ($tag == 'edit' && isset($course[0]['name'])) ? htmlspecialchars($course[0]['name']) : '' ?>" required>
+        <input type="hidden" class="form-control" name="inst_id" value="<?= ($tag == 'edit' && isset($course[0]['inst_id'])) ? htmlspecialchars($course[0]['inst_id']) : $user[0]['id'] ?>" required>
+
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="mb-3">
+        <label class="col-form-label">Course Fees <span
+        class="text-danger">*</span></label>
+        <input type="text" class="form-control" name="fees" value="<?= ($tag == 'edit' && isset($course[0]['fees'])) ? htmlspecialchars($course[0]['fees']) : '' ?>" required>
+
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="mb-3">
+        <label class="col-form-label">Duration Type<span class="text-danger">*</span></label>
+        <select class="select2 form-control" name="duration_type" required>
+        <option value="N/A" <?= ($tag == 'edit' && isset($course[0]['duration_type']) && $course[0]['duration_type'] == 'N/A') ? 'selected' : '' ?> data-display="Please select">Choose</option>
+        <option value="Days" <?= ($tag == 'edit' && isset($course[0]['duration_type']) && $course[0]['duration_type'] == 'Days') ? 'selected' : '' ?> data-display="Please select">Days</option>
+        <option value="Month" <?= ($tag == 'edit' && isset($course[0]['duration_type']) && $course[0]['duration_type'] == 'Month') ? 'selected' : '' ?> data-display="Please select">Month</option>
+        <option value="Year" <?= ($tag == 'edit' && isset($course[0]['duration_type']) && $course[0]['duration_type'] == 'Year') ? 'selected' : '' ?> data-display="Please select">Year</option>
+
+
+        </select>
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="mb-3">
+        <label class="col-form-label">Duration</label>
+        <input type="number" class="form-control" name="duration" value="<?= ($tag == 'edit' && isset($course[0]['duration'])) ? htmlspecialchars($course[0]['duration']) : '' ?>" required>
+    </div>
+</div>
+
+
+
+</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <!-- /Basic Info -->
+                                  
+                                <div class="d-flex align-items-center justify-content-end">
+
+                                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#create_success">Save</button>
+                                </div>
+                            </form>
+					</div>
+				</div>
+			</div>
+		</div>
     <script>
         // Get today's date in YYYY-MM-DD format
 

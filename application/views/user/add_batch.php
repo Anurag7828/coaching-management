@@ -77,7 +77,7 @@
                                                             <input type="time" class="form-control" name="ending_time" value="<?= ($tag == 'edit' && isset($batch[0]['ending_time'])) ? htmlspecialchars($batch[0]['ending_time']) : '' ?>" required>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <!-- <div class="col-md-6">
                                                         <div class="mb-3">
                                                             <label class="col-form-label">Course Name <span class="text-danger">*</span></label>
                                                             <select class="select2 form-control" name="course_id" required>
@@ -91,7 +91,7 @@
                                                              
                                                             </select>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
          
 
                                   

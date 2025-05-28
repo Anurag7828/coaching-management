@@ -126,7 +126,7 @@ public function registration()
                 // Verify password for user
                 if ($password == $f_password) {
                     // Set session data for user
-                    $this->session->set_userdata(array('id' => $id,'status' => 1, 'username' => $username,'role' => 'branch'));
+                    $this->session->set_userdata(array('id' => $id,'status' => 1, 'username' => $f_username,'role' => 'branch'));
 
                     // Redirect to the user dashboard
                     redirect('Branch_Dashboard/index/' . encryptId($id));

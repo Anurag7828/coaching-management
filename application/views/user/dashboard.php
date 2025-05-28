@@ -57,7 +57,20 @@
 				<div class="welcome-wrap mb-4">
 					<div class=" d-flex align-items-center justify-content-between flex-wrap">
 						<div class="mb-3">
-							<h2 class="mb-1 text-white">Welcome <?= $user[0]['name']?></h2>
+						<?php
+// Get current hour
+$hour = date('H');
+
+// Determine the greeting message
+if ($hour >= 5 && $hour < 12) {
+    $greeting = "Good Morning";
+} elseif ($hour >= 12 && $hour < 17) {
+    $greeting = "Good Afternoon";
+} else {
+    $greeting = "Good Evening";
+}
+?>
+							<h2 class="mb-1 text-white"><?= $greeting ?>,<?= $user[0]['name']?></h2>
 						
 						</div>
 						<div class="d-flex align-items-center flex-wrap mb-1">
