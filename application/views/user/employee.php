@@ -544,6 +544,7 @@
 														// Get current month (numeric format)
 														$currentMonth = date('m');
 														$months = [
+<<<<<<< HEAD
 															'01' => 'January',
 															'02' => 'February',
 															'03' => 'March',
@@ -556,6 +557,20 @@
 															'10' => 'October',
 															'11' => 'November',
 															'12' => 'December'
+=======
+															'2025-01' => 'January',
+															'2025-02' => 'February',
+															'2025-03' => 'March',
+															'2025-04' => 'April',
+															'2025-05' => 'May',
+															'2025-06' => 'June',
+															'2025-07' => 'July',
+															'2025-08' => 'August',
+															'2025-09' => 'September',
+															'2025-10' => 'October',
+															'2025-11' => 'November',
+															'2025-12' => 'December'
+>>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 														];
 														?>
 
@@ -564,9 +579,18 @@
 																<label class="col-form-label">Salary Month <span
 																		class="text-danger">*</span></label>
 																<select class="select2 form-control" name="month"
+<<<<<<< HEAD
 																	required>
 																	<?php foreach ($months as $key => $month): ?>
 																		<option value="<?= $key ?>" <?= ($tag == 'edit' && isset($shift[0]['salary_month']) && $shift[0]['salary_month'] == $key) || (!isset($shift[0]['salary_month']) && $key == $currentMonth) ? 'selected' : '' ?>>
+=======
+																	required onchange="fetchAttendanceData()" id="salary_month" >
+																	<?php 
+																	$currentMonth = date('Y-m'); // This gives 2025-05
+																	$prevMonth = date('Y-m', strtotime('-1 month'));foreach ($months as $key => $month): ?>
+																		<option value="<?= $key ?>" <?= ($tag == 'edit' && isset($shift[0]['salary_month']) && $shift[0]['salary_month'] == $key) || (!isset($shift[0]['salary_month']) && $key == $currentMonth) ? 'selected' : '' ?>>
+
+>>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 																			<?= $month ?>
 																		</option>
 																	<?php endforeach; ?>
@@ -588,7 +612,11 @@
 																<label class="col-form-label">Total Working Days<span
 																		class="text-danger">*</span></label>
 																<input type="text" class="form-control"
+<<<<<<< HEAD
 																	name="total_days">
+=======
+																	name="total_days" readonly>
+>>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 
 
 															</div>
@@ -597,7 +625,11 @@
 															<div class="mb-3">
 																<label class="col-form-label">Total Present Days<span
 																		class="text-danger">*</span></label>
+<<<<<<< HEAD
 																<input type="text" class="form-control" name="present">
+=======
+																<input type="text" class="form-control" name="present" readonly>
+>>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 
 
 															</div>
@@ -606,7 +638,20 @@
 															<div class="mb-3">
 																<label class="col-form-label">Total Absent Days<span
 																		class="text-danger">*</span></label>
+<<<<<<< HEAD
 																<input type="text" class="form-control" name="leaves">
+=======
+																<input type="text" class="form-control" name="leaves" readonly>
+
+
+															</div>
+														</div>
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Total Late Days<span
+																		class="text-danger">*</span></label>
+																<input type="text" class="form-control" name="late" readonly>
+>>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 
 
 															</div>
@@ -659,16 +704,27 @@
 
 
 
+<<<<<<< HEAD
+=======
+														
+>>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 														?>
 
 														<?php foreach ($reward as $item): ?>
 
 
 															<div class="form-check">
+<<<<<<< HEAD
 																<input class="form-check-input fee-checkbox" name="reward[]"
 																	type="checkbox"
 																	value="<?= $item['id'] ?>"><?= $item['name'] ?>
 
+=======
+															<input class="form-check-input reward-checkbox" name="reward[]" type="checkbox" value="<?= $item['id'] ?>">
+															<?= $item['name'] ?>
+
+																
+>>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 
 															</div>
 														<?php endforeach; ?>
@@ -684,7 +740,75 @@
 
 															</div>
 														</div>
+<<<<<<< HEAD
 
+=======
+														<div class="col-md-12">
+                                                        <div class="mb-3">
+                                                            <div
+                                                                class="d-flex align-items-center justify-content-between">
+                                                                <label class="col-form-label">Payment Mode</label>
+
+                                                            </div>
+                                                            <select class="select" name="mode" id="paymentType" required
+                                                                onchange="handlePaymentChange()">
+                                                                <option Value="N/A">Choose</option>
+                                                                <option Value="Cash" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cash') ? 'selected' : '' ?>>Cash</option>
+                                                                <option value="UPI" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'UPI') ? 'selected' : '' ?>>UPI</option>
+                                                                <option value="Card" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Card') ? 'selected' : '' ?>>Created/Debit Card</option>
+
+                                                                <option value="Bank" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Bank') ? 'selected' : '' ?>>Bank</option>
+                                                                <option value="Cheque" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cheque') ? 'selected' : '' ?>>Cheque</option>
+                                                                <option value="None" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'None') ? 'selected' : '' ?>>None</option>
+
+
+                                                            </select>
+                                                        </div>
+                                                    </div>
+ <div class="col-md-12 d-none" id="bankDetails">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">Bank Name<span
+                                                                    class="text-danger"> *</span></label>
+                                                            <select class="form-control" name="account_id"
+                                                                id="bankName">
+                                                                <option>Choose</option>
+
+                                                                <?php
+
+
+                                                                foreach ($account as $account_info) { ?>
+                                                                    <option value="<?= $account_info['id'] ?>"
+                                                                        <?= ($tag == 'edit' && isset($Student_payment[0]['account_id']) && $Student_payment[0]['account_id'] == $account_info['id']) ? 'selected' : '' ?>>
+                                                                        <?= $account_info['bank_name'] ?>-<?= $account_info['account_no'] ?>
+                                                                    </option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-md-12 d-none" id="chequeDetails">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">Cheque Number<span
+                                                                    class="text-danger"> *</span></label>
+                                                            <input type="text" class="form-control" name="cheque_no"
+                                                                id="chequeNumber"
+                                                                value="<?= $Student_payment[0]['cheque_no'] ?>">
+                                                        </div>
+
+                                                    </div>
+													 <div class="col-md-12">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">paid Amount<span
+                                                                    class="text-danger"> *</span></label>
+                                                            <input type="number" class="form-control" name="paid"
+                                                                id="paid" value="<?= $Student_payment[0]['paid'] ?>"
+                                                                required oninput="validatePaidAmount()">
+                                                            <input type="hidden" name="p_id"
+                                                                value="<?= $Student_payment[0]['id'] ?>">
+                                                        </div>
+                                                    </div>
+>>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 													</div>
 
 
@@ -736,7 +860,120 @@
 						<script>
 							CKEDITOR.replace('editor'); // Initialize CKEditor
 						</script>
+					<script>
+document.addEventListener('DOMContentLoaded', function () {
+    fetchAttendanceData(); // Triggers attendance fetch for the default-selected option
+});
+</script>
 						<!-- /Main Wrapper -->
+						<script>
+function calculateDeductedSalary() {
+    const salaryInput = document.querySelector('input[name="salary"]');
+    const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
+    const lessSalaryInput = document.querySelector('input[name="less_salary"]');
+    const totalSalaryInput = document.querySelector('input[name="total_salary"]');
+    const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
+    const rewardCheckboxes = document.querySelectorAll('.reward-checkbox');
+    const base_url = "<?= base_url() ?>";
+
+    const monthlySalary = parseFloat(salaryInput.value) || 0;
+    const deductedDays = parseFloat(cuttingDaysInput.value) || 0;
+    const perDaySalary = monthlySalary / 30;
+    let deductedAmount = deductedDays * perDaySalary;
+
+    const selectedPenaltyIds = Array.from(penaltyCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+    const selectedRewardIds = Array.from(rewardCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+    let totalReward = 0;
+
+    function updateTotalSalary() {
+        const finalSalary = monthlySalary - deductedAmount + totalReward;
+        lessSalaryInput.value = deductedAmount.toFixed(2);
+        totalSalaryInput.value = finalSalary.toFixed(2);
+    }
+
+    const fetchPenalty = selectedPenaltyIds.length > 0
+        ? fetch(base_url + 'Admin_Dashboard/get_penalty_amounts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: selectedPenaltyIds })
+        }).then(res => res.json()).then(data => {
+            if (data.status) {
+                deductedAmount += data.total_penalty;
+            }
+        }) : Promise.resolve();
+
+    const fetchReward = selectedRewardIds.length > 0
+        ? fetch(base_url + 'Admin_Dashboard/get_reward_amounts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: selectedRewardIds })
+        }).then(res => res.json()).then(data => {
+            if (data.status) {
+                totalReward = data.total_reward;
+            }
+        }) : Promise.resolve();
+
+    Promise.all([fetchPenalty, fetchReward]).then(updateTotalSalary).catch(err => {
+        console.error("Error fetching data", err);
+        updateTotalSalary();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('input[name="cuting_days"]').addEventListener('input', calculateDeductedSalary);
+    document.querySelectorAll('.fee-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
+    document.querySelectorAll('.reward-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
+});
+</script>
+
+
+<script>
+function fetchAttendanceData() {
+    const month = document.getElementById('salary_month').value;
+    const empCode = "<?= $employee[0]['id'] ?>";
+    const instId = "<?= $user[0]['id'] ?>";
+    const base_url = "<?= base_url() ?>";
+
+    if (month && empCode && instId) {
+        fetch(base_url + "Admin_Dashboard/get_emp_attendance_summary?emp_code=" + empCode + "&inst_id=" + instId + "&month=" + month)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status) {
+                document.querySelector('input[name="total_days"]').value = data.total_days;
+                document.querySelector('input[name="present"]').value = data.present_days;
+                document.querySelector('input[name="leaves"]').value = data.absent_days;
+                document.querySelector('input[name="cuting_days"]').value = data.absent_days;
+                document.querySelector('input[name="late"]').value = data.late_days;
+
+                calculateDeductedSalary(); // now this will work
+            } else {
+                alert("No attendance data found.");
+            }
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            alert("Failed to fetch attendance data.");
+        });
+    }
+}
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
+    const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
+
+    cuttingDaysInput.addEventListener('input', calculateDeductedSalary);
+    penaltyCheckboxes.forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
+});
+</script>
+
+
 						<script>
 							function handlePaymentChange() {
 								var paymentType = document.getElementById("paymentType").value;
