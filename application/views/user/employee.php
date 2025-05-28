@@ -544,20 +544,6 @@
 														// Get current month (numeric format)
 														$currentMonth = date('m');
 														$months = [
-<<<<<<< HEAD
-															'01' => 'January',
-															'02' => 'February',
-															'03' => 'March',
-															'04' => 'April',
-															'05' => 'May',
-															'06' => 'June',
-															'07' => 'July',
-															'08' => 'August',
-															'09' => 'September',
-															'10' => 'October',
-															'11' => 'November',
-															'12' => 'December'
-=======
 															'2025-01' => 'January',
 															'2025-02' => 'February',
 															'2025-03' => 'March',
@@ -570,7 +556,6 @@
 															'2025-10' => 'October',
 															'2025-11' => 'November',
 															'2025-12' => 'December'
->>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 														];
 														?>
 
@@ -579,18 +564,12 @@
 																<label class="col-form-label">Salary Month <span
 																		class="text-danger">*</span></label>
 																<select class="select2 form-control" name="month"
-<<<<<<< HEAD
-																	required>
-																	<?php foreach ($months as $key => $month): ?>
-																		<option value="<?= $key ?>" <?= ($tag == 'edit' && isset($shift[0]['salary_month']) && $shift[0]['salary_month'] == $key) || (!isset($shift[0]['salary_month']) && $key == $currentMonth) ? 'selected' : '' ?>>
-=======
 																	required onchange="fetchAttendanceData()" id="salary_month" >
 																	<?php 
 																	$currentMonth = date('Y-m'); // This gives 2025-05
 																	$prevMonth = date('Y-m', strtotime('-1 month'));foreach ($months as $key => $month): ?>
 																		<option value="<?= $key ?>" <?= ($tag == 'edit' && isset($shift[0]['salary_month']) && $shift[0]['salary_month'] == $key) || (!isset($shift[0]['salary_month']) && $key == $currentMonth) ? 'selected' : '' ?>>
 
->>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 																			<?= $month ?>
 																		</option>
 																	<?php endforeach; ?>
@@ -612,11 +591,7 @@
 																<label class="col-form-label">Total Working Days<span
 																		class="text-danger">*</span></label>
 																<input type="text" class="form-control"
-<<<<<<< HEAD
-																	name="total_days">
-=======
 																	name="total_days" readonly>
->>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 
 
 															</div>
@@ -625,11 +600,7 @@
 															<div class="mb-3">
 																<label class="col-form-label">Total Present Days<span
 																		class="text-danger">*</span></label>
-<<<<<<< HEAD
-																<input type="text" class="form-control" name="present">
-=======
 																<input type="text" class="form-control" name="present" readonly>
->>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 
 
 															</div>
@@ -638,9 +609,6 @@
 															<div class="mb-3">
 																<label class="col-form-label">Total Absent Days<span
 																		class="text-danger">*</span></label>
-<<<<<<< HEAD
-																<input type="text" class="form-control" name="leaves">
-=======
 																<input type="text" class="form-control" name="leaves" readonly>
 
 
@@ -651,7 +619,6 @@
 																<label class="col-form-label">Total Late Days<span
 																		class="text-danger">*</span></label>
 																<input type="text" class="form-control" name="late" readonly>
->>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 
 
 															</div>
@@ -704,27 +671,17 @@
 
 
 
-<<<<<<< HEAD
-=======
 														
->>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 														?>
 
 														<?php foreach ($reward as $item): ?>
 
 
 															<div class="form-check">
-<<<<<<< HEAD
-																<input class="form-check-input fee-checkbox" name="reward[]"
-																	type="checkbox"
-																	value="<?= $item['id'] ?>"><?= $item['name'] ?>
-
-=======
 															<input class="form-check-input reward-checkbox" name="reward[]" type="checkbox" value="<?= $item['id'] ?>">
 															<?= $item['name'] ?>
 
 																
->>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 
 															</div>
 														<?php endforeach; ?>
@@ -740,9 +697,6 @@
 
 															</div>
 														</div>
-<<<<<<< HEAD
-
-=======
 														<div class="col-md-12">
                                                         <div class="mb-3">
                                                             <div
@@ -808,7 +762,6 @@
                                                                 value="<?= $Student_payment[0]['id'] ?>">
                                                         </div>
                                                     </div>
->>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 													</div>
 
 

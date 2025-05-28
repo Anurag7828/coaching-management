@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
-
 	<?php include('includes2/header-links.php') ?>
 	<style>
 		.email-wrap {
