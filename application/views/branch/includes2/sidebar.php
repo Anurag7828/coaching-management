@@ -35,7 +35,7 @@
 									</a>
 									
 								</li>
-								<li >
+								<!-- <li >
 									<a href="<?= base_url('Admin_Dashboard/change_student_password/' . encryptId($user[0]['id'])) ?>" >
 										<i class="ti ti-password"></i><span>Change Password</span>
 							
@@ -46,7 +46,7 @@
 									<a href="<?= base_url('Admin/logout/') ?>" >
 										<i class="ti ti-lock"></i><span>Log Out</span>
 							
-									</a>
+									</a> -->
 									
 								</li>
 								
