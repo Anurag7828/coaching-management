@@ -2403,6 +2403,183 @@ public function upload_emp_attendance_csv()
     ]);
 }
 
+public function get_emp_attendance_summary()
+{
+    $emp_code = $this->input->get('emp_code');
+    $inst_id = $this->input->get('inst_id');
+    $month = $this->input->get('month'); // e.g., "2025-05"
+
+    if (!$emp_code || !$month) {
+        echo json_encode(['status' => false, 'message' => 'Invalid input.']);
+        return;
+    }
+
+    // Get emp_id from emp_code
+    $emp = $this->db->get_where('employees', ['id' => $emp_code, 'inst_id' => $inst_id])->row();
+
+    if (!$emp) {
+        echo json_encode(['status' => false, 'message' => 'Employee not found.']);
+        return;
+    }
+
+    $emp_id = $emp->id;
+
+    // Use month as YYYY-MM
+    $start_date = $month . "-01";
+    $end_date = date("Y-m-t", strtotime($start_date));
+
+    // Total working days (distinct attendance dates)
+    $this->db->distinct();
+    $this->db->select('date');
+    $this->db->where('date >=', $start_date);
+    $this->db->where('date <=', $end_date);
+    $this->db->where('emp_id', $emp_id);
+    $workingDays = $this->db->get('emp_attendance')->num_rows();
+
+    // Present days
+    $presentDays = $this->db->where('emp_id', $emp_id)
+        ->where_in('status', ['Present', 'present'])
+        ->where('date >=', $start_date)
+        ->where('date <=', $end_date)
+        ->get('emp_attendance')
+        ->num_rows();
+
+    // Late days
+    $lateDays = $this->db->where('emp_id', $emp_id)
+        ->where_in('status', ['Late', 'late'])
+        ->where('date >=', $start_date)
+        ->where('date <=', $end_date)
+        ->get('emp_attendance')
+        ->num_rows();
+
+    // Absent days
+    $absentDays = $this->db->where('emp_id', $emp_id)
+        ->where_in('status', ['Absent', 'absent'])
+        ->where('date >=', $start_date)
+        ->where('date <=', $end_date)
+        ->get('emp_attendance')
+        ->num_rows();
+
+    echo json_encode([
+        'status' => true,
+        'total_days' => $workingDays,
+        'present_days' => $presentDays,
+        'absent_days' => $absentDays,
+        'late_days' => $lateDays
+    ]);
+}
+public function add_emp_salary($inst_id_encrypted) {
+    $inst_id = decryptId($inst_id_encrypted);
+    $post = $this->input->post();
+
+    // Sanitize and extract form values
+    $employee_id = $post['inst_id'];
+    $month = $post['month'];
+    $salary = $post['salary'];
+    $total_days = $post['total_days'];
+    $present = $post['present'];
+    $leaves = $post['leaves'];
+    $cuting_days = $post['cuting_days'];
+    $less_salary = $post['less_salary'];
+    $total_salary = $post['total_salary'];
+    $mode = $post['mode'];
+    $paid = $post['paid'];
+    $account_id = isset($post['account_id']) ? $post['account_id'] : null;
+    $cheque_no = isset($post['cheque_no']) ? $post['cheque_no'] : null;
+    $reward_ids = isset($post['reward']) ? implode(',', $post['reward']) : '';
+    $penalty_ids = isset($post['penailty_type']) ? implode(',', $post['penailty_type']) : '';
+
+    $date = date('Y-m-d');
+    $now = date('Y-m-d H:i:s');
+
+    // 1. Insert into employee_salary
+    $employee_salary = [
+        'inst_id' => $inst_id,
+        'employee_id' => $employee_id,
+        'month' => $month,
+        'salary' => $salary,
+        'total_days' => $total_days,
+        'present' => $present,
+        'leaves' => $leaves,
+        'cuting_days' => $cuting_days,
+        'less_salary' => $less_salary,
+        'total_salary' => $total_salary,
+        'status' => 'Paid',
+        'date' => $date,
+        'created_at' => $now
+    ];
+    $salary_id = $this->CommonModal->insertRowReturnId('employee_salary', $employee_salary);
+
+    // 2. Insert into emp_salary_cal
+    $emp_salary_cal = [
+        'inst_id' => $inst_id,
+        'branch_id' => 0, // Add branch_id logic if applicable
+        'emp_id' => $employee_id,
+        'reward' => $reward_ids,
+        'penailty' => $penalty_ids,
+        'salary_id' => $salary_id,
+        'date' => $date
+    ];
+    $this->CommonModal->insertRow('emp_salary_cal', $emp_salary_cal);
+
+   $due= $total_salary-$paid;
+
+    // Optional: Insert payment details (if tracking mode-specific info)
+    $payment_data = [
+        'inst_id' => $inst_id,
+        'emp_id' => $employee_id,
+        'mode' => $mode,
+          'transaction_id' => 'TXN' . time(), // Unique ID
+        'account_id' => $account_id,
+        'cheque_no' => $cheque_no,
+          'total' => $total_salary,
+        'paid' => $paid,
+        'due' => $due,
+
+        'month' => $month,
+        'date' => $date
+    ];
+    $this->CommonModal->insertRow('employee_payment', $payment_data);
+
+    $this->session->set_flashdata('msg', 'Salary added successfully!');
+    redirect('Admin_Dashboard/employee_salary_list'); // Update with your route
+}
+
+public function get_penalty_amounts() {
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (isset($data['ids']) && is_array($data['ids'])) {
+        $this->db->select_sum('depacted_rupees');
+        $this->db->where_in('id', $data['ids']);
+        $query = $this->db->get('penailty');
+
+        $result = $query->row();
+        $total = $result ? (float)$result->depacted_rupees : 0;
+
+        echo json_encode(['status' => true, 'total_penalty' => $total]);
+    } else {
+        echo json_encode(['status' => false, 'message' => 'No IDs provided']);
+    }
+}
+public function get_reward_amounts() {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $rewardIds = $input['ids'];
+
+    if (!empty($rewardIds)) {
+        $this->db->select_sum('reward_rupees');
+        $this->db->where_in('id', $rewardIds);
+        $query = $this->db->get('reward');
+
+        $total = $query->row()->reward_rupees ?? 0;
+
+        echo json_encode([
+            'status' => true,
+            'total_reward' => floatval($total)
+        ]);
+    } else {
+        echo json_encode(['status' => false]);
+    }
+}
 
 public function upload_emp_excel_formate($id){
     $data['title'] = "View batch";
