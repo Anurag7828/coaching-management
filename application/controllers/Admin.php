@@ -126,11 +126,7 @@ public function registration()
                 // Verify password for user
                 if ($password == $f_password) {
                     // Set session data for user
-<<<<<<< HEAD
                     $this->session->set_userdata(array('id' => $id,'status' => 0, 'email' => $email, 'role' => 'student'));
-=======
-                    $this->session->set_userdata(array('id' => $id,'status' => 1, 'username' => $f_username,'role' => 'branch'));
->>>>>>> bda2ac486d94bc03e4fad91edc06622e004d2ad3
 
                     // Redirect to the user dashboard
                     redirect('Admin_Dashboard/student_profile/' . encryptId($id));
