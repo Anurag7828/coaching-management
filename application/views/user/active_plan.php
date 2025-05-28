@@ -73,6 +73,16 @@
 											<i class="ti ti-moneybag me-2"></i>Bank Account
 										</a>
 									</li>
+                                    <li class="nav-item me-3">
+										<a href="<?= base_url('Admin_Dashboard/inst_reward/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0">
+											<i class="ti ti-moneybag me-2"></i>Reward
+										</a>
+									</li>
+									<li class="nav-item me-3">
+										<a href="<?= base_url('Admin_Dashboard/inst_penailty/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0">
+											<i class="ti ti-moneybag me-2"></i>Penailty
+										</a>
+									</li>
 								</ul>
 							</div>
 						</div>

@@ -112,26 +112,26 @@ public function registration()
             }
         }else {
             // Step 2: Check in the 'users' table for user login if not found in the admin table
-            $branch_data = $this->CommonModal->getRowById('branch', 'email', $email);
+            $branch_data = $this->CommonModal->getRowById('students', 'email', $email);
 
             if ($branch_data) {
                 // Fetch user details from the database result
                 $id = $branch_data[0]['id'];
-                $f_username = $branch_data[0]['username'];
+                $email = $branch_data[0]['username'];
                 $f_password = $branch_data[0]['password'];
                 $role = $branch_data[0]['role']; 
                 $status = $branch_data[0]['status']; 
 
-              if($status==1){
+              if($status==0){
                 // Verify password for user
                 if ($password == $f_password) {
                     // Set session data for user
-                    $this->session->set_userdata(array('id' => $id,'status' => 1, 'username' => $username,'role' => 'branch'));
+                    $this->session->set_userdata(array('id' => $id,'status' => 0, 'email' => $email, 'role' => 'student'));
 
                     // Redirect to the user dashboard
-                    redirect('Branch_Dashboard/index/' . encryptId($id));
+                    redirect('Admin_Dashboard/student_profile/' . encryptId($id));
                 } else {
-                    flashData('login_error', 'Enter a valid Password for User.');
+                    flashData('login_error', 'Enter a valid Password for  Student.');
                 }
             } else{
                 flashData('login_error', 'Package Is Expire');

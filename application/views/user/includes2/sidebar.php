@@ -84,7 +84,37 @@
 										<li><a href="<?= base_url('Admin_Dashboard/add_employee/'. encryptId($user[0]['id']))?>">Add Employee</a></li>
 										<li><a href="<?= base_url('Admin_Dashboard/view_employee/'. encryptId($user[0]['id']))?>">View Employee</a></li>
 									
-										<li><a href="<?= base_url('Admin_Dashboard/view_employee_attendance/'. encryptId($user[0]['id']))?>">Employee Attendance</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_emp_attendance/'. encryptId($user[0]['id']))?>">Employee Attendance</a></li>
+
+
+									
+									</ul>
+								</li>
+								<li class="submenu">
+									<a href="javascript:void(0);">
+										<i class="ti ti-layout-2"></i><span>Department</span><span class="menu-arrow"></span>
+									</a>
+									<ul>
+										<li><a href="<?= base_url('Admin_Dashboard/add_department/'. encryptId($user[0]['id']))?>">Add Department</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_department/'. encryptId($user[0]['id']))?>">Active Department</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_department/'. encryptId($user[0]['id']).'?tag=deactive')?>">Deactive Department</a></li>
+
+									
+
+
+									
+									</ul>
+								</li>
+								<li class="submenu">
+									<a href="javascript:void(0);">
+										<i class="ti ti-layout-2"></i><span>Designation</span><span class="menu-arrow"></span>
+									</a>
+									<ul>
+										<li><a href="<?= base_url('Admin_Dashboard/add_desgination/'. encryptId($user[0]['id']))?>">Add Designation</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_desgination/'. encryptId($user[0]['id']))?>">Active Designation</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_desgination/'. encryptId($user[0]['id']).'?tag=deactive')?>">Deactive Designation</a></li>
+
+									
 
 
 									

@@ -81,10 +81,15 @@
 												alt="Image">
 										</div>
 										<div>
-											<h5 class="mb-1"><?= $employee[0]['name'] ?> (<?= $employee[0]['gender'] ?>)
+											<?php $desig = $this->CommonModal->getRowById('designation', 'id', $employee[0]['designation']); ?>
+											<h5 class="mb-1"><?= $employee[0]['name'] ?> (<?= $desig[0]['name'] ?>)
 											</h5>
+											<?php $depart = $this->CommonModal->getRowById('department', 'id', $employee[0]['department']); ?>
 
-											<p class="d-inline-flex align-items-center mb-0">employee Code :-
+											<p class="d-inline-flex align-items-center mb-0">Department :-
+												<?= $depart[0]['name'] ?>
+											</p>
+											<p class="mb-0">employee Code :-
 												<?= $employee[0]['emp_code'] ?>
 											</p>
 											<p class="mb-2">employee Id :- <?= $employee[0]['emp_id'] ?> </p>
@@ -186,6 +191,8 @@
 								<hr>
 								<h6 class="mb-3 fw-semibold">Personal Information</h6>
 								<ul>
+									<li class="row mb-3"><span class="col-6">Gender</span><span class="col-6">
+											<?= $employee[0]['gender'] ?></span></li>
 									<li class="row mb-3"><span class="col-6">Father Name</span><span class="col-6">
 											<?= $employee[0]['f_name'] ?></span></li>
 									<li class="row mb-3"><span class="col-6">Aadhar No.</span><span class="col-6">
@@ -230,6 +237,10 @@
 										<a href="#" data-bs-toggle="tab" data-bs-target="#email" class="nav-link"><i
 												class="ti ti-mail-check me-1"></i>Email</a>
 									</li>
+									<li class="nav-item" role="presentation">
+										<a href="#" data-bs-toggle="tab" data-bs-target="#attendence" class="nav-link"><i
+										class="ti ti-notes me-1"></i>Attendance Report</a>
+									</li>
 
 								</ul>
 							</div>
@@ -241,7 +252,7 @@
 							<!-- Activities -->
 							<div class="tab-pane active show" id="activities">
 								<div class="card">
-									
+
 									<div
 										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
 										<h4 class="fw-semibold">Overview</h4>
@@ -249,9 +260,9 @@
 									</div>
 									<div class="card-body">
 										<div class="contact-activity">
-										<div class="badge badge-soft-purple fs-14 fw-normal shadow-none mb-3"><i
+											<div class="badge badge-soft-purple fs-14 fw-normal shadow-none mb-3"><i
 													class="ti ti-calendar-check me-1"></i>Salary Overview</div>
-									
+
 											<div class="card border shadow-none mb-3">
 												<div class="card-body p-3">
 													<div class="d-flex">
@@ -260,11 +271,16 @@
 															<i class="ti ti-notes"></i>
 														</span>
 														<div>
-															<h6 class="fw-medium mb-1"><?= $employee[0]['salary'] ?> Rs (per Month)</h6>
-															<p class="mb-1">Per Day :- <?= $employee[0]['salary']/30 ?> Rs </p>
-															<p class="mb-1">Per Year :- <?= $employee[0]['salary']*12 ?> Rs </p>
+															<h6 class="fw-medium mb-1"><?= $employee[0]['salary'] ?> Rs
+																(per Month)</h6>
+															<p class="mb-1">Per Day :-
+																<?= $employee[0]['salary'] / 30 ?>
+																Rs </p>
+															<p class="mb-1">Per Year :-
+																<?= $employee[0]['salary'] * 12 ?>
+																Rs </p>
 
-														
+
 
 
 														</div>
@@ -326,7 +342,7 @@
 										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
 										<h4 class="fw-semibold">Calculate This Month Salary</h4>
 										<div class="d-inline-flex align-items-center">
-										<a href="javascript:void(0);" data-bs-toggle="modal"
+											<a href="javascript:void(0);" data-bs-toggle="modal"
 												data-bs-target="#add_notes" class="btn btn-danger"><i
 													class="ti ti-circle-plus me-1"></i>Calculate Salary</a>
 										</div>
@@ -340,7 +356,7 @@
 														<table class="table">
 															<thead class="thead-light">
 																<tr>
-																<th>Month</th>
+																	<th>Month</th>
 
 																	<th>Salary</th>
 																	<th>No. Of Leave</th>
@@ -357,19 +373,20 @@
 																$total_amount = 0; // Initialize total amount
 																?>
 																<tr>
-																<td><?= $employee[0]['salary'] ?> Rs</td>
+																	<td><?= $employee[0]['salary'] ?> Rs</td>
 
 																	<td><?= $employee[0]['salary'] ?> Rs</td>
 																	<td>4</td>
-																	<?php $less=$employee[0]['salary']/4 ?> 
-																	<td><?= $less?> Rs</td>
+																	<?php $less = $employee[0]['salary'] / 4 ?>
+																	<td><?= $less ?> Rs</td>
 
-																	<td class="text-end"><?= $employee[0]['salary']- $less?> Rs
+																	<td class="text-end">
+																		<?= $employee[0]['salary'] - $less ?> Rs
 																	</td>
 																	<td class="text-end">Due
 																	</td>
 																</tr>
-																
+
 															</tbody>
 														</table>
 
@@ -389,134 +406,331 @@
 										class="card-header d-flex align-items-center justify-content-between flex-wrap">
 										<h4 class="fw-semibold">Email</h4>
 										<div class="d-inline-flex align-items-center">
-											<a href="javascript:void(0);" class="link-purple fw-medium" data-bs-toggle="modal"
-											data-bs-target="#add_compose" ><i
+											<a href="javascript:void(0);" class="link-purple fw-medium"
+												data-bs-toggle="modal" data-bs-target="#add_compose"><i
 													class="ti ti-circle-plus me-1"></i>Create Email</a>
 										</div>
 									</div>
 									<div class="card-body">
 										<div class="card border mb-0">
 											<div class="card-body pb-0">
-												<?php $emails = $this->CommonModal->getRowByMultitpleId('employee_email', 'emp_id', $employee[0]['id'], 'inst_id',$user[0]['id'],'id','DESC');
-	if (!empty($emails)) {
-	foreach ($emails as $email) {
-		$i++;
-		?>
-												<div class="row align-items-center">
-													<div class="col-md-8">
-														<div class="mb-3">
-															<h4 class="fw-medium mb-1"><?= $email['subject']?></h4>
-															<p><?= $email['message']?></p>
+												<?php $emails = $this->CommonModal->getRowByMultitpleId('employee_email', 'emp_id', $employee[0]['id'], 'inst_id', $user[0]['id'], 'id', 'DESC');
+												if (!empty($emails)) {
+													foreach ($emails as $email) {
+														$i++;
+														?>
+														<div class="row align-items-center">
+															<div class="col-md-8">
+																<div class="mb-3">
+																	<h4 class="fw-medium mb-1"><?= $email['subject'] ?></h4>
+																	<p><?= $email['message'] ?></p>
+																</div>
+															</div>
+															<div class="col-md-4 text-md-end">
+																<div class="mb-3">
+																	<a href="<?= base_url('Admin_Dashboard/delete_mail/' . encryptId($email['id']) . '/employee_email') ?>"
+																		class="btn btn-primary">Delete</a>
+																</div>
+															</div>
 														</div>
-													</div>
-													<div class="col-md-4 text-md-end">
-														<div class="mb-3">
-															<a href="<?= base_url('Admin_Dashboard/delete_mail/'.encryptId($email['id']).'/employee_email')?>" class="btn btn-primary" >Delete</a>
-														</div>
-													</div>
-												</div>
-												<?php
-																}
-															}
-															?>
+														<?php
+													}
+												}
+												?>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-								<!-- Add Note -->
-		<div class="modal custom-modal fade modal-padding" id="add_notes" role="dialog">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Add New Fees</h5>
-						<button type="button" class="btn-close position-static" data-bs-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">×</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('Admin_Dashboard/add_fees_type/' . encryptId($user[0]['id'])) ?>"
-							method="post">
-							<div class="col-md-6">
-								<div class="mb-3">
-
-									<?php
-									$fees = $this->CommonModal->getRowById('fees', 'inst_id', $user[0]['id']);
-									$Student_fees = $this->CommonModal->getRowById('student_fees', 'student_id', $student[0]['id']);
-
-									// Convert fees_type to an array (If no record, set empty array)
-									$selected_fees = !empty($Student_fees) ? array_column($Student_fees, 'fees_type') : [];
-									?>
-
-									<?php foreach ($fees as $item): ?>
-										<?php if (in_array($item['id'], $selected_fees))
-											continue; // ✅ Skip already selected fees ?>
-
-										<div class="form-check">
-											<input class="form-check-input fee-checkbox" name="fees_type[]" type="checkbox"
-												value="<?= $item['id'] ?>" id="flexCheck<?= $item['id'] ?>">
-											<input class="" name="inst_id" type="hidden" value="<?= $user[0]['id'] ?>">
-											<input class="" name="student_id" type="hidden"
-												value="<?= $student[0]['id'] ?>">
-											<label class="form-check-label" for="flexCheck<?= $item['id'] ?>">
-												<?= $item['name'] ?>
-												<?php $Student_payment = $this->CommonModal->getRowByIdOrderByLimit('fees_payment', 'student_id', $student[0]['id'], 'inst_id', $user[0]['id'], 'id', 'ASC', '1'); ?>
-												<input class="" name="p_id" type="hidden"
-												value="<?= $Student_payment[0]['id'] ?>">
-											</label>
+							<div class="tab-pane fade" id="attendence">
+								<div class="card">
+									<div
+										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+										<h4 class="fw-semibold">View Attendence</h4>
+										<div class="d-inline-flex align-items-center">
+											<a href="<?= base_url('Admin_Dashboard/emp_attendence_report/' . encryptId($user[0]['id']) . '/' . encryptId($employee[0]['id'])); ?>"
+												class="com-add"><i class="ti ti-circle-plus me-1"></i>View Detail</a>
 										</div>
-									<?php endforeach; ?>
+									</div>
+									<div class="card-body">
+										<div class="card mb-3">
+											<div class="card-body">
+												<div class="border-bottom mb-3">
+													<?php
+													$this->db->select("status, COUNT(*) as count");
+													$this->db->where('inst_id', $user[0]['id']);
+													$this->db->where('emp_id', $employee[0]['id']);
 
+													$this->db->group_by("status");
+													$count_query = $this->db->get('emp_attendance')->result_array();
 
+													// Initialize counts
+													$attendance_count = ['Present' => 0, 'Absent' => 0, 'Late' => 0];
 
+													foreach ($count_query as $row) {
+														$attendance_count[$row['status']] = $row['count'];
+													}
 
+													// Pass data to view
+													$data['attendance_count'] = $attendance_count;
+													?>
+													<div class="row align-items-center">
+														<div class="col-md-4">
+															<div class="mb-3">
+																<p class="fs-12 mb-0">Total Present</p>
+																<p class="text-gray-9">
+																	<?= isset($attendance_count['Present']) ? $attendance_count['Present'] : '0' ?>
+																</p>
+															</div>
+														</div>
+														<div class="col-md-4">
+															<div class="mb-3">
+																<p class="fs-12 mb-0">Total Absent</p>
+																<p class="text-gray-9">
+																	<?= isset($attendance_count['Absent']) ? $attendance_count['Absent'] : '0' ?>
+																</p>
+															</div>
+														</div>
+														<div class="col-md-4">
+															<div class="mb-3">
+																<p class="fs-12 mb-0">Total Late</p>
+																<p class="text-gray-9">
+																	<?= isset($attendance_count['Late']) ? $attendance_count['Late'] : '0' ?>
+																</p>
+															</div>
+														</div>
+													</div>
+												</div>
 
+											</div>
+											<!-- /Tab Content -->
 
+										</div>
+										<!-- /Contact Details -->
+
+									</div>
 
 								</div>
+							</div>
+							<!-- Add Note -->
+							<div class="modal custom-modal fade modal-padding" id="add_notes" role="dialog">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Calculate</h5>
+											<button type="button" class="btn-close position-static"
+												data-bs-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">×</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<form
+												action="<?= base_url('Admin_Dashboard/add_emp_salary/' . encryptId($user[0]['id'])) ?>"
+												method="post">
+												<div class="col-md-12">
+													<div class="mb-3">
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Employee Id <span
+																		class="text-danger">*</span></label>
+																<input type="text" class="form-control" readonly
+																	value="<?= $employee[0]['emp_code'] ?>">
+																<input type="hidden" class="form-control" name="inst_id"
+																	value="<?= $user[0]['id'] ?>" required>
+
+															</div>
+														</div>
+														<?php
+														// Get current month (numeric format)
+														$currentMonth = date('m');
+														$months = [
+															'01' => 'January',
+															'02' => 'February',
+															'03' => 'March',
+															'04' => 'April',
+															'05' => 'May',
+															'06' => 'June',
+															'07' => 'July',
+															'08' => 'August',
+															'09' => 'September',
+															'10' => 'October',
+															'11' => 'November',
+															'12' => 'December'
+														];
+														?>
+
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Salary Month <span
+																		class="text-danger">*</span></label>
+																<select class="select2 form-control" name="month"
+																	required>
+																	<?php foreach ($months as $key => $month): ?>
+																		<option value="<?= $key ?>" <?= ($tag == 'edit' && isset($shift[0]['salary_month']) && $shift[0]['salary_month'] == $key) || (!isset($shift[0]['salary_month']) && $key == $currentMonth) ? 'selected' : '' ?>>
+																			<?= $month ?>
+																		</option>
+																	<?php endforeach; ?>
+																</select>
+															</div>
+														</div>
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Montly Salary<span
+																		class="text-danger">*</span></label>
+																<input type="text" class="form-control" name="salary"
+																	readonly value="<?= $employee[0]['salary'] ?>">
 
 
+															</div>
+														</div>
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Total Working Days<span
+																		class="text-danger">*</span></label>
+																<input type="text" class="form-control"
+																	name="total_days">
+
+
+															</div>
+														</div>
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Total Present Days<span
+																		class="text-danger">*</span></label>
+																<input type="text" class="form-control" name="present">
+
+
+															</div>
+														</div>
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Total Absent Days<span
+																		class="text-danger">*</span></label>
+																<input type="text" class="form-control" name="leaves">
+
+
+															</div>
+														</div>
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Depacted Salary Days<span
+																		class="text-danger">*</span></label>
+																<input type="text" class="form-control"
+																	name="cuting_days">
+
+
+															</div>
+														</div>
+
+														<br>
+
+														<label class="col-form-label">Penailty<span
+																class="text-danger">*</span></label>
+
+														<?php
+														$penailty = $this->CommonModal->getRowById('penailty', 'inst_id', $user[0]['id']);
+
+														foreach ($penailty as $item): ?>
+
+															<div class="form-check">
+																<input class="form-check-input fee-checkbox"
+																	name="penailty_type[]" type="checkbox"
+																	value="<?= $item['id'] ?>"><?= $item['name'] ?>
+
+															</div>
+														<?php endforeach; ?>
+
+
+
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Depacted Salary <span
+																		class="text-danger">*</span></label>
+																<input type="text" class="form-control"
+																	name="less_salary">
+
+
+															</div>
+														</div>
+														<label class="col-form-label">Rewards<span
+																class="text-danger">*</span></label>
+														<?php
+														$reward = $this->CommonModal->getRowById('reward', 'inst_id', $user[0]['id']);
+
+
+
+														?>
+
+														<?php foreach ($reward as $item): ?>
+
+
+															<div class="form-check">
+																<input class="form-check-input fee-checkbox" name="reward[]"
+																	type="checkbox"
+																	value="<?= $item['id'] ?>"><?= $item['name'] ?>
+
+
+															</div>
+														<?php endforeach; ?>
+
+
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">Total paid Salary <span
+																		class="text-danger">*</span></label>
+																<input type="text" class="form-control"
+																	name="total_salary">
+
+
+															</div>
+														</div>
+
+													</div>
+
+
+												</div>
+												<div class="col-lg-12 text-end modal-btn">
+													<a class="btn btn-light" data-bs-dismiss="modal">Cancel</a>
+													<button class="btn btn-primary" type="submit">Submit</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
 							</div>
-							<div class="col-lg-12 text-end modal-btn">
-								<a class="btn btn-light" data-bs-dismiss="modal">Cancel</a>
-								<button class="btn btn-primary" type="submit">Submit</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
 							<div class="modal custom-modal fade" id="add_compose" role="dialog">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Add Compose</h5>
-						<button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-							<i class="ti ti-x"></i>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('Admin_Dashboard/send_emp_email/' . encryptId($user[0]['id']).'/'.encryptId($employee[0]['id']).'/2') ?>" method="post">
-							
-							<div class="mb-3">
-								<input type="text" name="subject" placeholder="Subject" class="form-control">
-							</div>
-							<div class="mb-3">
-							<textarea name="message" id="editor"></textarea>
-							</div>
-							<div class="mb-3">
-								<div class="text-center">
-									<button class="btn btn-primary"><span>Send</span><i
-											class="fa-solid fa-paper-plane ms-1"></i></button>
-								
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Add Compose</h5>
+											<button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+												<i class="ti ti-x"></i>
+											</button>
+										</div>
+										<div class="modal-body">
+											<form
+												action="<?= base_url('Admin_Dashboard/send_emp_email/' . encryptId($user[0]['id']) . '/' . encryptId($employee[0]['id']) . '/2') ?>"
+												method="post">
+
+												<div class="mb-3">
+													<input type="text" name="subject" placeholder="Subject"
+														class="form-control">
+												</div>
+												<div class="mb-3">
+													<textarea name="message" id="editor"></textarea>
+												</div>
+												<div class="mb-3">
+													<div class="text-center">
+														<button class="btn btn-primary"><span>Send</span><i
+																class="fa-solid fa-paper-plane ms-1"></i></button>
+
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
 								</div>
 							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
 						</div>
 						<script src="https://cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
 						<script>

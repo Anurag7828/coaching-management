@@ -34,10 +34,10 @@
                                         <!-- Select Customer -->
                                         <div class="col-sm-6">
                                             <div class="w-full mb-3">
-                                                <label class="text-dark text-[13px] mb-2">Select Batch</label>
-                                                <select id="batch_id" name="batch_id" class="form-control">
-                                                    <?php foreach ($batches as $batch): ?>
-                                                        <option value="<?= $batch['id'] ?>"><?= $batch['name'] ?></option>
+                                                <label class="text-dark text-[13px] mb-2">Select Department</label>
+                                                <select id="batch_id" name="department_id" class="form-control">
+                                                    <?php foreach ($department as $departments): ?>
+                                                        <option value="<?= $departments['id'] ?>"><?= $departments['name'] ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
@@ -72,7 +72,7 @@
 
             function fetchStudents(batchId) {
                 if (batchId) {
-                    fetch("<?= base_url('Admin_Dashboard/get_students_by_batch/') ?>" + batchId + "/" + userId)
+                    fetch("<?= base_url('Admin_Dashboard/get_emp_by_department/') ?>" + batchId + "/" + userId)
                         .then(response => response.text())
                         .then(data => {
                             document.getElementById("studentList").innerHTML = data;

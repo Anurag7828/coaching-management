@@ -43,7 +43,7 @@
 							<div class="card-body pb-0 pt-2">
 								<ul class="nav nav-tabs nav-tabs-bottom">
                                 <li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/profile/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 ">
+										<a href="<?= base_url('Admin_Dashboard/student_profile/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 ">
 											<i class="ti ti-settings-cog me-2"></i>General Settings
 										</a>
 									</li>
@@ -53,36 +53,12 @@
 										</a>
 									</li> -->
 									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/change_password/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 active">
+										<a href="<?= base_url('Admin_Dashboard/change_student_password/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 active">
 											<i class="ti ti-apps me-2"></i>Change Password
 										</a>
 									</li>
 									
-									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/active_plan/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 " >
-											<i class="ti ti-moneybag me-2"></i>Active Plan
-										</a>
-									</li>
-                                    <li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/inst_fees/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 " >
-											<i class="ti ti-moneybag me-2"></i>Institution Fees
-										</a>
-									</li>
-                                    <li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/account/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0">
-											<i class="ti ti-moneybag me-2"></i>Bank Account
-										</a>
-									</li>
-                                    <li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/inst_reward/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0">
-											<i class="ti ti-moneybag me-2"></i>Reward
-										</a>
-									</li>
-									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/inst_penailty/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0">
-											<i class="ti ti-moneybag me-2"></i>Penailty
-										</a>
-									</li>
+								
 								</ul>
 							</div>
 						</div>
@@ -97,7 +73,7 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="fw-semibold mb-3">Password Settings</h4>
-                                        <form id="passwordForm" action="<?= base_url('Admin_Dashboard/change_password/'.encryptId($user[0]['id']))?>" method="post">
+                                        <form id="passwordForm" action="<?= base_url('Admin_Dashboard/change_student_password/'.encryptId($user[0]['id']))?>" method="post">
     <div class="border-bottom mb-3">
         <div class="row">
             <div class="col-md-4">

@@ -21,39 +21,32 @@ class Branch_Dashboard extends CI_Controller
     }
 
 public function index($id)
-{
-    $data['title'] = "Home";
-    $tid = decryptId($id);
-    
-    // Fetch user and entity counts
-    $data['user'] = $this->CommonModal->getRowById('branch', 'id', $tid);
-    $uid = $this->CommonModal->getRowById('branch', 'id', $tid);
-    $data['u'] = $this->CommonModal->getRowById('users', 'id',  $uid[0]['user_id']);
-    $data['stock_place'] = $this->CommonModal->getNumWhereRows('stock_place', 'user_id', $uid[0]['user_id']);
-    $data['product'] = $this->CommonModal->getNumWhereRows('product', 'user_id', $uid[0]['user_id']);
-    $data['return_purchase'] = $this->CommonModal->getNumWhereRows('return_purchase','user_id', $uid[0]['user_id']);
-    $data['invoice'] = $this->CommonModal->getNumWhereRows('invoice','user_id',$uid[0]['user_id']);
-    $data['customer'] = $this->CommonModal->getNumWhereRows('customer','user_id', $uid[0]['user_id']);
-    $data['vender'] = $this->CommonModal->getNumWhereRows('vender', 'user_id', $uid[0]['user_id']);
-    $data['account'] = $this->CommonModal->getNumWhereRows('account', 'user_id', $uid[0]['user_id']);
-    
-    
-      // Fetch data using the model methods
-    $data['stock'] = $this->CommonModal->getLowStockItems(40,$uid[0]['user_id']);
-    $data['purchase_payment'] = $this->CommonModal->getPurchasePayments($uid[0]['user_id']);
-    $data['return_purchase'] = $this->CommonModal->getReturnPurchasePayments($uid[0]['user_id']);
-    $data['invoice_payment'] = $this->CommonModal->getInvoicePayments($uid[0]['user_id']);
-    $data['return_invoice_payment'] = $this->CommonModal->getReturnInvoicePayments($uid[0]['user_id']);
-    $data['view_invoice'] = $this->CommonModal->getInvoices($uid[0]['user_id']);
-    $data['s_place'] = $this->CommonModal->getStockPlaces($uid[0]['user_id']);
-    $data['product_list'] = $this->CommonModal->getProductList($uid[0]['user_id']);
+	{
+        $tid = decryptId($id);
+        $data['title'] = "Admin_Dashboard";  
+             $data['student'] = $this->CommonModal->getRowById('students', 'id', $tid);   
+             $student = $this->CommonModal->getRowById('students', 'id', $tid);    
+             $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $student[0]['inst_id']);
+        // $data['payment'] = $this->CommonModal->getRowByIdOrderByLimit('fees_payment', 'inst_id', $tid,'','','id','DESC',6);
+        // $data['rec_student'] = $this->CommonModal->getRowByIdOrderByLimit('students', 'inst_id', $tid,'','','id','DESC',6);
 
-   $data['top_selling_products'] = $this->CommonModal->getTopSellingProducts($uid[0]['user_id']);
 
-    $data['expired_products'] = $this->CommonModal->getExpiredProducts($uid[0]['user_id']);
+        // $data['student'] = $this->CommonModal->getNumWhereMultipleRows('students','status',0,'inst_id',$tid);
+        // $data['batch'] = $this->CommonModal->getNumWhereMultipleRows('batchs','status',0,'inst_id',$tid);
+        // $data['course'] = $this->CommonModal->getNumWhereMultipleRows('courses','status',0,'inst_id',$tid);
+        // $data['present'] = $this->CommonModal->get_today_present_count('student_attendance','Present','inst_id',$tid);
 
-    $this->load->view('branch/dashboard', $data);
-}
+        // $subscription = $this->CommonModal->getRowById('subscription', 'inst_id', $tid);
+        // if ($subscription) {
+        //     $today = date('Y-m-d');
+        //     if ($subscription[0]['expire_date'] < $today) {
+        //         redirect('Admin_Dashboard/plan_choose/'.$id);
+        //     }
+        // }
+
+        $this->load->view('branch/dashboard', $data);
+
+	}
 
 
 

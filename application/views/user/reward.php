@@ -64,8 +64,8 @@
 										</a>
 									</li>
 									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/inst_fees/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 active" >
-											<i class="ti ti-moneybag me-2"></i>Institution Fees
+										<a href="<?= base_url('Admin_Dashboard/inst_reward/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 " >
+											<i class="ti ti-moneybag me-2"></i>Institution reward
 										</a>
 									</li>
 									<li class="nav-item me-3">
@@ -73,8 +73,8 @@
 											<i class="ti ti-moneybag me-2"></i>Bank Account
 										</a>
 									</li>
-									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/inst_reward/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0">
+                                    <li class="nav-item me-3">
+										<a href="<?= base_url('Admin_Dashboard/inst_reward/'.encryptId($user[0]['id'])) ?>" class="nav-link px-0 active">
 											<i class="ti ti-moneybag me-2"></i>Reward
 										</a>
 									</li>
@@ -97,20 +97,20 @@
 <div class="card">
     <div class="card-body pb-0">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="fs-20">Institution Fees</h4>
+            <h4 class="fs-20">Rewards</h4>
             <a href="javascript:void(0)" class="btn btn-sm btn-icon rounded border"
                 data-bs-toggle="modal" data-bs-target="#add_bank"><i
                     class="ti ti-plus"></i></a>
         </div>
         <div class="row">
-        <?php if (!empty($fees)) : ?>
-            <?php $i = 1; foreach ($fees as $row) : ?>
+        <?php if (!empty($reward)) : ?>
+            <?php $i = 1; foreach ($reward as $row) : ?>
             <!-- Bank Account -->
             <div class="col-xxl-4 col-sm-6">
                 <div class="bank-box active">
                     <div class="mb-4">
                         <h5 class="fw-semibold mb-1"><?= $row['name']?></h5>
-                        <p class="fw-medium"><?= $row['amount']?></p>
+                        <p class="fw-medium">Rs <?= $row['reward_rupees']?></p>
                       
 
                     </div>
@@ -136,18 +136,18 @@
 
                                 
 <a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/deactivefees/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
+<?= base_url('Admin_Dashboard/deactivereward/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
                                                 class="ti ti-eye text-danger"></i>Deactive</a>
                                                 <?php } else{ ?>
                                                     <a class="dropdown-item" href="
-<?= base_url('Admin_Dashboard/activefees/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
+<?= base_url('Admin_Dashboard/activereward/' . $row['id'].'/'.encryptId($user[0]['id'])); ?>"><i
                                                 class="ti ti-eye text-success"></i>Active</a>
                                                 <?php } ?>
                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                     data-bs-target="#edit_bank<?= $row['id']?>"><i
                                         class="fa-solid fa-pencil text-blue"></i>
                                     Edit</a>
-                                <a class="dropdown-item" href="<?= base_url('Admin_Dashboard/inst_fees/'.encryptId($user[0]['id']).'?BdID='.encryptId($row['id']))?>" ><i
+                                <a class="dropdown-item" href="<?= base_url('Admin_Dashboard/inst_reward/'.encryptId($user[0]['id']).'?BdID='.encryptId($row['id']))?>" ><i
                                         class="fa-regular fa-trash-can text-danger"></i>
                                     Delete</a>
                             </div>
@@ -157,7 +157,7 @@
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Edit Fees</h5>
+						<h5 class="modal-title">Edit Reward</h5>
 						<div class="d-flex align-items-center">
 							
 							<button class="btn-close custom-btn-close border p-1 me-0 text-dark" data-bs-dismiss="modal"
@@ -166,17 +166,17 @@
 							</button>
 						</div>
 					</div>
-                    <form action="<?= base_url('Admin_Dashboard/edit_fees/'.$row['id'])?>" method="post" enctype="multipart/form-data">
+                    <form action="<?= base_url('Admin_Dashboard/edit_reward/'.$row['id'])?>" method="post" enctype="multipart/form-data">
 						<div class="modal-body">
 							<div class="mb-3">
-								<label class="col-form-label">Fees Name <span class="text-danger">*</span></label>
+								<label class="col-form-label">Reward Name <span class="text-danger">*</span></label>
 								<input type="text" class="form-control" name="name" value="<?= $row['name']?>" required>
 								<input type="hidden" class="form-control" name="inst_id" value="<?=$user[0]['id']?>" required>
 
 							</div>
 							<div class="mb-3">
 								<label class="col-form-label">Amount<span class="text-danger">*</span></label>
-								<input type="text" class="form-control" name="amount" value="<?= $row['amount']?>" required>
+								<input type="text" class="form-control" name="reward_rupees" value="<?= $row['reward_rupees']?>" required>
 							</div>
 							
 						</div>
@@ -201,7 +201,7 @@
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Add Fees</h5>
+						<h5 class="modal-title">Add Reward</h5>
 						<div class="d-flex align-items-center">
 							
 							<button class="btn-close custom-btn-close border p-1 me-0 text-dark" data-bs-dismiss="modal"
@@ -210,17 +210,17 @@
 							</button>
 						</div>
 					</div>
-                    <form action="<?= base_url('Admin_Dashboard/add_fees/'.encryptId($user[0]['id']))?>" method="post" enctype="multipart/form-data">
+                    <form action="<?= base_url('Admin_Dashboard/add_reward/'.encryptId($user[0]['id']))?>" method="post" enctype="multipart/form-data">
 						<div class="modal-body">
 							<div class="mb-3">
-								<label class="col-form-label">Fees Name <span class="text-danger">*</span></label>
+								<label class="col-form-label">Reward Name <span class="text-danger">*</span></label>
 								<input type="text" class="form-control" name="name" required>
 								<input type="hidden" class="form-control" name="inst_id" value="<?=$user[0]['id']?>" required>
 
 							</div>
 							<div class="mb-3">
 								<label class="col-form-label">Amount<span class="text-danger">*</span></label>
-								<input type="text" class="form-control" name="amount" required>
+								<input type="text" class="form-control" name="reward_rupees" required>
 							</div>
 							
 						</div>

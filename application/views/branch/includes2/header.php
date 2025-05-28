@@ -1,85 +1,717 @@
-	      <!-- Nav header start -->
-         <div class="nav-header">
-         
-            <div class="nav-control">
-                <div class="hamburger">
-                    <span class="line">
-						<svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M10.7468 5.58925C11.0722 5.26381 11.0722 4.73617 10.7468 4.41073C10.4213 4.0853 9.89369 4.0853 9.56826 4.41073L4.56826 9.41073C4.25277 9.72622 4.24174 10.2342 4.54322 10.5631L9.12655 15.5631C9.43754 15.9024 9.96468 15.9253 10.3039 15.6143C10.6432 15.3033 10.6661 14.7762 10.3551 14.4369L6.31096 10.0251L10.7468 5.58925Z" fill="#452B90"/>
-							<path opacity="0.3" d="M16.5801 5.58924C16.9056 5.26381 16.9056 4.73617 16.5801 4.41073C16.2547 4.0853 15.727 4.0853 15.4016 4.41073L10.4016 9.41073C10.0861 9.72622 10.0751 10.2342 10.3766 10.5631L14.9599 15.5631C15.2709 15.9024 15.798 15.9253 16.1373 15.6143C16.4766 15.3033 16.4995 14.7762 16.1885 14.4369L12.1443 10.0251L16.5801 5.58924Z" fill="#452B90"/>
-						</svg>
-					</span>
-                </div>
-            </div>
-        </div>
-          
-   
-   
-   <!-- Header start -->
-   <div class="header">
-            <div class="header-content">
-                <nav class="navbar navbar-expand">
-                    <div class="navbar-collapse justify-between">
-                        <div class="header-left">
-							<div class="dashboard_bar max-md:hidden dark:text-white">
-                                Dashboard
-                            </div>
-                        </div>
-                        <div class="header-right flex items-center h-full">
-						
-							<ul class="flex flex-row">
-							<li class="nav-item pl-4 flex items-center relative">
-        <div id="google_translate_element"></div>
- </li>	
-							
-								
-								<li class="nav-item pl-4 flex items-center relative">
-									<div class="dropdown header-profile2">
-										<a data-dz-dropdown="DzinfoDropdown" class="dz-dropdown nav-link relative p-2 max-sm:p-0 text-[#464a53] text-lg leading-[1] block duration-500 bg-transparent" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
-											<div class="header-info2 flex items-center text-right">
-												<div class="header-media">
-													<img src="<?= base_url() ?>uploads/users/<?= $user['0']['image'] ?>" alt="" class="w-[45px] h-[45px] max-sm:w-[40px] max-sm:h-[40px] rounded-md">
-												</div>
-											</div>
-										</a>
-										<div id="DzinfoDropdown" class="dz-dropdown-menu dropdown-menu dropdown-menu-end bg-white dark:bg-[#182237] absolute rounded-md w-[275px] right-0 top-full z-[9] shadow-[0_0_3.125rem_0_rgba(82,63,105,0.15)] py-2 hidden">
-											<div class="card border-0 mb-0">
-												<div class="card-header relative flex items-center justify-between bg-transparent py-2 sm:px-[1.25rem] px-4 border-b border-[#E6E6E6] dark:border-[#ffffff1a]">
-													<div class="flex items-center">
-														<img src="<?= base_url() ?>uploads/users/<?= $user['0']['image'] ?>" class="avatar avatar-md mr-2.5 h-[2.813rem] w-[2.813rem] inline-block object-cover rounded-md" alt="">
-														<div>
-															<h6 class="text-sm"><?= $user['0']['name'] ?></h6>
-															<span class="text-xs text-body-color"><?= $user['0']['company_name'] ?></span>	
-														</div>	
-													</div>
-												</div>
-												<div class="card-body sm:py-2 border-b border-[#E6E6E6] dark:border-[#ffffff1a]">
-													<a href="<?= base_url('Branch_Dashboard/sub_admin/'.encryptId($user['0']['id'])) ?>" class="dropdown-item py-[0.6rem] px-[1.25rem] block w-full ai-icon hover:bg-primary-light group">
-														<svg class="inline-block" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path fill-rule="evenodd" clip-rule="evenodd" d="M11.9848 15.3462C8.11714 15.3462 4.81429 15.931 4.81429 18.2729C4.81429 20.6148 8.09619 21.2205 11.9848 21.2205C15.8524 21.2205 19.1543 20.6348 19.1543 18.2938C19.1543 15.9529 15.8733 15.3462 11.9848 15.3462Z" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-														<path fill-rule="evenodd" clip-rule="evenodd" d="M11.9848 12.0059C14.5229 12.0059 16.58 9.94779 16.58 7.40969C16.58 4.8716 14.5229 2.81445 11.9848 2.81445C9.44667 2.81445 7.38857 4.8716 7.38857 7.40969C7.38 9.93922 9.42381 11.9973 11.9524 12.0059H11.9848Z" stroke="var(--primary)" stroke-width="1.42857" stroke-linecap="round" stroke-linejoin="round"/>
-														</svg>
-	
-														<span class="ml-2 text-[13px] text-body-color group-hover:text-primary">Profile</span>
+<!-- <div class="preloader">
+			<span class="loader"></span>
+		</div> -->
+
+		<!-- Header -->
+		<div class="header">
+
+			<!-- Logo -->
+			<div class="header-left active">
+				<a href="<?= base_url('Admin_Dashboard/student_login/'. encryptId($user[0]['id']))?>" class="logo logo-normal">
+                    <img src="<?= base_url()?>assets/img/logo.svg" alt="Logo">
+                    <img src="<?= base_url()?>assets/img/white-logo.svg" class="white-logo" alt="Logo">
+                </a>
+				<a href="<?= base_url('Admin_Dashboard/student_login/'. encryptId($user[0]['id']))?>" class="logo-small">
+					<img src="<?= base_url()?>assets/img/logo-small.svg" alt="Logo">
+				</a>
+				<a id="toggle_btn" href="javascript:void(0);">
+					<i class="ti ti-arrow-bar-to-left"></i>
+				</a>
+			</div>
+			<!-- /Logo -->
+
+			<a id="mobile_btn" class="mobile_btn" href="#sidebar">
+				<span class="bar-icon">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</a>
+
+			<div class="header-user">
+				<ul class="nav user-menu">
+					
+					<!-- Search -->
+					<li class="nav-item nav-search-inputs me-auto">
+						<div class="top-nav-search">
+							<a href="javascript:void(0);" class="responsive-search">
+								<i class="fa fa-search"></i>
+							</a>
+							<form action="#" class="dropdown">
+								<div class="searchinputs" id="dropdownMenuClickable">
+									<input type="text" placeholder="Search">
+									<div class="search-addon">
+										<button type="submit"><i class="ti ti-command"></i></button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</li>
+					<!-- /Search -->
+
+					<!-- Horizontal Single -->
+					<!-- <li>
+						<div class="sidebar sidebar-horizontal" id="horizontal-single">
+							<div class="sidebar-menu">
+								<div class="main-menu">
+									<ul class="nav-menu">
+										<li class="menu-title">
+											<span>Main</span>
+										</li>
+										<li class="submenu">
+											<a href="javascript:void(0);" class="active">
+												<i class="ti ti-layout-2"></i><span>Dashboard</span><span class="menu-arrow"></span>
+											</a>
+											<ul>
+												<li><a href="index-2.html">Deals Dashboard</a></li>
+												<li><a href="leads-dashboard.html">Leads Dashboard</a></li>
+												<li><a href="project-dashboard.html">Project Dashboard</a></li>
+												<li class="submenu" aria-colcount="active">
+													<a href="#">
+														<i class="ti ti-user-star"></i><span>Super Admin</span>
+														<span class="menu-arrow"></span>
 													</a>
-													
-												</div>
-												<div class="card-footer px-0 py-2">
-													
-													<a href="../../admin/logout" class="dropdown-item py-[0.6rem] px-[1.25rem] text-base block w-full ai-icon">
-														<svg class="profle-logout inline-block" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff7979" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-														<span class="ml-2 text-danger text-[13px]">Logout </span>
+													<ul>
+														<li><a href="dashboard.html" class="active">Dashboard</a></li>
+														<li><a href="company.html">Companies</a></li>
+														<li><a href="subscription.html">Subscriptions</a></li>
+														<li><a href="packages.html">Packages</a></li>
+														<li><a href="domain.html">Domain</a></li>
+														<li><a href="purchase-transaction.html">Purchase Transaction</a></li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+										<li class="submenu">
+											<a href="javascript:void(0);"><i class="ti ti-brand-airtable"></i><span>Application</span>
+												<span class="menu-arrow"></span></a>
+											<ul>
+												<li><a href="chat.html">Chat</a></li>
+												<li class="submenu submenu-two">
+													<a href="javascript:void(0);">Call<span class="menu-arrow inside-submenu"></span></a>
+													<ul>
+														<li><a href="video-call.html">Video Call</a></li>
+														<li><a href="audio-call.html">Audio Call</a></li>
+														<li><a href="call-history.html">Call History</a></li>
+													</ul>
+												</li>
+												<li><a href="calendar.html">Calendar</a></li>
+												<li><a href="email.html">Email</a></li>
+												<li><a href="todo.html">To Do</a></li>
+												<li><a href="notes.html">Notes</a></li>
+												<li><a href="file-manager.html">File Manager</a></li>
+												<li><a href="social-feed.html">Social Feed</a></li>
+												<li><a href="kanban-view.html">Kanban</a></li>
+												<li><a href="invoice.html">Invoices</a></li>
+											</ul>
+										</li>
+										<li class="submenu">
+											<a href="javascript:void(0);">
+												<i class="ti ti-layout-2"></i><span>layouts</span><span class="menu-arrow"></span>
+											</a>
+											<ul>
+												<li><a href="layout-mini.html">Mini</a></li>
+												<li><a href="layout-horizontal-single.html">Horizontal Single</a></li>
+												<li><a href="layout-without-header.html">Without Header</a></li>
+												<li><a href="layout-rtl.html">RTL</a></li>
+												<li><a href="layout-detached.html">Detached</a></li>
+												<li><a href="layout-dark.html">Dark</a></li>
+											</ul>
+										</li>
+										<li class="submenu">
+											<a href="#">
+												<i class="ti ti-ti ti-user-up"></i><span>Crm</span>
+												<span class="menu-arrow"></span>
+											</a>
+											<ul>
+												<li>
+													<a href="contacts.html"><span>Contacts</span></a>
+												</li>
+												<li>
+													<a href="companies.html"><span>Companies</span></a>
+												</li>
+												<li>
+													<a href="deals.html"><span>Deals</span></a>
+												</li>
+												<li>
+													<a href="leads.html"><span>Leads</span></a>
+												</li>
+												<li>
+													<a href="pipeline.html"><span>Pipeline</span></a>
+												</li>
+												<li>
+													<a href="campaign.html"><span>Campaign</span></a>
+												</li>
+												<li>
+													<a href="projects.html"><span>Projects</span></a>
+												</li>
+												<li>
+													<a href="tasks.html"><span>Tasks</span></a>
+												</li>
+												<li>
+													<a href="proposals.html"><span>Proposals</span></a>
+												</li>
+												<li>
+													<a href="contracts.html"><span>Contracts</span></a>
+												</li>
+												<li>
+													<a href="estimations.html"><span>Estimations</span></a>
+												</li>
+												<li>
+													<a href="invoices.html"><span>Invoices</span></a>
+												</li>
+												<li>
+													<a href="payments.html"><span>Payments</span></a>
+												</li>
+												<li>
+													<a href="analytics.html"><span>Analytics</span></a>
+												</li>
+												<li>
+													<a href="activities.html"><span>Activities</span></a>
+												</li>
+												<li class="submenu">
+													<a href="#">
+														<span>Crm Settings</span>
+														<span class="menu-arrow"></span>
 													</a>
-												</div>
-											</div>
-											
+													<ul>
+														<li><a href="sources.html"><span>Sources</span></a></li>
+														<li><a href="lost-reason.html"><span>Lost Reason</span></a></li>
+														<li><a href="contact-stage.html"><span>Contact Stage</span></a></li>
+														<li><a href="industry.html"><span>Industry</span></a></li>
+														<li><a href="calls.html"><span>Calls</span></a></li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+										<li class="submenu">
+											<a href="#">
+												<i class="ti ti-file-invoice"></i><span>Reports</span>
+												<span class="menu-arrow"></span>
+											</a>
+											<ul>
+												<li><a href="lead-reports.html">Lead Reports</a></li>
+												<li><a href="deal-reports.html">Deal Reports</a></li>
+												<li><a href="contact-reports.html">Contact Reports</a></li>
+												<li><a href="company-reports.html">Company Reports</a></li>
+												<li><a href="project-reports.html">Project Reports</a></li>
+												<li><a href="task-reports.html">Task Reports</a></li>
+											</ul>
+										</li>
+										<li class="submenu">
+											<a href="#">
+												<i class="ti ti-page-break"></i><span>Pages</span>
+												<span class="menu-arrow"></span>
+											</a>
+											<ul>
+												<li><a href="manage-users.html"><span>Manage Users</span></a></li>
+												<li><a href="roles-permissions.html"><span>Roles & Permissions</span></a></li>
+												<li><a href="delete-request.html"><span>Delete Request</span></a></li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Membership</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="membership-plans.html">Membership Plans</a></li>
+														<li><a href="membership-addons.html">Membership Addons</a></li>
+														<li><a href="membership-transactions.html">Transactions</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Location</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="countries.html">Countries</a></li>
+														<li><a href="states.html">States</a></li>
+														<li><a href="cities.html">Cities</a></li>
+													</ul>
+												</li>
+												<li><a href="testimonials.html"><span>Testimonials</span></a></li>
+												<li><a href="faq.html"><span>FAQ</span></a></li>
+												<li><a href="contact-messages.html"><span>Contact Messages</span></a></li>
+												<li><a href="tickets.html"><span>Tickets</span></a></li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Authentication</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="login.html">Login</a></li>
+														<li><a href="register.html">Register</a></li>
+														<li><a href="forgot-password.html">Forgot Password</a></li>
+														<li><a href="reset-password.html">Reset Password</a></li>
+														<li><a href="email-verification.html">Email Verification</a></li>
+														<li><a href="two-step-verification.html">2 Step Verification</a></li>
+														<li><a href="lock-screen.html">Lock Screen</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Error Pages</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="error-404.html">404 Error</a></li>
+														<li><a href="error-500.html">500 Error</a></li>
+													</ul>
+												</li>
+												<li><a href="blank-page.html"><span>Blank Page</span></a></li>
+												<li><a href="coming-soon.html"><span>Coming Soon</span></a></li>
+												<li><a href="under-maintenance.html"><span>Under Maintenance</span></a></li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Base UI</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="ui-alerts.html">Alerts</a></li>
+														<li><a href="ui-accordion.html">Accordion</a></li>
+														<li><a href="ui-avatar.html">Avatar</a></li>
+														<li><a href="ui-badges.html">Badges</a></li>
+														<li><a href="ui-borders.html">Border</a></li>
+														<li><a href="ui-buttons.html">Buttons</a></li>
+														<li><a href="ui-buttons-group.html">Button Group</a></li>
+														<li><a href="ui-breadcrumb.html">Breadcrumb</a></li>
+														<li><a href="ui-cards.html">Card</a></li>
+														<li><a href="ui-carousel.html">Carousel</a></li>
+														<li><a href="ui-colors.html">Colors</a></li>
+														<li><a href="ui-dropdowns.html">Dropdowns</a></li>
+														<li><a href="ui-grid.html">Grid</a></li>
+														<li><a href="ui-images.html">Images</a></li>
+														<li><a href="ui-lightbox.html">Lightbox</a></li>
+														<li><a href="ui-media.html">Media</a></li>
+														<li><a href="ui-modals.html">Modals</a></li>
+														<li><a href="ui-offcanvas.html">Offcanvas</a></li>
+														<li><a href="ui-pagination.html">Pagination</a></li>
+														<li><a href="ui-popovers.html">Popovers</a></li>
+														<li><a href="ui-progress.html">Progress</a></li>
+														<li><a href="ui-placeholders.html">Placeholders</a></li>
+														<li><a href="ui-rangeslider.html">Range Slider</a></li>
+														<li><a href="ui-spinner.html">Spinner</a></li>
+														<li><a href="ui-sweetalerts.html">Sweet Alerts</a></li>
+														<li><a href="ui-nav-tabs.html">Tabs</a></li>
+														<li><a href="ui-toasts.html">Toasts</a></li>
+														<li><a href="ui-tooltips.html">Tooltips</a></li>
+														<li><a href="ui-typography.html">Typography</a></li>
+														<li><a href="ui-video.html">Video</a></li>
+														<li><a href="ui-sortable.html">Sortable</a></li>
+														<li><a href="ui-swiperjs.html">Swiperjs</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Advanced UI</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="ui-ribbon.html">Ribbon</a></li>
+														<li><a href="ui-clipboard.html">Clipboard</a></li>
+														<li><a href="ui-drag-drop.html">Drag & Drop</a></li>
+														<li><a href="ui-rangeslider.html">Range Slider</a></li>
+														<li><a href="ui-rating.html">Rating</a></li>
+														<li><a href="ui-text-editor.html">Text Editor</a></li>
+														<li><a href="ui-counter.html">Counter</a></li>
+														<li><a href="ui-scrollbar.html">Scrollbar</a></li>
+														<li><a href="ui-stickynote.html">Sticky Note</a></li>
+														<li><a href="ui-timeline.html">Timeline</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Charts</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="chart-apex.html">Apex Charts</a></li>
+														<li><a href="chart-c3.html">Chart C3</a></li>
+														<li><a href="chart-js.html">Chart Js</a></li>
+														<li><a href="chart-morris.html">Morris Charts</a></li>
+														<li><a href="chart-flot.html">Flot Charts</a></li>
+														<li><a href="chart-peity.html">Peity Charts</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Icons</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="icon-fontawesome.html">Fontawesome Icons</a></li>
+														<li><a href="icon-feather.html">Feather Icons</a></li>
+														<li><a href="icon-ionic.html">Ionic Icons</a></li>
+														<li><a href="icon-material.html">Material Icons</a></li>
+														<li><a href="icon-pe7.html">Pe7 Icons</a></li>
+														<li><a href="icon-simpleline.html">Simpleline Icons</a></li>
+														<li><a href="icon-themify.html">Themify Icons</a></li>
+														<li><a href="icon-weather.html">Weather Icons</a></li>
+														<li><a href="icon-typicon.html">Typicon Icons</a></li>
+														<li><a href="icon-flag.html">Flag Icons</a></li>
+														<li><a href="icon-tabler.html">Tabler Icons</a></li>
+														<li><a href="icon-bootstrap.html">Bootstrap Icons</a></li>
+														<li><a href="icon-remix.html">Remix Icons</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Forms</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li class="submenu submenu-two">
+															<a href="javascript:void(0);">Form Elements<span class="menu-arrow inside-submenu"></span></a>
+															<ul>
+																<li><a href="form-basic-inputs.html">Basic Inputs</a></li>
+																<li><a href="form-checkbox-radios.html">Checkbox & Radios</a></li>
+																<li><a href="form-input-groups.html">Input Groups</a></li>
+																<li><a href="form-grid-gutters.html">Grid & Gutters</a></li>
+																<li><a href="form-select.html">Form Select</a></li>
+																<li><a href="form-mask.html">Input Masks</a></li>
+																<li><a href="form-fileupload.html">File Uploads</a></li>
+															</ul>
+														</li>
+														<li class="submenu submenu-two">
+															<a href="javascript:void(0);">Layouts<span
+																	class="menu-arrow inside-submenu"></span></a>
+															<ul>
+																<li><a href="form-horizontal.html">Horizontal Form</a></li>
+																<li><a href="form-vertical.html">Vertical Form</a></li>
+																<li><a href="form-floating-labels.html">Floating Labels</a></li>
+															</ul>
+														</li>
+														<li><a href="form-validation.html">Form Validation</a></li>
+														<li><a href="form-select2.html">Select2</a></li>
+														<li><a href="form-wizard.html">Form Wizard</a></li>
+														<li><a href="form-pickers.html">Form Picker</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);"><span>Tables</span><span class="menu-arrow"></span></a>
+													<ul>
+														<li><a href="tables-basic.html">Basic Tables </a></li>
+														<li><a href="data-tables.html">Data Table </a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);"><span>Maps</span>
+														<span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li>
+															<a href="maps-vector.html">Vector</a>
+														</li>
+														<li>
+															<a href="maps-leaflet.html">Leaflet</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href="javascript:void(0);"><span>Documentation</span></a></li>
+												<li><a href="javascript:void(0);"><span>Changelog v2.2.2</span></a></li>
+												<li class="submenu">
+													<a href="javascript:void(0);"><span>Multi Level</span><span class="menu-arrow"></span></a>
+													<ul>
+													<li><a href="javascript:void(0);">Level 1.1</a></li>
+													<li class="submenu submenu-two"><a href="javascript:void(0);">Level 1.2<span class="menu-arrow inside-submenu"></span></a>
+													<ul>
+														<li><a href="javascript:void(0);">Level 2.1</a></li>
+														<li class="submenu submenu-two submenu-three"><a href="javascript:void(0);">Level 2.2<span class="menu-arrow inside-submenu inside-submenu-two"></span></a>
+															<ul>
+																<li><a href="javascript:void(0);">Level 3.1</a></li>
+																<li><a href="javascript:void(0);">Level 3.2</a></li>
+															</ul>
+														</li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+											</ul>
+										</li>
+										<li class="submenu">
+											<a href="#">
+												<i class="ti ti-settings-cog"></i><span>Settings</span>
+												<span class="menu-arrow"></span>
+											</a>
+											<ul>
+												<li class="submenu">
+													<a href="javascript:void(0);"><span>General Settings</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="profile.html">Profile</a></li>
+														<li><a href="security.html">Security</a></li>
+														<li><a href="notifications.html">Notifications</a></li>
+														<li><a href="connected-apps.html">Connected Apps</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Website Settings</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="company-settings.html">Company Settings</a></li>
+														<li><a href="localization.html">Localization</a></li>
+														<li><a href="prefixes.html">Prefixes</a></li>
+														<li><a href="preference.html">Preference</a></li>
+														<li><a href="appearance.html">Appearance</a></li>
+														<li><a href="language.html">Language</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>App Settings</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="invoice-settings.html">Invoice Settings</a></li>
+														<li><a href="printers.html">Printers</a></li>
+														<li><a href="custom-fields.html">Custom Fields</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>System Settings</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="email-settings.html">Email Settings</a></li>
+														<li><a href="sms-gateways.html">SMS Gateways</a></li>
+														<li><a href="gdpr-cookies.html">GDPR Cookies</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Financial Settings</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="payment-gateways.html">Payment Gateways</a></li>
+														<li><a href="bank-accounts.html">Bank Accounts</a></li>
+														<li><a href="tax-rates.html">Tax Rates</a></li>
+														<li><a href="currencies.html">Currencies</a></li>
+													</ul>
+												</li>
+												<li class="submenu">
+													<a href="javascript:void(0);">
+														<span>Other Settings</span><span class="menu-arrow"></span>
+													</a>
+													<ul>
+														<li><a href="storage.html">Storage</a></li>
+														<li><a href="ban-ip-address.html">Ban IP Address</a></li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</li> -->
+					<!-- /Horizontal Single -->
+
+					<!-- Nav List -->
+					<li class="nav-item nav-list">
+						<ul class="nav">
+							<li>
+								<div>
+									<a href="#" class="btn btn-icon border btn-menubar btnFullscreen">
+										<i class="ti ti-maximize"></i>
+									</a>
+								</div>
+							</li>
+							<li class="dark-mode-list">
+								<a href="javascript:void(0);" id="dark-mode-toggle" class="dark-mode-toggle">
+									<i class="ti ti-sun light-mode active"></i>
+									<i class="ti ti-moon dark-mode"></i>
+								</a>
+							</li>
+							<!-- <li class="nav-item dropdown">
+								<a href="javascript:void(0);" class="btn btn-header-list" data-bs-toggle="dropdown">
+									<i class="ti ti-layout-grid-add"></i>
+								</a>
+								<div class="dropdown-menu dropdown-menu-end menus-info">
+									<div class="row">
+										<div class="col-md-6">
+											<ul class="menu-list">
+												<li>
+													<a href="contacts.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-violet">
+																<i class="ti ti-user-up"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Contacts</p>
+																<span>Add New Contact</span>
+															</div>
+														</div>
+													</a>
+												</li>
+												<li>
+													<a href="pipeline.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-green">
+																<i class="ti ti-timeline-event-exclamation"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Pipline</p>
+																<span>Add New Pipline</span>
+															</div>
+														</div>
+													</a>
+												</li>
+												<li>
+													<a href="activities.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-pink">
+																<i class="ti ti-bounce-right"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Activities</p>
+																<span>Add New Activity</span>
+															</div>
+														</div>
+													</a>
+												</li>
+												<li>
+													<a href="analytics.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-info">
+																<i class="ti ti-analyze"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Analytics</p>
+																<span>Shows All Information</span>
+															</div>
+														</div>
+													</a>
+												</li>
+												<li>
+													<a href="projects.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-danger">
+																<i class="ti ti-atom-2"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Projects</p>
+																<span>Add New Project</span>
+															</div>
+														</div>
+													</a>
+												</li>
+											</ul>
+										</div>
+										<div class="col-md-6">
+											<ul class="menu-list">
+												<li>
+													<a href="deals.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-info">
+																<i class="ti ti-medal"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Deals</p>
+																<span>Add New Deals</span>
+															</div>
+														</div>
+													</a>
+												</li>
+												<li>
+													<a href="leads.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-secondary">
+																<i class="ti ti-chart-arcs"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Leads</p>
+																<span>Add New Leads</span>
+															</div>
+														</div>
+													</a>
+												</li>
+												<li>
+													<a href="companies.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-tertiary">
+																<i class="ti ti-building-community"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Company</p>
+																<span>Add New Company</span>
+															</div>
+														</div>
+													</a>
+												</li>
+												<li>
+													<a href="tasks.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-success">
+																<i class="ti ti-list-check"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Tasks</p>
+																<span>Add New Task</span>
+															</div>
+														</div>
+													</a>
+												</li>
+												<li>
+													<a href="campaign.html">
+														<div class="menu-details">
+															<span class="menu-list-icon bg-purple">
+																<i class="ti ti-brand-campaignmonitor"></i>
+															</span>
+															<div class="menu-details-content">
+																<p>Campaign</p>
+																<span>Add New Campaign</span>
+															</div>
+														</div>
+													</a>
+												</li>
+											</ul>
 										</div>
 									</div>
-								</li>
-							</ul>
-                        </div>
-                    </div>
-				</nav>
+								</div>
+							</li> -->
+							
+						</ul>
+					</li>
+					<!-- /Nav List -->
+					
+			
+					<!-- Profile Dropdown -->
+					<li class="nav-item dropdown has-arrow main-drop">
+						<a href="javascript:void(0);" class="nav-link userset" data-bs-toggle="dropdown">
+							<span class="user-info">
+								<span class="user-letter">
+									<img src="<?= base_url()?>uploads/institution/<?= $clg[0]['logo']?>" alt="Profile" style="height: 36px;">
+								
+								</span>
+								<span class="badge badge-success rounded-pill"></span>
+							</span>
+						</a>
+						<div class="dropdown-menu menu-drop-user">
+							<div class="profilename">
+								<a class="dropdown-item" href="<?= base_url('Admin_Dashboard/student_login/'. encryptId($user[0]['id']))?>">
+									<i class="ti ti-layout-2"></i> Dashboard
+								</a>
+								<a class="dropdown-item" href="<?= base_url('Admin_Dashboard/student_profile/'.encryptId($user[0]['id']))?>">
+									<i class="ti ti-user-pin"></i> My Profile
+								</a>
+								<a class="dropdown-item" href="<?= base_url('Admin/logout')?>">
+									<i class="ti ti-lock"></i> Logout
+								</a>
+							</div>
+						</div>
+					</li>
+					<!-- /Profile Dropdown -->
+
+				</ul>
 			</div>
+
+			<!-- Mobile Menu -->
+			<div class="dropdown mobile-user-menu">
+				<a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="<?= base_url('Admin_Dashboard/student_login/'. encryptId($user[0]['id']))?>">
+						<i class="ti ti-layout-2"></i> Dashboard
+					</a>
+					<a class="dropdown-item" href="<?= base_url('Admin_Dashboard/student_profile/'. encryptId($user[0]['id']))?>">
+						<i class="ti ti-user-pin"></i> My Profile
+					</a>
+					<a class="dropdown-item" href="<?= base_url('Admin/logout')?>">
+						<i class="ti ti-lock"></i> Logout
+					</a>
+				</div>
+			</div>
+			<!-- /Mobile Menu -->
+
 		</div>
-        <!-- Header end -->
+		<!-- /Header -->
