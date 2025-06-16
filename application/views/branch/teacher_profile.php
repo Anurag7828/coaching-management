@@ -2,23 +2,24 @@
 <html lang="en">
 
 <head>
-<?php include('includes2/header-links.php') ?>
-<style>
-    .page-wrapper {
-        margin-left: 0 !important; /* Remove space reserved for sidebar */
-        width: 100% !important;
-    }
+	<?php include('includes2/header-links.php') ?>
+	<style>
+		.page-wrapper {
+			margin-left: 0 !important;
+			/* Remove space reserved for sidebar */
+			width: 100% !important;
+		}
 
-    .content {
-        max-width: 100% !important;
-        padding-left: 20px;
-        padding-right: 20px;
-    }
+		.content {
+			max-width: 100% !important;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
 
-    .main-wrapper {
-        display: block;
-    }
-</style>
+		.main-wrapper {
+			display: block;
+		}
+	</style>
 
 </head>
 
@@ -26,7 +27,7 @@
 	<div class="main-wrapper">
 
 		<?php include('includes2/header.php') ?>
-		
+
 		<div class="page-wrapper">
 			<div class="content">
 				<div class="row">
@@ -56,18 +57,18 @@
 							<div class="card-body pb-0 pt-2">
 								<ul class="nav nav-tabs nav-tabs-bottom">
 									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/student_profile/'.encryptId($user[0]['id']))?>" class="nav-link px-0 active">
+										<a href="<?= base_url('Admin_Dashboard/teacher_profile/' . encryptId($user[0]['id'])) ?>" class="nav-link px-0 active">
 											<i class="ti ti-settings-cog me-2"></i>General Settings
 										</a>
 									</li>
-								
+
 									<li class="nav-item me-3">
-										<a href="<?= base_url('Admin_Dashboard/change_student_password/' . encryptId($user[0]['id'])) ?>" class="nav-link px-0">
+										<a href="<?= base_url('Admin_Dashboard/change_teacher_password/' . encryptId($user[0]['id'])) ?>" class="nav-link px-0">
 											<i class="ti ti-apps me-2"></i>Change Password
 										</a>
 									</li>
 
-								
+
 								</ul>
 							</div>
 						</div>
@@ -82,8 +83,8 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="fw-semibold mb-3">Profile Settings</h4>
-										<form action="<?= base_url('Admin_Dashboard/update_student_profile/' . encryptId($user[0]['id'])) ?>" method="post" enctype="multipart/form-data">
-										
+										<form action="<?= base_url('Admin_Dashboard/update_teacher_profile/' . encryptId($user[0]['id'])) ?>" method="post" enctype="multipart/form-data">
+
 
 											<div class="border-bottom mb-3">
 												<div class="row">
@@ -99,8 +100,8 @@
 													</div>
 													<div class="col-md-6">
 														<div class="mb-3">
-															<label class="form-label">Roll No.<span class="text-danger">*</span></label>
-															<input type="text" name="roll_no" value="<?= $user[0]['roll_no'] ?>" class="form-control" readonly>
+															<label class="form-label">Employee Code .<span class="text-danger">*</span></label>
+															<input type="text" name="emp_code" value="<?= $user[0]['emp_code'] ?>" class="form-control" readonly>
 														</div>
 													</div>
 													<div class="col-md-4">
@@ -145,49 +146,36 @@
 													</div>
 													<div class="col-md-3">
 														<div class="mb-3">
-															<label class="form-label">Date of Birth<span class="text-danger">*</span></label>
-															<input type="text" class="form-control" readonly name="dob" value="<?= $user[0]['dob'] ?>">
+															<label class="form-label">Joining date<span class="text-danger">*</span></label>
+															<input type="date" class="form-control" readonly name="joining_date" value="<?= $user[0]['joining_date'] ?>">
 														</div>
 													</div>
 
 													<div class="col-md-3">
 														<div class="mb-3">
 															<label class="form-label">Adhar Number</label>
-															<input type="text" class="form-control" readonly name="adhar_no" value="<?= $user[0]['adhar_no'] ?>">
+															<input type="text" class="form-control" readonly name="aadhar" value="<?= $user[0]['aadhar'] ?>">
 														</div>
 													</div>
-													<div class="border-bottom mb-3 pb-3">
-														<h5 class="fw-semibold mb-1">Parents Information</h5>
-													</div>
-													<div class="border-bottom mb-3 ">
-														<div class="row">
-															<div class="col-md-3">
-																<div class="mb-3">
-																	<label class="form-label">Father Name<span class="text-danger">*</span></label>
-																	<input type="text" class="form-control" readonly name="f_name" value="<?= $user[0]['f_name'] ?>">
-																</div>
-															</div>
-															<div class="col-md-3">
-																<div class="mb-3">
-																	<label class="form-label">Mother Name<span class="text-danger">*</span></label>
-																	<input type="text" class="form-control" readonly name="m_name" value="<?= $user[0]['m_name'] ?>">
-																</div>
-															</div>
-															<div class="col-md-3">
-																<div class="mb-3">
-																	<label class="form-label">Parents Email<span class="text-danger">*</span></label>
-																	<input type="text" class="form-control" readonly name="parents_email" value="<?= $user[0]['parents_email'] ?>">
-																</div>
-															</div>
-
-															<div class="col-md-3">
-																<div class="mb-3">
-																	<label class="form-label">Parents Contact</label>
-																	<input type="text" class="form-control" readonly name="parents_phone" value="<?= $user[0]['parents_phone'] ?>">
-																</div>
-															</div>
+													<div class="col-md-3">
+														<div class="mb-3">
+															<label class="form-label">PAN Number</label>
+															<input type="text" class="form-control" readonly name="pan_no" value="<?= $user[0]['pan_no'] ?>">
 														</div>
 													</div>
+													<div class="col-md-3">
+														<div class="mb-3">
+															<label class="form-label">Father Name<span class="text-danger">*</span></label>
+															<input type="text" class="form-control" readonly name="f_name" value="<?= $user[0]['f_name'] ?>">
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="mb-3">
+															<label class="form-label">Salary<span class="text-danger">*</span></label>
+															<input type="text" class="form-control" readonly name="salary" value="<?= $user[0]['salary'] ?>">
+														</div>
+													</div>
+                                          
 												</div>
 												<!-- <div class="border-bottom mb-3 pb-3">
 												<h5 class="fw-semibold mb-1">Company Images</h5>
@@ -355,7 +343,7 @@
 													</div>
 												</div>
 
-												
+
 										</form>
 									</div>
 								</div>

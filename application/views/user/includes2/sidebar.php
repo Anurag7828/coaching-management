@@ -83,7 +83,6 @@
 									<ul>
 										<li><a href="<?= base_url('Admin_Dashboard/add_employee/'. encryptId($user[0]['id']))?>">Add Employee</a></li>
 										<li><a href="<?= base_url('Admin_Dashboard/view_employee/'. encryptId($user[0]['id']))?>">View Employee</a></li>
-									
 										<li><a href="<?= base_url('Admin_Dashboard/view_emp_attendance/'. encryptId($user[0]['id']))?>">Employee Attendance</a></li>
 
 

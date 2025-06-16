@@ -1,10 +1,7 @@
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
-			<div class="modern-profile p-3 pb-0">
-				
-				
+			<div class="modern-profile p-3 pb-0">	
 			</div>
-			
 			<div class="sidebar-inner slimscroll">
 				<div id="sidebar-menu" class="sidebar-menu">
 					<ul>
@@ -31,8 +28,7 @@
 									<li>
 									<a href="<?= base_url('Admin_Dashboard/View_student_attendance/' . encryptId($user[0]['id'])) ?>" >
 										<i class="ti ti-user-star"></i><span>Attendance Report</span>
-										
-									</a>
+								    </a>
 									
 								</li>
 								<!-- <li >
@@ -53,7 +49,6 @@
 							
 							</ul>
 						</li>
-						
 					</ul>
 				</div>
 			</div>

@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
 
 	<?php include('includes2/header-links.php') ?>
@@ -17,6 +15,24 @@
 			/* Ensure it fits within container */
 		}
 	</style>
+	<style>
+		.page-wrapper {
+			margin-left: 0 !important;
+			/* Remove space reserved for sidebar */
+			width: 100% !important;
+		}
+
+		.content {
+			max-width: 100% !important;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+
+		.main-wrapper {
+			display: block;
+		}
+	</style>
+
 </head>
 
 <body>
@@ -25,35 +41,32 @@
 	<div class="main-wrapper">
 
 		<?php include('includes2/header.php') ?>
-		<?php include('includes2/sidebar.php') ?>
+
 		<!-- Page Wrapper -->
 		<div class="page-wrapper">
 			<div class="content">
-
-				<div class="row">
-					<div class="col-md-12">
-
-						<!-- Page Header -->
-						<div class="page-header">
-							<div class="row align-items-center">
-								<div class="col-sm-4">
-									<h4 class="page-title">Student Overview</h4>
-								</div>
-								<div class="col-sm-8 text-sm-end">
-									<div class="head-icons">
-										<a href="company-details.html" data-bs-toggle="tooltip" data-bs-placement="top"
-											data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
-										<a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
-											data-bs-original-title="Collapse" id="collapse-header"><i
-												class="ti ti-chevrons-up"></i></a>
-									</div>
+				<div class="col-md-12">
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row align-items-center">
+							<div class="col-sm-4">
+								<h4 class="page-title">Student Overview</h4>
+							</div>
+							<div class="col-sm-8 text-sm-end">
+								<div class="head-icons">
+									<a href="company-details.html" data-bs-toggle="tooltip" data-bs-placement="top"
+										data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+									<a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
+										data-bs-original-title="Collapse" id="collapse-header"><i
+											class="ti ti-chevrons-up"></i></a>
 								</div>
 							</div>
 						</div>
-						<!-- /Page Header -->
-
 					</div>
+					<!-- /Page Header -->
+
 				</div>
+
 
 				<div class="row">
 					<div class="col-md-12">
@@ -118,7 +131,7 @@
 										<?php } ?>
 										<a href="<?php echo base_url() . 'Admin_Dashboard/student_profile/' . encryptId($user[0]['id']); ?>"
 											class="btn-icon"><i class="ti ti-edit-circle"></i></a>
-										
+
 									</div>
 								</div>
 							</div>
@@ -229,7 +242,7 @@
 									</li>
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#attendence" class="nav-link"><i
-												class="ti ti-notes me-1"></i>Attendance Report</a>
+												class="ti ti-notes me-1"></i>Total Attendance </a>
 									</li>
 								</ul>
 							</div>
@@ -605,7 +618,7 @@
 														</div>
 													</div>
 												</div>
-
+												
 											</div>
 											<!-- /Tab Content -->
 
@@ -839,7 +852,7 @@
 
 
 
-						</div>
+					</div>
 						<script src="https://cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
 						<script>
 							CKEDITOR.replace('editor'); // Initialize CKEditor

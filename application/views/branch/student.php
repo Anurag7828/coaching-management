@@ -14,6 +14,23 @@
 			/* Ensure it fits within container */
 		}
 	</style>
+	<style>
+    .page-wrapper {
+        margin-left: 0 !important; /* Remove space reserved for sidebar */
+        width: 100% !important;
+    }
+
+    .content {
+        max-width: 100% !important;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .main-wrapper {
+        display: block;
+    }
+</style>
+
 </head>
 
 <body>
@@ -22,7 +39,7 @@
 	<div class="main-wrapper">
 
 		<?php include('includes2/header.php') ?>
-		<?php include('includes2/sidebar.php') ?>
+		
 		<!-- Page Wrapper -->
 		<div class="page-wrapper">
 			<div class="content">
