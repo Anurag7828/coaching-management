@@ -1,4 +1,9 @@
 {
     "git.decorations.enabled": true,
-    "git.enabled": true
+    "git.enabled": true,
+    "editor.suggest.showFolders": true,
+    "explorer.compactFolders": true,
+    "vsicons.presets.foldersAllDefaultIcon": false,
+    "vsicons.presets.hideFolders": false,
+    "files.simpleDialog.enable": false
 }

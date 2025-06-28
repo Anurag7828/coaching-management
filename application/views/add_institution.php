@@ -1,29 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <head>
-
-    <?php include('includes/header-links.php') ?>
-
+<?php include('includes/header-links.php') ?>
 </head>
 
 <body>
 
-    <!-- Main Wrapper -->
     <div class="main-wrapper">
-
         <?php include('includes/header.php') ?>
         <?php include('includes/sidebar.php') ?>
-
         <div class="page-wrapper">
             <div class="content">
-
                 <div class="row  mb-3">
                     <div class="col-md-12">
                         <div class="offcanvas-header mb-3">
                             <h5 class="fw-semibold">Add New Institution</h5>
-
                         </div>
                         <div class="offcanvas-body">
                             <form action="" method="Post">
@@ -93,16 +85,12 @@
                                                             <input type="date" class="form-control" name="date" value="<?= ($tag == 'edit' && isset($institution[0]['date'])) ? htmlspecialchars($institution[0]['date']) : date('Y-m-d') ?>" required>
 
                                                         </div>
-                                                    </div>
-
-                                  
-                                                   
+                                                    </div>                    
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <!-- /Basic Info -->
-
                                     <!-- Address Info -->
                                     <div class="accordion-item border-top rounded mb-3">
                                         <div class="accordion-header">
