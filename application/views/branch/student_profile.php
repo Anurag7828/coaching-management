@@ -49,7 +49,6 @@
 								</div>
 							</div>
 						</div>
-						<!-- /Page Header -->
 
 						<!-- Settings Menu -->
 						<div class="card">
@@ -82,9 +81,7 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="fw-semibold mb-3">Profile Settings</h4>
-										<form action="<?= base_url('Admin_Dashboard/update_student_profile/' . encryptId($user[0]['id'])) ?>" method="post" enctype="multipart/form-data">
-										
-
+										<form action="<?= base_url('Admin_Dashboard/update_student_profile/' . encryptId($user[0]['id'])) ?>" method="post" enctype="multipart/form-data">								
 											<div class="border-bottom mb-3">
 												<div class="row">
 

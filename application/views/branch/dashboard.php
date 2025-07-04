@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 	<?php include('includes2/header-links.php') ?>
@@ -129,17 +130,16 @@
 												Deactive
 											</a>
 										<?php } ?>
-										<a href="<?php echo base_url() . 'Admin_Dashboard/student_profile/' . encryptId($user[0]['id']); ?>"
-											class="btn-icon"><i class="ti ti-edit-circle"></i></a>
+										<a href="javascript:void(0);" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#add_notes">
+											Pay Fees
+										</a>
 
 									</div>
 								</div>
 							</div>
 						</div>
 						<!-- /Contact clg -->
-
 					</div>
-
 					<!-- Contact Sidebar -->
 					<div class="col-xl-3 theiaStickySidebar">
 						<div class="card">
@@ -324,7 +324,7 @@
 
 											<a href="javascript:void(0);" data-bs-toggle="modal"
 												data-bs-target="#add_notes" class="com-add"><i
-													class="ti ti-circle-plus me-1"></i>Add New</a>
+													class="ti ti-circle-plus me-1"></i>Pay Fees</a>
 										</div>
 									</div>
 									<div class="card-body">
@@ -378,13 +378,14 @@
 																			Rs</strong>
 																	</td>
 																</tr>
+																<?php $due_amount = $total_amount - $paymentsum[0]['total_sum']; ?>
 																<tr>
 																	<td class="text-dark fw-medium mb-0">Due</td>
 																	<td class="text-end">
-																		<strong><?= $payment[0]['due'] ?>
-																			Rs</strong>
+																		<strong><?= $due_amount ?> Rs</strong>
 																	</td>
 																</tr>
+
 															</tbody>
 														</table>
 
@@ -520,8 +521,6 @@
 							</div>
 							<!-- /Calls -->
 
-
-
 							<!-- Email -->
 							<div class="tab-pane fade" id="email">
 								<div class="card">
@@ -618,7 +617,7 @@
 														</div>
 													</div>
 												</div>
-												
+
 											</div>
 											<!-- /Tab Content -->
 
@@ -630,78 +629,8 @@
 								</div>
 							</div>
 							<!-- /Page Wrapper -->
-
-
-
-
-							<!-- Add Note -->
-							<div class="modal custom-modal fade modal-padding" id="add_notes" role="dialog">
-								<div class="modal-dialog modal-dialog-centered">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h5 class="modal-title">Add New Fees</h5>
-											<button type="button" class="btn-close position-static" data-bs-dismiss="modal"
-												aria-label="Close">
-												<span aria-hidden="true">×</span>
-											</button>
-										</div>
-										<div class="modal-body">
-											<form action="<?= base_url('Admin_Dashboard/add_fees_type/' . encryptId($clg[0]['id'])) ?>"
-												method="post">
-												<div class="col-md-6">
-													<div class="mb-3">
-
-														<?php
-														$fees = $this->CommonModal->getRowById('fees', 'inst_id', $clg[0]['id']);
-														$user_fees = $this->CommonModal->getRowById('student_fees', 'student_id', $user[0]['id']);
-
-														// Convert fees_type to an array (If no record, set empty array)
-														$selected_fees = !empty($user_fees) ? array_column($user_fees, 'fees_type') : [];
-														?>
-
-														<?php foreach ($fees as $item): ?>
-															<?php if (in_array($item['id'], $selected_fees))
-																continue; // ✅ Skip already selected fees 
-															?>
-
-															<div class="form-check">
-																<input class="form-check-input fee-checkbox" name="fees_type[]" type="checkbox"
-																	value="<?= $item['id'] ?>" id="flexCheck<?= $item['id'] ?>">
-																<input class="" name="inst_id" type="hidden" value="<?= $clg[0]['id'] ?>">
-																<input class="" name="student_id" type="hidden"
-																	value="<?= $user[0]['id'] ?>">
-																<label class="form-check-label" for="flexCheck<?= $item['id'] ?>">
-																	<?= $item['name'] ?>
-																	<?php $user_payment = $this->CommonModal->getRowByIdOrderByLimit('fees_payment', 'student_id', $user[0]['id'], 'inst_id', $clg[0]['id'], 'id', 'ASC', '1'); ?>
-																	<input class="" name="p_id" type="hidden"
-																		value="<?= $user_payment[0]['id'] ?>">
-																</label>
-															</div>
-														<?php endforeach; ?>
-
-
-
-
-
-
-
-													</div>
-
-
-												</div>
-												<div class="col-lg-12 text-end modal-btn">
-													<a class="btn btn-light" data-bs-dismiss="modal">Cancel</a>
-													<button class="btn btn-primary" type="submit">Submit</button>
-												</div>
-											</form>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- /Add Note -->
-
 							<!-- Create Call Log -->
-							<div class="modal custom-modal fade modal-padding" id="create_call" role="dialog">
+							<div class="modal custom-modal fade modal-padding" id="add_notes" role="dialog">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -713,7 +642,7 @@
 										</div>
 										<div class="modal-body">
 											<form action="<?= base_url('Admin_Dashboard/pay_fees_payment/' . encryptId($clg[0]['id'])) ?>"
-												method="post">
+												method="post" target="_blank">
 												<div class="row">
 													<div class="col-md-12">
 														<div class="mb-3">
@@ -741,8 +670,6 @@
 																<option value="Bank">Bank</option>
 																<option value="Cheque">Cheque</option>
 																<option value="None">None</option>
-
-
 															</select>
 														</div>
 														<div class="d-none" id="bankDetails">
@@ -766,7 +693,6 @@
 															</div>
 														</div>
 
-
 														<div class=" d-none" id="chequeDetails">
 															<div class="mb-3">
 																<label class="col-form-label">Cheque Number<span
@@ -775,7 +701,6 @@
 																	id="chequeNumber"
 																	value="<?= $user_payment[0]['cheque_no'] ?>">
 															</div>
-
 														</div>
 
 														<div class="mb-3">
@@ -796,10 +721,6 @@
 																value="<?= $payment[0]['total'] ?>"
 																required>
 														</div>
-
-
-
-
 														<div class="text-end modal-btn">
 															<a class="btn btn-light" data-bs-dismiss="modal">Cancel</a>
 															<button class="btn btn-primary" type="submit">Confirm</button>
@@ -813,46 +734,7 @@
 							</div>
 							<!-- /Create Call Log -->
 
-
-
-
-							<!-- Add Compose -->
-							<div class="modal custom-modal fade" id="add_compose" role="dialog">
-								<div class="modal-dialog modal-dialog-centered">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h5 class="modal-title">Add Compose</h5>
-											<button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-												<i class="ti ti-x"></i>
-											</button>
-										</div>
-										<div class="modal-body">
-											<form action="<?= base_url('Admin_Dashboard/send_email/' . encryptId($clg[0]['id']) . '/' . encryptId($user[0]['id']) . '/1') ?>" method="post">
-
-												<div class="mb-3">
-													<input type="text" name="subject" placeholder="Subject" class="form-control">
-												</div>
-												<div class="mb-3">
-													<textarea name="message" id="editor"></textarea>
-												</div>
-												<div class="mb-3">
-													<div class="text-center">
-														<button class="btn btn-primary"><span>Send</span><i
-																class="fa-solid fa-paper-plane ms-1"></i></button>
-
-													</div>
-												</div>
-											</form>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- /Add Compose -->
-
-
-
-
-					</div>
+						</div>
 						<script src="https://cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
 						<script>
 							CKEDITOR.replace('editor'); // Initialize CKEditor

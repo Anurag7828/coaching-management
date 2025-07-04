@@ -1339,26 +1339,60 @@ class Admin_Dashboard extends CI_Controller
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
-    public function pay_fees_payment($id)
-    {
-        $tid = decryptId($id);
+ public function pay_fees_payment($id)
+{
+    $tid = decryptId($id);
 
+    if ($this->input->post()) {
+        $post = $this->input->post();
 
-        if ($this->input->post()) {
-            $post = $this->input->post();
+        // Calculate updated due
+        $post['due'] = $post['due'] - $post['paid'];
 
-            $post['due'] = $post['due'] - $post['paid'];
+        // Generate unique transaction ID
+        $post['transaction_id'] = $this->CommonModal->generate_transaction_id($post['inst_id'], $post['student_id']);
 
-            $post['transaction_id'] = $this->CommonModal->generate_transaction_id($post['inst_id'], $post['student_id']);
+        // Insert payment row and get ID
+        $payment_id = $this->CommonModal->insertRowReturnId('fees_payment', $post);
 
-
-
-            $savedata = $this->CommonModal->insertRowReturnId('fees_payment', $post);
-
-
-            redirect($_SERVER['HTTP_REFERER']);
+        // ✅ FIX: Check if insertion was successful before redirect
+        if ($payment_id) {
+            // Redirect to slip page
+            redirect(base_url('Admin_Dashboard/fee_slip/' . encryptId($payment_id)));
+        } else {
+            // Handle insertion error (optional logging)
+            show_error('Payment could not be saved.');
         }
     }
+}
+public function fee_slip($id)
+{
+    $payment_id = decryptId($id);
+
+    // Get payment detail
+    $payment_detail = $this->CommonModal->getRowById('fees_payment', 'id', $payment_id);
+    if (empty($payment_detail)) {
+        show_404();
+    }
+
+    // Load related info
+    $student = $this->CommonModal->getRowById('students', 'id', $payment_detail[0]['student_id']);
+    $clg = $this->CommonModal->getRowById('institutions', 'id', $payment_detail[0]['inst_id']);
+    $course = $this->CommonModal->getRowById('courses', 'id', $student[0]['course_id']);
+    $fees_type = $this->CommonModal->getRowById('student_fees', 'student_id', $payment_detail[0]['student_id']);
+
+    $data = [
+        'payment_detail' => $payment_detail[0],
+        'user' => $student[0],
+        'clg' => $clg,
+        'course' => $course,
+        'fees_type' => $fees_type
+    ];
+
+    // Load the slip view
+    $this->load->view('branch/fee_slip', $data);
+}
+
     public function view_batch($id)
     {
         $data['title'] = "View batch";
