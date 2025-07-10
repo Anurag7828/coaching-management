@@ -25,6 +25,7 @@
 								<div class="col-sm-4">
 									<h4 class="page-title">Settings</h4>
 								</div>
+		
 								<div class="col-sm-8 text-sm-end">
 									<div class="head-icons">
 										<a href="profile.html" data-bs-toggle="tooltip" data-bs-placement="top"

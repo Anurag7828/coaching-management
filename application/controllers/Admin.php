@@ -61,7 +61,8 @@ class Admin extends CI_Controller
                 $this->session->set_userdata(array('admin_id' => $id, 'email' => $email, 'role' => 'admin'));
                 redirect('Home');
             } else {
-                flashData('login_error', 'Enter a valid Password for Admin.');
+                $this->session->set_flashdata('error', 'Invalid password!');
+                redirect($_SERVER['HTTP_REFERER']);
             }
 
         } elseif ($user_data) {
@@ -74,10 +75,12 @@ class Admin extends CI_Controller
                     $this->session->set_userdata(array('id' => $id, 'status' => 0, 'email' => $email, 'role' => 'user'));
                     redirect('Admin_Dashboard/index/' . encryptId($id));
                 } else {
-                    flashData('login_error', 'Enter a valid Password for User.');
+                    $this->session->set_flashdata('error', 'Invalid password!');
+                    redirect($_SERVER['HTTP_REFERER']);
                 }
             } else {
-                flashData('login_error', 'Package Is Expire');
+                $this->session->set_flashdata('error', 'Package Is Expire');
+                redirect($_SERVER['HTTP_REFERER']);
             }
 
         } else {
@@ -93,10 +96,12 @@ class Admin extends CI_Controller
                         $this->session->set_userdata(array('id' => $id, 'status' => 0, 'email' => $email, 'role' => 'student'));
                         redirect('Admin_Dashboard/student_profile/' . encryptId($id));
                     } else {
-                        flashData('login_error', 'Enter a valid Password for Student.');
+                        $this->session->set_flashdata('error', 'Invalid password!');
+                        redirect($_SERVER['HTTP_REFERER']);
                     }
                 } else {
-                    flashData('login_error', 'Package Is Expire');
+                    $this->session->set_flashdata('error', 'Package Is Expire');
+                    redirect($_SERVER['HTTP_REFERER']);
                 }
 
             } else {
@@ -112,14 +117,17 @@ class Admin extends CI_Controller
                             $this->session->set_userdata(array('id' => $id, 'status' => 0, 'email' => $email, 'role' => 'teacher'));
                             redirect('Admin_Dashboard/teacher_profile/' . encryptId($id));
                         } else {
-                            flashData('login_error', 'Enter a valid Password for Teacher.');
+                            $this->session->set_flashdata('error', 'Invalid password!');
+                            redirect($_SERVER['HTTP_REFERER']);
                         }
                     } else {
-                        flashData('login_error', 'Package Is Expire');
+                        $this->session->set_flashdata('error', 'Package Is Expire');
+                        redirect($_SERVER['HTTP_REFERER']);
                     }
 
                 } else {
-                    flashData('login_error', 'Enter a valid Username.');
+                    $this->session->set_flashdata('error', 'Enter a Registered Email.');
+                    redirect($_SERVER['HTTP_REFERER']);
                 }
             }
         }
@@ -188,6 +196,43 @@ class Admin extends CI_Controller
             }
         }
     }
+    public function forget_password()
+{
+    if ($this->input->post()) {
+        $post = $this->input->post();
+        $plain_password = bin2hex(random_bytes(8));
+        // $post['password'] = password_hash($plain_password, PASSWORD_DEFAULT);
+$post['password'] = $plain_password;
+        $email = $post['email'];
+        $existing_email = $this->CommonModal->getRowById('institutions', 'email', $email);
+        $student_email = $this->CommonModal->getRowById('students', 'email', $email);
+        $main_email = $this->CommonModal->getRowById('admin', 'email', $email);
+
+        if ($existing_email) {
+            $this->CommonModal->updateRowById('institutions', 'id', $existing_email[0]['id'], $post);
+        } elseif ($student_email) {
+            $this->CommonModal->updateRowById('students', 'id', $student_email[0]['id'], $post);
+        } elseif ($main_email) {
+            $this->CommonModal->updateRowById('admin', 'admin_id', $main_email[0]['admin_id'], $post);
+        } else {
+            $this->session->set_flashdata('error', 'Email not found!');
+            redirect($_SERVER['HTTP_REFERER']);
+            return;
+        }
+
+        // Send email
+        $this->load->library('email');
+        $this->email->from('noreply@yourdomain.com', 'Coaching Management System');
+        $this->email->to($email);
+        $this->email->subject('Password Reset');
+        $this->email->message("Your new password is: " . $plain_password);
+        $this->email->send();
+
+        $this->session->set_flashdata('success', 'A new password has been sent to your email.');
+       redirect($_SERVER['HTTP_REFERER']);
+    }
+}
+
     public function thankyou()
     {
         $data['title'] = "Thankyou";

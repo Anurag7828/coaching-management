@@ -7,11 +7,11 @@
 
 			<!-- Logo -->
 			<div class="header-left active">
-				<a href="index-2.html" class="logo logo-normal">
+				<a href="" class="logo logo-normal">
                     <img src="<?= base_url()?>assets/img/logo.svg" alt="Logo">
                     <img src="<?= base_url()?>assets/img/white-logo.svg" class="white-logo" alt="Logo">
                 </a>
-				<a href="index-2.html" class="logo-small">
+				<a href="" class="logo-small">
 					<img src="<?= base_url()?>assets/img/logo-small.svg" alt="Logo">
 				</a>
 				<a id="toggle_btn" href="javascript:void(0);">
@@ -63,7 +63,7 @@
 												<i class="ti ti-layout-2"></i><span>Dashboard</span><span class="menu-arrow"></span>
 											</a>
 											<ul>
-												<li><a href="index-2.html">Deals Dashboard</a></li>
+												<li><a href="">Deals Dashboard</a></li>
 												<li><a href="leads-dashboard.html">Leads Dashboard</a></li>
 												<li><a href="project-dashboard.html">Project Dashboard</a></li>
 												<li class="submenu" aria-colcount="active">
@@ -700,7 +700,7 @@
 			<div class="dropdown mobile-user-menu">
 				<a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="index-2.html">
+					<a class="dropdown-item" href="index-2.">
 						<i class="ti ti-layout-2"></i> Dashboard
 					</a>
 					<a class="dropdown-item" href="profile.html">

@@ -241,6 +241,10 @@
 										<a href="#" data-bs-toggle="tab" data-bs-target="#attendence" class="nav-link"><i
 										class="ti ti-notes me-1"></i>Attendance Report</a>
 									</li>
+									<li class="nav-item" role="presentation">
+										<a href="#" data-bs-toggle="tab" data-bs-target="#timetable" class="nav-link"><i
+										class="ti ti-notes me-1"></i>Time Table</a>
+									</li>
 
 								</ul>
 							</div>
@@ -509,6 +513,110 @@
 										<!-- /Contact Details -->
 
 									</div>
+
+								</div>
+							</div>
+							<div class="tab-pane fade" id="timetable">
+								<div class="card">
+									<div
+										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+										<h4 class="fw-semibold">Class Time Table</h4>
+										           <a href="<?= base_url('Admin_Dashboard/add_timetable/'. encryptId($user[0]['id']).'/'. encryptId($employee[0]['id']).'?tag=emp')?>" class="btn btn-primary"><i
+                                                    class="ti ti-square-rounded-plus me-2"></i>Add Class</a>
+									</div>
+									  <div class="card-body">
+                            
+                                <div class="table-responsive custom-table">
+                                <table class="table">
+    <thead class="thead-light">
+        <tr>
+            <th class="no-sort">S No.</th>
+           
+                  <th>Batch Name</th>
+        
+            <th>Course Name</th>
+            <th>Starting Time</th>
+            <th>Ending Time</th>
+            <!-- <th>Paid</th> -->
+          
+            <th>Status</th>
+            <!-- <th>Add By</th> -->
+
+            <th class="text-end">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (!empty($class)) : ?>
+            <?php $i = 1; foreach ($class as $row) : ?>
+                <tr>
+                    <td><?= $i++; ?></td>
+                 
+                        <td>
+                            <?php if (!empty($row['batch_id'])): ?>
+                                <?php $batch = $this->CommonModal->getRowById('batchs', 'id', $row['batch_id']); ?>
+                                <?= !empty($batch) ? $batch[0]['name'] : 'N/A'; ?>
+                            <?php else: ?>
+                                N/A
+                            <?php endif; ?>
+                        </td>
+                 
+                   
+                    <td>
+                        <?php if (!empty($row['course_id'])): ?>
+                            <?php $course = $this->CommonModal->getRowById('courses', 'id', $row['course_id']); ?>
+                            <?= !empty($course) ? $course[0]['name'] : 'N/A'; ?>
+                        <?php else: ?>
+                            N/A
+                        <?php endif; ?>
+                  
+                
+                    <td><?= date("h:i A", strtotime($row['starting_time'])); ?></td>
+                    <td><?= date("h:i A", strtotime($row['ending_time'])); ?></td>
+
+                
+
+                    <td> <?php if($row['status'] == '0') { ?>
+                    <span class="badge badge-pill badge-status  bg-success">
+    Active
+</span>
+<?php } else{
+    ?>
+                <span class="badge badge-pill badge-status  bg-danger">
+    Dective
+</span>
+<?php } ?>
+</td>
+
+
+
+                    <td>
+                        <div class="dropdown table-action">
+                            <a href="#" class="action-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                            
+                                                                    <a class="dropdown-item"
+                                                                        href="<?php echo base_url() . 'Admin_Dashboard/update_timetable/' . $row['id'].'/'.encryptId($user[0]['id']) ; ?>"><i
+                                                                            class="ti ti-edit text-blue"></i> Edit</a>
+                                                                    <a class="dropdown-item" href="
+<?php echo base_url() . 'Admin_Dashboard/view_timetable/' . encryptId($emp_id).'/'.encryptId($user[0]['id']). '?BdID=' . $row['id'] ?>"><i
+                                                                            class="ti ti-trash text-danger"></i>Delete</a>
+  </div>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+       
+        <?php endif; ?>
+    </tbody>
+</table>
+
+                                </div>
+                              
+                                <!-- /Contact List -->
+
+                            </div>
 
 								</div>
 							</div>
