@@ -83,46 +83,7 @@
                                 <!-- /Search -->
                             </div>
                             <div class="card-body">
-                                <!-- Filter -->
-                                <!-- <div class="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
-                                    <div class="d-flex align-items-center flex-wrap row-gap-2">
-                                        <div class="dropdown me-2">
-                                            <a href="javascript:void(0);" class="dropdown-toggle"
-                                                data-bs-toggle="dropdown"><i
-                                                    class="ti ti-sort-ascending-2 me-2"></i>Sort </a>
-                                            <div class="dropdown-menu  dropdown-menu-start">
-                                                <ul>
-                                                    <li>
-                                                        <a href="javascript:void(0);" class="dropdown-item">
-                                                            <i class="ti ti-circle-chevron-right me-1"></i>Ascending
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:void(0);" class="dropdown-item">
-                                                            <i class="ti ti-circle-chevron-right me-1"></i>Descending
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:void(0);" class="dropdown-item">
-                                                            <i class="ti ti-circle-chevron-right me-1"></i>Recently
-                                                            Viewed
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:void(0);" class="dropdown-item">
-                                                            <i class="ti ti-circle-chevron-right me-1"></i>Recently
-                                                            Added
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                </div> -->
-                                <!-- /Filter -->
-
+                               
                                 <!-- Contact List -->
                                 <div class="table-responsive custom-table">
                                     <table class="table datatable">

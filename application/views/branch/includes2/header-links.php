@@ -12,7 +12,7 @@
 	<meta name="robots" content="index, follow">
 
 	<!-- Title -->
-	<title><?= $user[0]['name']?> | <?= $title ?></title>
+	<title><?= $user[0]['name']?></title>
 
 	<!-- Themescript JS -->
 	<!-- <script src="<?= base_url()?>assets/js/theme-script.js" ></script> -->

@@ -94,7 +94,7 @@ class Admin extends CI_Controller
                 if ($status == 0) {
                     if ($password == $f_password) {
                         $this->session->set_userdata(array('id' => $id, 'status' => 0, 'email' => $email, 'role' => 'student'));
-                        redirect('Admin_Dashboard/student_profile/' . encryptId($id));
+                        redirect('Admin_Dashboard/student_login/' . encryptId($id));
                     } else {
                         $this->session->set_flashdata('error', 'Invalid password!');
                         redirect($_SERVER['HTTP_REFERER']);
@@ -115,7 +115,7 @@ class Admin extends CI_Controller
                     if ($status == 0) {
                         if ($password == $f_password) {
                             $this->session->set_userdata(array('id' => $id, 'status' => 0, 'email' => $email, 'role' => 'teacher'));
-                            redirect('Admin_Dashboard/teacher_profile/' . encryptId($id));
+                            redirect('Admin_Dashboard/teacher_login/' . encryptId($id));
                         } else {
                             $this->session->set_flashdata('error', 'Invalid password!');
                             redirect($_SERVER['HTTP_REFERER']);

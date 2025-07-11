@@ -46,11 +46,11 @@
 				<div class="row">
 					<div class="col-md-12">
 
-				
+
 						<div class="page-header">
 							<div class="row align-items-center">
 								<div class="col-sm-4">
-									<h4 class="page-title">Employee Overview</h4>
+									<h4 class="page-title">Welcome <?= $user[0]['name'] ?></h4>
 								</div>
 								<div class="col-sm-8 text-sm-end">
 									<div class="head-icons">
@@ -62,6 +62,18 @@
 									</div>
 								</div>
 							</div>
+							<?php if ($this->session->flashdata('error')): ?>
+								<div class="alert alert-danger alert-dismissible fade show" role="alert">
+									<?= $this->session->flashdata('error') ?>
+									<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+								</div>
+							<?php endif; ?>
+							<?php if ($this->session->flashdata('successmsg')): ?>
+								<div class="alert alert-success alert-dismissible fade show" role="alert">
+									<?= $this->session->flashdata('successmsg') ?>
+									<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+								</div>
+							<?php endif; ?>
 						</div>
 
 					</div>
@@ -74,11 +86,7 @@
 						<div class="contact-head">
 							<div class="row align-items-center">
 								<div class="col-sm-6">
-									<ul class="contact-breadcrumb">
-										<li><a href=""><i class="ti ti-arrow-narrow-left"></i>Employee</a>
-										</li>
-										<li><?= $teacher[0]['name'] ?></li>
-									</ul>
+
 								</div>
 
 							</div>
@@ -133,16 +141,15 @@
 												Deactive
 											</a>
 										<?php } ?>
-										<a href="<?php echo base_url() . 'Admin_Dashboard/update_employee/' . encryptId($user[0]['id']) . '/' . encryptId($clg[0]['id']) . '?tag=' . $user[0]['status']; ?>"
+										<a href="<?= base_url('Admin_Dashboard/teacher_profile/' . encryptId($user[0]['id'])) ?>"
 											class="btn-icon"><i class="ti ti-edit-circle"></i></a>
 										<div class="act-dropdown">
 											<a href="#" data-bs-toggle="dropdown" aria-expanded="false">
 												<i class="ti ti-dots-vertical"></i>
 											</a>
 											<div class="dropdown-menu dropdown-menu-right">
-												<a class="dropdown-item"
-													href="<?php echo base_url() . 'Admin_Dashbaord/view_employee/' . encryptId($clg[0]['id']) . '?BdID=' . $user[0]['id'] . '&tag=' . $user[0]['status']; ?>"><i
-														class="ti ti-trash text-danger"></i>Delete</a>
+												<a class="dropdown-item" href="<?= base_url('Admin/logout') ?>">
+													<i class="ti ti-lock"></i> Logout</a>
 											</div>
 										</div>
 									</div>
@@ -243,17 +250,28 @@
 									</li>
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#notes" class="nav-link"><i
-												class="ti ti-notes me-1"></i>Calculate Salary</a>
+												class="ti ti-notes me-1"></i>Salary</a>
 									</li>
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#email" class="nav-link"><i
 												class="ti ti-mail-check me-1"></i>Email</a>
 									</li>
 									<li class="nav-item" role="presentation">
-										<a href="#" data-bs-toggle="tab" data-bs-target="#attendence" class="nav-link"><i
-										class="ti ti-notes me-1"></i>Attendance Report</a>
+										<a href="#" data-bs-toggle="tab" data-bs-target="#attendence"
+											class="nav-link"><i class="ti ti-notes me-1"></i>Attendance Report</a>
 									</li>
-
+									<li class="nav-item" role="presentation">
+										<a href="#" data-bs-toggle="tab" data-bs-target="#timetable" class="nav-link"><i
+												class="ti ti-notes me-1"></i>Time Table</a>
+									</li>
+									<li class="nav-item" role="presentation">
+										<a href="#" data-bs-toggle="tab" data-bs-target="#liveclass" class="nav-link"><i
+												class="ti ti-notes me-1"></i>Live Class</a>
+									</li>
+									<li class="nav-item" role="presentation">
+										<a href="#" data-bs-toggle="tab" data-bs-target="#assignment" class="nav-link"><i
+												class="ti ti-notes me-1"></i>Acadmic Resource</a>
+									</li>
 								</ul>
 							</div>
 						</div>
@@ -287,10 +305,12 @@
 																(per Month)</h6>
 															<p class="mb-1">Per Day :-
 																<?= $user[0]['salary'] / 30 ?>
-																Rs </p>
+																Rs
+															</p>
 															<p class="mb-1">Per Year :-
 																<?= $user[0]['salary'] * 12 ?>
-																Rs </p>
+																Rs
+															</p>
 
 
 
@@ -352,11 +372,9 @@
 								<div class="card">
 									<div
 										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
-										<h4 class="fw-semibold">Calculate This Month Salary</h4>
+										<h4 class="fw-semibold">Month Salary</h4>
 										<div class="d-inline-flex align-items-center">
-											<a href="javascript:void(0);" data-bs-toggle="modal"
-												data-bs-target="#add_notes" class="btn btn-danger"><i
-													class="ti ti-circle-plus me-1"></i>Calculate Salary</a>
+
 										</div>
 									</div>
 									<div class="card-body">
@@ -524,6 +542,897 @@
 
 								</div>
 							</div>
+							<div class="tab-pane fade" id="timetable">
+								<div class="card">
+									<div
+										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+										<h4 class="fw-semibold">Class Time Table</h4>
+										<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#add_class"
+											class="btn btn-primary"><i class="ti ti-square-rounded-plus me-2"></i>Add
+											Class</a>
+									</div>
+									<div class="card-body">
+
+										<div class="table-responsive custom-table">
+											<table class="table">
+												<thead class="thead-light">
+													<tr>
+														<th class="no-sort">S No.</th>
+
+														<th>Batch Name</th>
+
+														<th>Course Name</th>
+														<th>Subject Name</th>
+														<th>Starting Time</th>
+														<th>Ending Time</th>
+
+
+														<th class="text-end">Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php if (!empty($class)): ?>
+														<?php $i = 1;
+														foreach ($class as $row): ?>
+															<tr>
+																<td><?= $i++; ?></td>
+
+																<td>
+																	<?php if (!empty($row['batch_id'])): ?>
+																		<?php $batchh = $this->CommonModal->getRowById('batchs', 'id', $row['batch_id']); ?>
+																		<?= !empty($batchh) ? $batchh[0]['name'] : 'N/A'; ?>
+																	<?php else: ?>
+																		N/A
+																	<?php endif; ?>
+																</td>
+
+
+																<td>
+																	<?php if (!empty($row['course_id'])): ?>
+																		<?php $courses = $this->CommonModal->getRowById('courses', 'id', $row['course_id']); ?>
+																		<?= !empty($courses) ? $courses[0]['name'] : 'N/A'; ?>
+																	<?php else: ?>
+																		N/A
+																	<?php endif; ?>
+																</td>
+																<td>
+																	<?php if (!empty($row['subject_id'])): ?>
+																		<?php $subject = $this->CommonModal->getRowById('subjects', 'id', $row['subject_id']); ?>
+																		<?= !empty($subject) ? $subject[0]['subject'] : 'N/A'; ?>
+																	<?php else: ?>
+																		N/A
+																	<?php endif; ?>
+																</td>
+
+																<td><?= date("h:i A", strtotime($row['starting_time'])); ?></td>
+																<td><?= date("h:i A", strtotime($row['ending_time'])); ?></td>
+
+
+
+
+
+
+																<td>
+																	<div class="dropdown table-action">
+																		<a href="#" class="action-icon"
+																			data-bs-toggle="dropdown" aria-expanded="false">
+																			<i class="fa fa-ellipsis-v"></i>
+																		</a>
+																		<div class="dropdown-menu dropdown-menu-right">
+
+																			<a class="dropdown-item" href="javascript:void(0);"
+																				data-bs-toggle="modal"
+																				data-bs-target="#edit_class<?= $row['id'] ?>"><i
+																					class="ti ti-edit text-blue"></i> Edit</a>
+																			<a class="dropdown-item"
+																				href="
+<?php echo base_url() . 'Admin_Dashboard/view_timetable/' . encryptId($user[0]['id']) . '/' . encryptId($user[0]['inst_id']) . '?BdID=' . $row['id'] ?>"><i
+																					class="ti ti-trash text-danger"></i>Delete</a>
+																		</div>
+																	</div>
+																</td>
+															</tr>
+															<div class="modal custom-modal fade modal-padding"
+																id="edit_class<?= $row['id'] ?>" role="dialog">
+																<div class="modal-dialog modal-dialog-centered">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<h5 class="modal-title">Class</h5>
+																			<button type="button"
+																				class="btn-close position-static"
+																				data-bs-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">×</span>
+																			</button>
+																		</div>
+																		<div class="modal-body">
+																			<?php $timetable = $this->CommonModal->getRowById('timetable', 'id', $row['id']); ?>
+
+																			<form
+																				action="<?= base_url('Admin_Dashboard/update_timetable_teacher/' . encryptId($user[0]['inst_id']) . '/' . encryptId($user[0]['id'])) ?>"
+																				method="Post">
+																				<div class="accordion" id="main_accordion">
+																					<!-- Basic Info -->
+																					<div class="accordion-item rounded mb-3">
+																						<div class="accordion-header">
+
+																						</div>
+																						<div class="accordion-collapse collapse show"
+																							id="basic"
+																							data-bs-parent="#main_accordion">
+																							<div
+																								class="accordion-body border-top">
+																								<div class="row">
+																									<div class="col-md-12">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Select
+																												Batch</label>
+
+																											<select
+																												class="select2 form-control"
+																												name="batch_id">
+																												<option
+																													value="N/A"
+																													<?= (isset($timetable[0]['batch_id']) && $timetable[0]['batch_id'] == 'N/A') ? 'selected' : '' ?>
+																													data-display="Please select">
+																													Choose
+																												</option>
+																												<?php if (!empty($batch)): ?>
+																													<?php foreach ($batch as $item): ?>
+
+																														<option
+																															value="<?= $item['id'] ?>"
+																															<?= (isset($timetable[0]['batch_id']) && $timetable[0]['batch_id'] == $item['id']) ? 'selected' : '' ?>
+																															data-display="Please select">
+																															<?= $item['name'] ?>
+																														</option>
+																													<?php endforeach; ?>
+																												<?php endif; ?>
+
+																											</select>
+																											<input type="hidden"
+																												class="form-control"
+																												name="inst_id"
+																												value="<?= (isset($timetable[0]['inst_id'])) ? htmlspecialchars($timetable[0]['inst_id']) : $user[0]['inst_id'] ?>"
+																												required>
+																											<input type="hidden"
+																												class="form-control"
+																												name="emp_id"
+																												value="<?= (isset($timetable[0]['emp_id'])) ? htmlspecialchars($timetable[0]['emp_id']) : $user[0]['id'] ?>"
+																												required>
+																										</div>
+																									</div>
+
+
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Course</label>
+
+																											<select
+																												class="form-control"
+																												name="course_id"
+																												id="course_id_<?= $row['id'] ?>">
+																												<option
+																													value="N/A">
+																													Choose
+																												</option>
+																												<?php if (!empty($course)): ?>
+																													<?php foreach ($course as $item): ?>
+																														<option
+																															value="<?= $item['id'] ?>"
+																															<?= (isset($timetable[0]['course_id']) && $timetable[0]['course_id'] == $item['id']) ? 'selected' : '' ?>>
+																															<?= $item['name'] ?>
+																														</option>
+																													<?php endforeach; ?>
+																												<?php endif; ?>
+																											</select>
+																										</div>
+																									</div>
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Subjects</label>
+																											<select
+																												name="subject_id"
+																												id="subject_id_<?= $row['id'] ?>"
+																												class="select2 form-control">
+																												<option
+																													value="N/A">
+																													Choose
+																													Subject
+																												</option>
+																											</select>
+																										</div>
+																									</div>
+
+
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Start
+																												Timing<span
+																													class="text-danger">*</span></label>
+																											<input type="time"
+																												class="form-control"
+																												name="starting_time"
+																												value="<?= (isset($timetable[0]['starting_time'])) ? htmlspecialchars($timetable[0]['starting_time']) : '' ?>"
+																												required>
+																										</div>
+																									</div>
+
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">End
+																												Timing<span
+																													class="text-danger">*</span></label>
+																											<input type="time"
+																												class="form-control"
+																												name="ending_time"
+																												value="<?= (isset($timetable[0]['ending_time'])) ? htmlspecialchars($timetable[0]['ending_time']) : '' ?>"
+																												required>
+																										</div>
+																									</div>
+
+
+
+
+
+																								</div>
+																							</div>
+																						</div>
+																					</div>
+																					<!-- /Basic Info -->
+
+																					<div
+																						class="d-flex align-items-center justify-content-end">
+
+																						<button type="submit"
+																							class="btn btn-primary"
+																							data-bs-toggle="modal"
+																							data-bs-target="#create_success">Save</button>
+																					</div>
+																			</form>
+
+																		</div>
+																	</div>
+																</div>
+															</div>
+
+														<?php endforeach; ?>
+
+													<?php endif; ?>
+												</tbody>
+											</table>
+
+										</div>
+
+										<!-- /Contact List -->
+
+									</div>
+
+								</div>
+							</div>
+							<div class="tab-pane fade" id="liveclass">
+								<div class="card">
+									<div
+										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+										<h4 class="fw-semibold">Live Class</h4>
+										<a href="javascript:void(0);" data-bs-toggle="modal"
+											data-bs-target="#add_liveclass" class="btn btn-primary"><i
+												class="ti ti-square-rounded-plus me-2"></i>Add
+											Class</a>
+									</div>
+									<div class="card-body">
+
+										<!-- Contact List -->
+										<div class="table-responsive custom-table">
+											<table class="table ">
+												<thead class="thead-light">
+													<tr>
+														<th class="no-sort">S No.</th>
+
+														<th>Batch Name</th>
+
+
+
+														<th>Course Name</th>
+														<th>Subject Name</th>
+
+														<th>Platform</th>
+
+
+
+														<th>Date</th>
+														<th>Timing</th>
+														<th>link</th>
+
+														<th class="text-end">Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php if (!empty($liveclasss)): ?>
+														<?php $i = 1;
+														foreach ($liveclasss as $row): ?>
+															<tr>
+																<td><?= $i++; ?></td>
+																<td>
+																	<?php if (!empty($row['batch_id'])): ?>
+																		<?php $batchhh = $this->CommonModal->getRowById('batchs', 'id', $row['batch_id']); ?>
+																		<?= !empty($batchhh) ? $batchhh[0]['name'] : 'N/A'; ?>
+																	<?php else: ?>
+																		N/A
+																	<?php endif; ?>
+																</td>
+
+
+
+																<td>
+																	<?php if (!empty($row['course_id'])): ?>
+																		<?php $courseee = $this->CommonModal->getRowById('courses', 'id', $row['course_id']); ?>
+																		<?= !empty($courseee) ? $courseee[0]['name'] : 'N/A'; ?>
+																	<?php else: ?>
+																		N/A
+																	<?php endif; ?>
+																</td>
+																<td>
+																	<?php if (!empty($row['subject_id'])): ?>
+																		<?php $subjectt = $this->CommonModal->getRowById('subjects', 'id', $row['subject_id']); ?>
+																		<?= !empty($subjectt) ? $subjectt[0]['subject'] : 'N/A'; ?>
+																	<?php else: ?>
+																		N/A
+																	<?php endif; ?>
+																</td>
+
+																<td>
+																	<?php if (!empty($row['platform'])): ?>
+																		<?= $row['platform']; ?>
+																	<?php else: ?>
+																		N/A
+																	<?php endif; ?>
+																</td>
+
+
+																<td>
+																	<?php if (!empty($row['date'])): ?>
+																		<?= date("d-m-Y", strtotime($row['date'])); ?>
+																	<?php else: ?>
+																		N/A
+																	<?php endif; ?>
+																</td>
+																<td><?= date("h:i A", strtotime($row['starting_time'])); ?> To
+																	<?= date("h:i A", strtotime($row['ending_time'])); ?></td>
+
+
+																<td>
+																	<?php if (!empty($row['url'])): ?>
+																		<a class="dropdown-item" href="<?= $row['url']; ?>"
+																			target="_blank">
+																			<span class="badge badge-pill badge-status  bg-success">
+																				Join Now
+																			</span>
+																		</a>
+																	<?php else: ?>
+																		N/A
+																	<?php endif; ?>
+																</td>
+
+
+
+
+																<td>
+																	<div class="dropdown table-action">
+																		<a href="#" class="action-icon"
+																			data-bs-toggle="dropdown" aria-expanded="false">
+																			<i class="fa fa-ellipsis-v"></i>
+																		</a>
+																		<div class="dropdown-menu dropdown-menu-right">
+
+																			<a class="dropdown-item" href="javascript:void(0);"
+																				data-bs-toggle="modal"
+																				data-bs-target="#edit_liveclass<?= $row['id'] ?>"><i
+																					class="ti ti-edit text-blue"></i> Edit</a>
+																			<a class="dropdown-item" href="
+<?php echo base_url() . 'Admin_Dashboard/view_liveclass/' . encryptId($user[0]['inst_id']) . '?BdID=' . $row['id'] ?>"><i
+																					class="ti ti-trash text-danger"></i>Delete</a>
+																		</div>
+																	</div>
+																</td>
+																<?php $liveclass = $this->CommonModal->getRowById('liveclass', 'id', $row['id']); ?>
+															</tr>
+															<div class="modal custom-modal fade "
+																id="edit_liveclass<?= $row['id'] ?>" role="dialog">
+																<div class="modal-dialog modal-dialog-centered">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<h5 class="modal-title">Edit Live Class</h5>
+																			<button type="button"
+																				class="btn-close position-static"
+																				data-bs-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">×</span>
+																			</button>
+																		</div>
+																		<div class="modal-body">
+																			
+																			 
+																			<form
+																				action="<?= base_url('Admin_Dashboard/update_liveclass_teacher/' . encryptId($row['id'])) ?>"
+																				method="Post">
+																				<div class="accordion" id="main_accordion">
+																					<!-- Basic Info -->
+																					<div class="accordion-item rounded mb-3">
+
+																						<div class="accordion-collapse collapse show"
+																							id="basic"
+																							data-bs-parent="#main_accordion">
+																							<div
+																								class="accordion-body border-top">
+																								<div class="row">
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Select
+																												Batch<span
+																													class="text-danger">*</span></label>
+
+																											<select
+																												class="select2 form-control"
+																												name="batch_id">
+																												<option
+																													value="N/A"
+																													<?= (isset($liveclass[0]['batch_id']) && $liveclass[0]['batch_id'] == 'N/A') ? 'selected' : '' ?>
+																													data-display="Please select">
+																													Choose
+																												</option>
+																												<?php if (!empty($batch)): ?>
+																													<?php foreach ($batch as $item): ?>
+
+																														<option
+																															value="<?= $item['id'] ?>"
+																															<?= (isset($liveclass[0]['batch_id']) && $liveclass[0]['batch_id'] == $item['id']) ? 'selected' : '' ?>>
+																															<?= $item['name'] ?>
+																														</option>
+																													<?php endforeach; ?>
+																												<?php endif; ?>
+
+																											</select>
+																											<input type="hidden"
+																												class="form-control"
+																												name="inst_id"
+																												value="<?= (isset($liveclass[0]['inst_id'])) ? htmlspecialchars($liveclass[0]['inst_id']) : $user[0]['inst_id'] ?>"
+																												required>
+																											<input type="hidden"
+																												class="form-control"
+																												name="emp_id"
+																												value="<?= (isset($liveclass[0]['emp_id'])) ? htmlspecialchars($liveclass[0]['emp_id']) : $user[0]['id'] ?>"
+																												required>
+																										</div>
+																									</div>
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Course</label>
+
+																											<select
+																												class="form-control"
+																												name="course_id"
+																												id="coursee_id_<?= $row['id'] ?>">
+																												<option
+																													value="N/A">
+																													Choose
+																												</option>
+																												<?php if (!empty($course)): ?>
+																													<?php foreach ($course as $item): ?>
+																														<option
+																															value="<?= $item['id'] ?>"
+																															<?= (isset($timetable[0]['course_id']) && $timetable[0]['course_id'] == $item['id']) ? 'selected' : '' ?>>
+																															<?= $item['name'] ?>
+																														</option>
+																													<?php endforeach; ?>
+																												<?php endif; ?>
+																											</select>
+																										</div>
+																									</div>
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Subjects</label>
+																											<select
+																												name="subject_id"
+																												id="subjectt_id_<?= $row['id'] ?>"
+																												class="select2 form-control">
+																												<option
+																													value="N/A">
+																													Choose
+																													Subject
+																												</option>
+																											</select>
+																										</div>
+																									</div>
+
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Select
+																												Platform<span
+																													class="text-danger">*</span></label>
+
+																											<select
+																												class="select2 form-control"
+																												name="platform">
+																												<option
+																													value="N/A"
+																													<?= (isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'N/A') ? 'selected' : '' ?>
+																													data-display="Please select">
+																													Choose
+																												</option>
+																												<option
+																													value="Google Meet"
+																													<?= (isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Google Meet') ? 'selected' : '' ?>
+																													data-display="Please select">
+																													Google Meet
+																												</option>
+																												<option
+																													value="Zoom"
+																													<?= (isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Zoom') ? 'selected' : '' ?>
+																													data-display="Please select">
+																													Zoom
+																												</option>
+																												<option
+																													value="Microsoft Teams"
+																													<?= (isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Microsoft Teams') ? 'selected' : '' ?>
+																													data-display="Please select">
+																													Microsoft
+																													Teams
+																												</option>
+																												<option
+																													value="Skype"
+																													<?= (isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Skype') ? 'selected' : '' ?>
+																													data-display="Please select">
+																													Skype
+																												</option>
+																												<option
+																													value="Cisco Webex"
+																													<?= (isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Cisco Webex') ? 'selected' : '' ?>
+																													data-display="Please select">
+																													Cisco Webex
+																												</option>
+
+																											</select>
+																										</div>
+																									</div>
+
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Link<span
+																													class="text-danger">*</span></label>
+																											<input type="url"
+																												class="form-control"
+																												name="url"
+																												value="<?= (isset($liveclass[0]['url'])) ? htmlspecialchars($liveclass[0]['url']) : '' ?>"
+																												required>
+																										</div>
+																									</div>
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Date<span
+																													class="text-danger">*</span></label>
+																											<input type="date"
+																												class="form-control"
+																												name="date"
+																												value="<?= (isset($liveclass[0]['date'])) ? htmlspecialchars($liveclass[0]['date']) : '' ?>"
+																												required>
+																										</div>
+																									</div>
+
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">Start
+																												Timing<span
+																													class="text-danger">*</span></label>
+																											<input type="time"
+																												class="form-control"
+																												name="starting_time"
+																												value="<?= (isset($liveclass[0]['starting_time'])) ? htmlspecialchars($liveclass[0]['starting_time']) : '' ?>"
+																												required>
+																										</div>
+																									</div>
+
+																									<div class="col-md-6">
+																										<div class="mb-3">
+																											<label
+																												class="col-form-label">End
+																												Timing<span
+																													class="text-danger">*</span></label>
+																											<input type="time"
+																												class="form-control"
+																												name="ending_time"
+																												value="<?= (isset($liveclass[0]['ending_time'])) ? htmlspecialchars($liveclass[0]['ending_time']) : '' ?>"
+																												required>
+																										</div>
+																									</div>
+
+
+
+
+
+																								</div>
+																							</div>
+																						</div>
+																					</div>
+																					<!-- /Basic Info -->
+
+																					<div
+																						class="d-flex align-items-center justify-content-end">
+
+																						<button type="submit"
+																							class="btn btn-primary"
+																							data-bs-toggle="modal"
+																							data-bs-target="#create_success">Save</button>
+																					</div>
+																			</form>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														<?php endforeach; ?>
+
+													<?php endif; ?>
+												</tbody>
+											</table>
+
+										</div>
+										<div class="row align-items-center">
+											<div class="col-md-6">
+												<div class="datatable-length"></div>
+											</div>
+											<div class="col-md-6">
+												<div class="datatable-paginate"></div>
+											</div>
+										</div>
+										<!-- /Contact List -->
+
+									</div>
+
+								</div>
+							</div>
+							<div class="tab-pane fade" id="assignment">
+								<div class="card">
+									<div
+										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+										<h4 class="fw-semibold">Academic Resource</h4>
+										<a href="javascript:void(0);" data-bs-toggle="modal"
+											data-bs-target="#add_assignment" class="btn btn-primary"><i
+												class="ti ti-square-rounded-plus me-2"></i>Add
+											Resource</a>
+									</div>
+								   <div class="card-body">
+                               
+
+                                <!-- Contact List -->
+                                <div class="table-responsive custom-table">
+                                <table class="table datatable">
+    <thead class="thead-light">
+        <tr>
+            <th class="no-sort">S No.</th>
+         
+                  <th>Batch Name</th>
+         
+            <th>Course Name</th>
+            <th>Subject Name</th>
+            <th>Title</th>
+           
+            <th>File</th>
+            <!-- <th>Add By</th> -->
+
+            <th class="text-end">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (!empty($assignments)) : ?>
+            <?php $i = 1; foreach ($assignments as $row) : ?>
+                <tr>
+                    <td><?= $i++; ?></td>
+                  
+                        <td>
+                            <?php if (!empty($row['batch_id'])): ?>
+                                <?php $abatch = $this->CommonModal->getRowById('batchs', 'id', $row['batch_id']); ?>
+                                <?= !empty($abatch) ? $abatch[0]['name'] : 'N/A'; ?>
+                            <?php else: ?>
+                                N/A
+                            <?php endif; ?>
+                        </td>
+                   
+                   
+                    <td>
+                        <?php if (!empty($row['course_id'])): ?>
+                            <?php $acourse = $this->CommonModal->getRowById('courses', 'id', $row['course_id']); ?>
+                            <?= !empty($acourse) ? $acourse[0]['name'] : 'N/A'; ?>
+                        <?php else: ?>
+                            N/A
+                        <?php endif; ?>
+                  
+                    </td>
+                    <td>
+                                                            <?php if (!empty($row['subject_id'])): ?>
+                                                                <?php $subjecttt = $this->CommonModal->getRowById('subjects', 'id', $row['subject_id']); ?>
+                                                                <?= !empty($subjecttt) ? $subjecttt[0]['subject'] : 'N/A'; ?>
+                                                            <?php else: ?>
+                                                                N/A
+                                                            <?php endif; ?>
+                                                        </td>
+                    <td><?= $row['title']; ?></td>
+                    <td>  <a href="<?= base_url('uploads/assignment/' . $row['file']) ?>" target="_blank">
+                                                            <i class="fas fa-file-pdf text-danger" style="font-size: 30px;"></i> 
+                                                        </a> </td>
+
+
+
+
+                    <td>
+                        <div class="dropdown table-action">
+                            <a href="#" class="action-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                            
+                                                                    <a class="dropdown-item"
+                                                                       href="javascript:void(0);"
+																				data-bs-toggle="modal"
+																				data-bs-target="#edit_assignment<?= $row['id'] ?>"><i
+                                                                            class="ti ti-edit text-blue"></i> Edit</a>
+                                                                    <a class="dropdown-item" href="
+<?php echo base_url() . 'Admin_Dashboard/view_assignment/' .encryptId($user[0]['inst_id']). '?BdID=' . $row['id'] ?>"><i
+                                                                            class="ti ti-trash text-danger"></i>Delete</a>
+  </div>
+                        </div>
+                    </td>
+                </tr>
+				<div class="modal custom-modal fade " id="edit_assignment<?= $row['id'] ?>" role="dialog">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Assignment</h5>
+										<button type="button" class="btn-close position-static" data-bs-dismiss="modal"
+											aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+									</div>
+									<div class="modal-body">
+											<?php $assignment = $this->CommonModal->getRowById('assignment', 'id', $row['id']); ?>
+										<form
+											action="<?= base_url('Admin_Dashboard/update_assignment_teacher/'.encryptId($row['id'])) ?>"
+											method="Post" enctype="multipart/form-data">
+                                <div class="accordion" id="main_accordion">
+                                    <!-- Basic Info -->
+                                    <div class="accordion-item rounded mb-3">
+                                        
+                                        <div class="accordion-collapse collapse show" id="basic" data-bs-parent="#main_accordion">
+                                            <div class="accordion-body border-top">
+                                                <div class="row">
+
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                               <label class="col-form-label">Select Batch</label>
+										
+                                                            <select class="select2 form-control" name="batch_id">
+                                                                <option value="N/A" <?= ( isset($assignment[0]['batch_id']) && $assignment[0]['batch_id'] == 'N/A') ? 'selected' : '' ?>
+                                                                    data-display="Please select">Choose</option>
+                                                                <?php if (!empty($batch)): ?>
+                                                                    <?php foreach ($batch as $item): ?>
+
+                                                                        <option value="<?= $item['id'] ?>" <?= ( isset($assignment[0]['batch_id']) && $assignment[0]['batch_id'] == $item['id']) ? 'selected' : '' ?> data-display="Please select">
+                                                                            <?= $item['name'] ?>
+                                                                        </option>
+                                                                    <?php endforeach; ?>
+                                                                <?php endif; ?>
+
+                                                            </select>
+                                                            <input type="hidden" class="form-control" name="inst_id" value="<?= ( isset($assignment[0]['inst_id'])) ? htmlspecialchars($assignment[0]['inst_id']) : $user[0]['id'] ?>" required>
+                                                        </div>
+                                                    </div>
+
+
+                                                   
+                                                  <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                          <label class="col-form-label">Course</label>
+
+<select name="course_id" id="courseeee_id<?= $row['id'] ?>" class="form-control">
+    <option value="N/A">Choose Course</option>
+    <?php if (!empty($course)): ?>
+        <?php foreach ($course as $item): ?>
+            <option value="<?= $item['id'] ?>" <?= ( isset($assignment[0]['course_id']) && $assignment[0]['course_id'] == $item['id']) ? 'selected' : '' ?>>
+                <?= $item['name'] ?>
+            </option>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</select>
+
+
+
+                                                        </div>
+                                                    </div>
+                                                      <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                          <label class="col-form-label">Subjects</label>
+				<select name="subject_id" id="subjectttt_id<?= $row['id'] ?>" class="select2 form-control">
+    <option value="N/A">Choose Subject</option>
+</select>
+                                                        </div>
+                                                    </div>
+
+                                                   
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">Title<span
+                                                                    class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" name="title" value="<?= ( isset($assignment[0]['title'])) ? htmlspecialchars($assignment[0]['title']) : '' ?>" required>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                    <div class="col-md-12">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">File (PDF Formate)<span
+                                                                    class="text-danger">*</span></label>
+                                                         <input type="file" class="form-control" name="file" accept=".pdf">
+
+                                                              <?php if ( !empty($assignment[0]['file'])): ?>
+                                                    <div class="mt-2">
+                                                        <a href="<?= base_url('uploads/assignment/' . $assignment[0]['file']) ?>" target="_blank">
+                                                            <i class="fas fa-file-pdf text-danger" style="font-size: 30px;"></i> View PDF
+                                                        </a>
+                                                      
+                                                    </div>
+                                                <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                               
+         
+
+                                  
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /Basic Info -->
+                                  
+                                <div class="d-flex align-items-center justify-content-end">
+
+                                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#create_success">Save</button>
+                                </div>
+                            </form>
+									</div>
+								</div>
+							</div>
+						</div>
+            <?php endforeach; ?>
+       
+        <?php endif; ?>
+    </tbody>
+</table>
+
+                                </div>
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <div class="datatable-length"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="datatable-paginate"></div>
+                                    </div>
+                                </div>
+                                <!-- /Contact List -->
+
+                            </div>
+
+								</div>
+							</div>
 							<!-- Add Note -->
 							<div class="modal custom-modal fade modal-padding" id="add_notes" role="dialog">
 								<div class="modal-dialog modal-dialog-centered">
@@ -576,10 +1485,12 @@
 																<label class="col-form-label">Salary Month <span
 																		class="text-danger">*</span></label>
 																<select class="select2 form-control" name="month"
-																	required onchange="fetchAttendanceData()" id="salary_month" >
-																	<?php 
+																	required onchange="fetchAttendanceData()"
+																	id="salary_month">
+																	<?php
 																	$currentMonth = date('Y-m'); // This gives 2025-05
-																	$prevMonth = date('Y-m', strtotime('-1 month'));foreach ($months as $key => $month): ?>
+																	$prevMonth = date('Y-m', strtotime('-1 month'));
+																	foreach ($months as $key => $month): ?>
 																		<option value="<?= $key ?>" <?= ($tag == 'edit' && isset($shift[0]['salary_month']) && $shift[0]['salary_month'] == $key) || (!isset($shift[0]['salary_month']) && $key == $currentMonth) ? 'selected' : '' ?>>
 
 																			<?= $month ?>
@@ -612,7 +1523,8 @@
 															<div class="mb-3">
 																<label class="col-form-label">Total Present Days<span
 																		class="text-danger">*</span></label>
-																<input type="text" class="form-control" name="present" readonly>
+																<input type="text" class="form-control" name="present"
+																	readonly>
 
 
 															</div>
@@ -621,7 +1533,8 @@
 															<div class="mb-3">
 																<label class="col-form-label">Total Absent Days<span
 																		class="text-danger">*</span></label>
-																<input type="text" class="form-control" name="leaves" readonly>
+																<input type="text" class="form-control" name="leaves"
+																	readonly>
 
 
 															</div>
@@ -630,7 +1543,8 @@
 															<div class="mb-3">
 																<label class="col-form-label">Total Late Days<span
 																		class="text-danger">*</span></label>
-																<input type="text" class="form-control" name="late" readonly>
+																<input type="text" class="form-control" name="late"
+																	readonly>
 
 
 															</div>
@@ -683,17 +1597,19 @@
 
 
 
-														
+
 														?>
 
 														<?php foreach ($reward as $item): ?>
 
 
 															<div class="form-check">
-															<input class="form-check-input reward-checkbox" name="reward[]" type="checkbox" value="<?= $item['id'] ?>">
-															<?= $item['name'] ?>
+																<input class="form-check-input reward-checkbox"
+																	name="reward[]" type="checkbox"
+																	value="<?= $item['id'] ?>">
+																<?= $item['name'] ?>
 
-																
+
 
 															</div>
 														<?php endforeach; ?>
@@ -710,70 +1626,70 @@
 															</div>
 														</div>
 														<div class="col-md-12">
-                                                        <div class="mb-3">
-                                                            <div
-                                                                class="d-flex align-items-center justify-content-between">
-                                                                <label class="col-form-label">Payment Mode</label>
+															<div class="mb-3">
+																<div
+																	class="d-flex align-items-center justify-content-between">
+																	<label class="col-form-label">Payment Mode</label>
 
-                                                            </div>
-                                                            <select class="select" name="mode" id="paymentType" required
-                                                                onchange="handlePaymentChange()">
-                                                                <option Value="N/A">Choose</option>
-                                                                <option Value="Cash" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cash') ? 'selected' : '' ?>>Cash</option>
-                                                                <option value="UPI" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'UPI') ? 'selected' : '' ?>>UPI</option>
-                                                                <option value="Card" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Card') ? 'selected' : '' ?>>Created/Debit Card</option>
+																</div>
+																<select class="select" name="mode" id="paymentType"
+																	required onchange="handlePaymentChange()">
+																	<option Value="N/A">Choose</option>
+																	<option Value="Cash" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cash') ? 'selected' : '' ?>>Cash</option>
+																	<option value="UPI" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'UPI') ? 'selected' : '' ?>>UPI</option>
+																	<option value="Card" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Card') ? 'selected' : '' ?>>Created/Debit Card</option>
 
-                                                                <option value="Bank" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Bank') ? 'selected' : '' ?>>Bank</option>
-                                                                <option value="Cheque" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cheque') ? 'selected' : '' ?>>Cheque</option>
-                                                                <option value="None" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'None') ? 'selected' : '' ?>>None</option>
-
-
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                 <div class="col-md-12 d-none" id="bankDetails">
-                                                        <div class="mb-3">
-                                                            <label class="col-form-label">Bank Name<span
-                                                                    class="text-danger"> *</span></label>
-                                                            <select class="form-control" name="account_id"
-                                                                id="bankName">
-                                                                <option>Choose</option>
-
-                                                                <?php
+																	<option value="Bank" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Bank') ? 'selected' : '' ?>>Bank</option>
+																	<option value="Cheque" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cheque') ? 'selected' : '' ?>>Cheque</option>
+																	<option value="None" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'None') ? 'selected' : '' ?>>None</option>
 
 
-                                                                foreach ($account as $account_info) { ?>
-                                                                    <option value="<?= $account_info['id'] ?>"
-                                                                        <?= ($tag == 'edit' && isset($Student_payment[0]['account_id']) && $Student_payment[0]['account_id'] == $account_info['id']) ? 'selected' : '' ?>>
-                                                                        <?= $account_info['bank_name'] ?>-<?= $account_info['account_no'] ?>
-                                                                    </option>
-                                                                <?php } ?>
-                                                            </select>
-                                                        </div>
-                                                    </div>
+																</select>
+															</div>
+														</div>
+														<div class="col-md-12 d-none" id="bankDetails">
+															<div class="mb-3">
+																<label class="col-form-label">Bank Name<span
+																		class="text-danger"> *</span></label>
+																<select class="form-control" name="account_id"
+																	id="bankName">
+																	<option>Choose</option>
+
+																	<?php
 
 
-                                                    <div class="col-md-12 d-none" id="chequeDetails">
-                                                        <div class="mb-3">
-                                                            <label class="col-form-label">Cheque Number<span
-                                                                    class="text-danger"> *</span></label>
-                                                            <input type="text" class="form-control" name="cheque_no"
-                                                                id="chequeNumber"
-                                                                value="<?= $Student_payment[0]['cheque_no'] ?>">
-                                                        </div>
+																	foreach ($account as $account_info) { ?>
+																		<option value="<?= $account_info['id'] ?>"
+																			<?= ($tag == 'edit' && isset($Student_payment[0]['account_id']) && $Student_payment[0]['account_id'] == $account_info['id']) ? 'selected' : '' ?>>
+																			<?= $account_info['bank_name'] ?>-<?= $account_info['account_no'] ?>
+																		</option>
+																	<?php } ?>
+																</select>
+															</div>
+														</div>
 
-                                                    </div>
-													 <div class="col-md-12">
-                                                        <div class="mb-3">
-                                                            <label class="col-form-label">paid Amount<span
-                                                                    class="text-danger"> *</span></label>
-                                                            <input type="number" class="form-control" name="paid"
-                                                                id="paid" value="<?= $Student_payment[0]['paid'] ?>"
-                                                                required oninput="validatePaidAmount()">
-                                                            <input type="hidden" name="p_id"
-                                                                value="<?= $Student_payment[0]['id'] ?>">
-                                                        </div>
-                                                    </div>
+
+														<div class="col-md-12 d-none" id="chequeDetails">
+															<div class="mb-3">
+																<label class="col-form-label">Cheque Number<span
+																		class="text-danger"> *</span></label>
+																<input type="text" class="form-control" name="cheque_no"
+																	id="chequeNumber"
+																	value="<?= $Student_payment[0]['cheque_no'] ?>">
+															</div>
+
+														</div>
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">paid Amount<span
+																		class="text-danger"> *</span></label>
+																<input type="number" class="form-control" name="paid"
+																	id="paid" value="<?= $Student_payment[0]['paid'] ?>"
+																	required oninput="validatePaidAmount()">
+																<input type="hidden" name="p_id"
+																	value="<?= $Student_payment[0]['id'] ?>">
+															</div>
+														</div>
 													</div>
 
 
@@ -820,123 +1736,553 @@
 									</div>
 								</div>
 							</div>
+							<div class="modal custom-modal fade " id="add_class" role="dialog">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Class</h5>
+											<button type="button" class="btn-close position-static"
+												data-bs-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">×</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<form
+												action="<?= base_url('Admin_Dashboard/add_timetable_teacher/' . encryptId($user[0]['inst_id']) . '/' . encryptId($user[0]['id'])) ?>"
+												method="Post">
+												<div class="accordion" id="main_accordion">
+													<!-- Basic Info -->
+													<div class="accordion-item rounded mb-3">
+														<div class="accordion-header">
+
+														</div>
+														<div class="accordion-collapse collapse show" id="basic"
+															data-bs-parent="#main_accordion">
+															<div class="accordion-body border-top">
+																<div class="row">
+																	<div class="col-md-12">
+																		<div class="mb-3">
+																			<label class="col-form-label">Select
+																				Batch</label>
+
+																			<select class="select2 form-control"
+																				name="batch_id">
+																				<option value="N/A"
+																					data-display="Please select">Choose
+																				</option>
+																				<?php if (!empty($batch)): ?>
+																					<?php foreach ($batch as $item): ?>
+
+																						<option value="<?= $item['id'] ?>"
+																							data-display="Please select">
+																							<?= $item['name'] ?>
+																						</option>
+																					<?php endforeach; ?>
+																				<?php endif; ?>
+
+																			</select>
+																			<input type="hidden" class="form-control"
+																				name="inst_id"
+																				value="<?= $user[0]['inst_id'] ?>"
+																				required>
+																			<input type="hidden" class="form-control"
+																				name="emp_id"
+																				value="<?= $user[0]['id'] ?>" required>
+																		</div>
+																	</div>
+
+
+																	<div class="col-md-6">
+																		<div class="mb-3">
+																			<label class="col-form-label">Course</label>
+
+																			<select class=" form-control"
+																				name="course_id" id="course_id">
+																				<option value="N/A">Choose</option>
+																				<?php if (!empty($course)): ?>
+																					<?php foreach ($course as $item): ?>
+																						<option value="<?= $item['id'] ?>">
+																							<?= $item['name'] ?>
+																						</option>
+																					<?php endforeach; ?>
+																				<?php endif; ?>
+																			</select>
+																		</div>
+																	</div>
+																	<div class="col-md-6">
+																		<div class="mb-3">
+																			<label
+																				class="col-form-label">Subjects</label>
+																			<select name="subject_id" id="subject_id"
+																				class=" select2 form-control">
+																				<option value="N/A">Choose Subject
+																				</option>
+																			</select>
+																		</div>
+																	</div>
+
+
+																	<div class="col-md-6">
+																		<div class="mb-3">
+																			<label class="col-form-label">Start
+																				Timing<span
+																					class="text-danger">*</span></label>
+																			<input type="time" class="form-control"
+																				name="starting_time" value="" required>
+																		</div>
+																	</div>
+
+																	<div class="col-md-6">
+																		<div class="mb-3">
+																			<label class="col-form-label">End
+																				Timing<span
+																					class="text-danger">*</span></label>
+																			<input type="time" class="form-control"
+																				name="ending_time" value="" required>
+																		</div>
+																	</div>
+
+
+
+
+
+																</div>
+															</div>
+														</div>
+													</div>
+													<!-- /Basic Info -->
+
+													<div class="d-flex align-items-center justify-content-end">
+
+														<button type="submit" class="btn btn-primary"
+															data-bs-toggle="modal"
+															data-bs-target="#create_success">Save</button>
+													</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
 						</div>
+						<div class="modal custom-modal fade " id="add_liveclass" role="dialog">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Live Class</h5>
+										<button type="button" class="btn-close position-static" data-bs-dismiss="modal"
+											aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<form
+											action="<?= base_url('Admin_Dashboard/add_liveclass_teacher/' . encryptId($user[0]['inst_id'])) ?>"
+											method="Post">
+											<div class="accordion" id="main_accordion">
+												<!-- Basic Info -->
+												<div class="accordion-item rounded mb-3">
+
+													<div class="accordion-collapse collapse show" id="basic"
+														data-bs-parent="#main_accordion">
+														<div class="accordion-body border-top">
+															<div class="row">
+																<div class="col-md-6">
+																	<div class="mb-3">
+																		<label class="col-form-label">Select Batch<span
+																				class="text-danger">*</span></label>
+
+																		<select class="select2 form-control"
+																			name="batch_id">
+																			<option value="N/A" <?= ($tag == 'edit' && isset($liveclass[0]['batch_id']) && $liveclass[0]['batch_id'] == 'N/A') ? 'selected' : '' ?>
+																				data-display="Please select">Choose
+																			</option>
+																			<?php if (!empty($batch)): ?>
+																				<?php foreach ($batch as $item): ?>
+
+																					<option value="<?= $item['id'] ?>"
+																						<?= ($tag == 'edit' && isset($liveclass[0]['batch_id']) && $liveclass[0]['batch_id'] == $item['id']) ? 'selected' : '' ?>>
+																						<?= $item['name'] ?>
+																					</option>
+																				<?php endforeach; ?>
+																			<?php endif; ?>
+
+																		</select>
+																		<input type="hidden" class="form-control"
+																			name="inst_id"
+																			value="<?= ($tag == 'edit' && isset($liveclass[0]['inst_id'])) ? htmlspecialchars($liveclass[0]['inst_id']) : $user[0]['inst_id'] ?>"
+																			required>
+																		<input type="hidden" class="form-control"
+																			name="emp_id"
+																			value="<?= ($tag == 'edit' && isset($liveclass[0]['emp_id'])) ? htmlspecialchars($liveclass[0]['emp_id']) : $user[0]['id'] ?>"
+																			required>
+																	</div>
+																</div>
+																<div class="col-md-6">
+																	<div class="mb-3">
+																		<label class="col-form-label">Course<span
+																				class="text-danger">*</span></label>
+
+																		<select class=" form-control" name="course_id"
+																			id="coursee_id">
+																			<option value="N/A">Choose</option>
+																			<?php if (!empty($course)): ?>
+																				<?php foreach ($course as $item): ?>
+																					<option value="<?= $item['id'] ?>"
+																						<?= ($tag == 'edit' && isset($liveclass[0]['course_id']) && $liveclass[0]['course_id'] == $item['id']) ? 'selected' : '' ?>>
+																						<?= $item['name'] ?>
+																					</option>
+																				<?php endforeach; ?>
+																			<?php endif; ?>
+																		</select>
+																	</div>
+																</div>
+																<div class="col-md-6">
+																	<div class="mb-3">
+																		<label class="col-form-label">Subjects<span
+																				class="text-danger">*</span></label>
+																		<select name="subject_id" id="subjectt_id"
+																			class=" select2 form-control">
+																			<option value="N/A">Choose Subject</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="col-md-6">
+																	<div class="mb-3">
+																		<label class="col-form-label">Select
+																			Platform<span
+																				class="text-danger">*</span></label>
+
+																		<select class="select2 form-control"
+																			name="platform">
+																			<option value="N/A" <?= ($tag == 'edit' && isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'N/A') ? 'selected' : '' ?>
+																				data-display="Please select">Choose
+																			</option>
+																			<option value="Google Meet" <?= ($tag == 'edit' && isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Google Meet') ? 'selected' : '' ?>
+																				data-display="Please select">
+																				Google Meet
+																			</option>
+																			<option value="Zoom" <?= ($tag == 'edit' && isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Zoom') ? 'selected' : '' ?>
+																				data-display="Please select">
+																				Zoom
+																			</option>
+																			<option value="Microsoft Teams"
+																				<?= ($tag == 'edit' && isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Microsoft Teams') ? 'selected' : '' ?>
+																				data-display="Please select">
+																				Microsoft Teams
+																			</option>
+																			<option value="Skype" <?= ($tag == 'edit' && isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Skype') ? 'selected' : '' ?>
+																				data-display="Please select">
+																				Skype
+																			</option>
+																			<option value="Cisco Webex" <?= ($tag == 'edit' && isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'Cisco Webex') ? 'selected' : '' ?>
+																				data-display="Please select">
+																				Cisco Webex
+																			</option>
+
+																		</select>
+																	</div>
+																</div>
+
+																<div class="col-md-6">
+																	<div class="mb-3">
+																		<label class="col-form-label">Link<span
+																				class="text-danger">*</span></label>
+																		<input type="url" class="form-control"
+																			name="url"
+																			value="<?= ($tag == 'edit' && isset($liveclass[0]['url'])) ? htmlspecialchars($liveclass[0]['url']) : '' ?>"
+																			required>
+																	</div>
+																</div>
+																<div class="col-md-6">
+																	<div class="mb-3">
+																		<label class="col-form-label">Date<span
+																				class="text-danger">*</span></label>
+																		<input type="date" class="form-control"
+																			name="date"
+																			value="<?= ($tag == 'edit' && isset($liveclass[0]['date'])) ? htmlspecialchars($liveclass[0]['date']) : '' ?>"
+																			required>
+																	</div>
+																</div>
+
+																<div class="col-md-6">
+																	<div class="mb-3">
+																		<label class="col-form-label">Start Timing<span
+																				class="text-danger">*</span></label>
+																		<input type="time" class="form-control"
+																			name="starting_time"
+																			value="<?= ($tag == 'edit' && isset($liveclass[0]['starting_time'])) ? htmlspecialchars($liveclass[0]['starting_time']) : '' ?>"
+																			required>
+																	</div>
+																</div>
+
+																<div class="col-md-6">
+																	<div class="mb-3">
+																		<label class="col-form-label">End Timing<span
+																				class="text-danger">*</span></label>
+																		<input type="time" class="form-control"
+																			name="ending_time"
+																			value="<?= ($tag == 'edit' && isset($liveclass[0]['ending_time'])) ? htmlspecialchars($liveclass[0]['ending_time']) : '' ?>"
+																			required>
+																	</div>
+																</div>
+
+
+
+
+
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- /Basic Info -->
+
+												<div class="d-flex align-items-center justify-content-end">
+
+													<button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+														data-bs-target="#create_success">Save</button>
+												</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						</div>
+<div class="modal custom-modal fade " id="add_assignment" role="dialog">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Assignment</h5>
+										<button type="button" class="btn-close position-static" data-bs-dismiss="modal"
+											aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<form
+											action="<?= base_url('Admin_Dashboard/add_assignment_teacher') ?>"
+											method="Post" enctype="multipart/form-data">
+                                <div class="accordion" id="main_accordion">
+                                    <!-- Basic Info -->
+                                    <div class="accordion-item rounded mb-3">
+                                        
+                                        <div class="accordion-collapse collapse show" id="basic" data-bs-parent="#main_accordion">
+                                            <div class="accordion-body border-top">
+                                                <div class="row">
+
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                               <label class="col-form-label">Select Batch</label>
+										
+                                                            <select class="select2 form-control" name="batch_id">
+                                                                <option value="N/A" 
+                                                                    data-display="Please select">Choose</option>
+                                                                <?php if (!empty($batch)): ?>
+                                                                    <?php foreach ($batch as $item): ?>
+
+                                                                        <option value="<?= $item['id'] ?>" data-display="Please select">
+                                                                            <?= $item['name'] ?>
+                                                                        </option>
+                                                                    <?php endforeach; ?>
+                                                                <?php endif; ?>
+
+                                                            </select>
+                                                            <input type="hidden" class="form-control" name="inst_id" value="<?= $user[0]['inst_id'] ?>" required>
+															<input type="hidden" class="form-control" name="emp_id" value="<?= $user[0]['id'] ?>" required>
+                                                        </div>
+                                                    </div>
+
+
+                                                   
+                                                  <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                          <label class="col-form-label">Course</label>
+											
+                                                    
+<select name="course_id" id="courseee_id" class="form-control">
+    <option value="N/A">Choose Course</option>
+    <?php if (!empty($course)): ?>
+        <?php foreach ($course as $item): ?>
+            <option value="<?= $item['id'] ?>">
+                <?= $item['name'] ?>
+            </option>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</select>
+
+
+
+                                                        </div>
+                                                    </div>
+                                                      <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                          <label class="col-form-label">Subjects</label>
+				<select name="subject_id" id="subjecttt_id" class=" select2 form-control">
+    <option value="N/A">Choose Subject</option>
+</select>
+                                                        </div>
+                                                    </div>
+
+                                                   
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">Title<span
+                                                                    class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" name="title" value="" required>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                    <div class="col-md-12">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">File (PDF Formate)<span
+                                                                    class="text-danger">*</span></label>
+                                                         <input type="file" class="form-control" name="file" accept=".pdf" required>
+
+                                                             
+                                                        </div>
+                                                    </div>
+                                               
+         
+
+                                  
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /Basic Info -->
+                                  
+                                <div class="d-flex align-items-center justify-content-end">
+
+                                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#create_success">Save</button>
+                                </div>
+                            </form>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+							
 						<script src="https://cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
 						<script>
 							CKEDITOR.replace('editor'); // Initialize CKEditor
 						</script>
-					<script>
-document.addEventListener('DOMContentLoaded', function () {
-    fetchAttendanceData(); // Triggers attendance fetch for the default-selected option
-});
-</script>
+						<script>
+							document.addEventListener('DOMContentLoaded', function () {
+								fetchAttendanceData(); // Triggers attendance fetch for the default-selected option
+							});
+						</script>
 						<!-- /Main Wrapper -->
 						<script>
-function calculateDeductedSalary() {
-    const salaryInput = document.querySelector('input[name="salary"]');
-    const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
-    const lessSalaryInput = document.querySelector('input[name="less_salary"]');
-    const totalSalaryInput = document.querySelector('input[name="total_salary"]');
-    const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
-    const rewardCheckboxes = document.querySelectorAll('.reward-checkbox');
-    const base_url = "<?= base_url() ?>";
+							function calculateDeductedSalary() {
+								const salaryInput = document.querySelector('input[name="salary"]');
+								const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
+								const lessSalaryInput = document.querySelector('input[name="less_salary"]');
+								const totalSalaryInput = document.querySelector('input[name="total_salary"]');
+								const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
+								const rewardCheckboxes = document.querySelectorAll('.reward-checkbox');
+								const base_url = "<?= base_url() ?>";
 
-    const monthlySalary = parseFloat(salaryInput.value) || 0;
-    const deductedDays = parseFloat(cuttingDaysInput.value) || 0;
-    const perDaySalary = monthlySalary / 30;
-    let deductedAmount = deductedDays * perDaySalary;
+								const monthlySalary = parseFloat(salaryInput.value) || 0;
+								const deductedDays = parseFloat(cuttingDaysInput.value) || 0;
+								const perDaySalary = monthlySalary / 30;
+								let deductedAmount = deductedDays * perDaySalary;
 
-    const selectedPenaltyIds = Array.from(penaltyCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
+								const selectedPenaltyIds = Array.from(penaltyCheckboxes)
+									.filter(cb => cb.checked)
+									.map(cb => cb.value);
 
-    const selectedRewardIds = Array.from(rewardCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
+								const selectedRewardIds = Array.from(rewardCheckboxes)
+									.filter(cb => cb.checked)
+									.map(cb => cb.value);
 
-    let totalReward = 0;
+								let totalReward = 0;
 
-    function updateTotalSalary() {
-        const finalSalary = monthlySalary - deductedAmount + totalReward;
-        lessSalaryInput.value = deductedAmount.toFixed(2);
-        totalSalaryInput.value = finalSalary.toFixed(2);
-    }
+								function updateTotalSalary() {
+									const finalSalary = monthlySalary - deductedAmount + totalReward;
+									lessSalaryInput.value = deductedAmount.toFixed(2);
+									totalSalaryInput.value = finalSalary.toFixed(2);
+								}
 
-    const fetchPenalty = selectedPenaltyIds.length > 0
-        ? fetch(base_url + 'Admin_Dashboard/get_penalty_amounts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ids: selectedPenaltyIds })
-        }).then(res => res.json()).then(data => {
-            if (data.status) {
-                deductedAmount += data.total_penalty;
-            }
-        }) : Promise.resolve();
+								const fetchPenalty = selectedPenaltyIds.length > 0
+									? fetch(base_url + 'Admin_Dashboard/get_penalty_amounts', {
+										method: 'POST',
+										headers: { 'Content-Type': 'application/json' },
+										body: JSON.stringify({ ids: selectedPenaltyIds })
+									}).then(res => res.json()).then(data => {
+										if (data.status) {
+											deductedAmount += data.total_penalty;
+										}
+									}) : Promise.resolve();
 
-    const fetchReward = selectedRewardIds.length > 0
-        ? fetch(base_url + 'Admin_Dashboard/get_reward_amounts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ids: selectedRewardIds })
-        }).then(res => res.json()).then(data => {
-            if (data.status) {
-                totalReward = data.total_reward;
-            }
-        }) : Promise.resolve();
+								const fetchReward = selectedRewardIds.length > 0
+									? fetch(base_url + 'Admin_Dashboard/get_reward_amounts', {
+										method: 'POST',
+										headers: { 'Content-Type': 'application/json' },
+										body: JSON.stringify({ ids: selectedRewardIds })
+									}).then(res => res.json()).then(data => {
+										if (data.status) {
+											totalReward = data.total_reward;
+										}
+									}) : Promise.resolve();
 
-    Promise.all([fetchPenalty, fetchReward]).then(updateTotalSalary).catch(err => {
-        console.error("Error fetching data", err);
-        updateTotalSalary();
-    });
-}
+								Promise.all([fetchPenalty, fetchReward]).then(updateTotalSalary).catch(err => {
+									console.error("Error fetching data", err);
+									updateTotalSalary();
+								});
+							}
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('input[name="cuting_days"]').addEventListener('input', calculateDeductedSalary);
-    document.querySelectorAll('.fee-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
-    document.querySelectorAll('.reward-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
-});
-</script>
+							document.addEventListener('DOMContentLoaded', function () {
+								document.querySelector('input[name="cuting_days"]').addEventListener('input', calculateDeductedSalary);
+								document.querySelectorAll('.fee-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
+								document.querySelectorAll('.reward-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
+							});
+						</script>
 
 
-<script>
-function fetchAttendanceData() {
-    const month = document.getElementById('salary_month').value;
-    const empCode = "<?= $user[0]['id'] ?>";
-    const instId = "<?= $clg[0]['id'] ?>";
-    const base_url = "<?= base_url() ?>";
+						<script>
+							function fetchAttendanceData() {
+								const month = document.getElementById('salary_month').value;
+								const empCode = "<?= $user[0]['id'] ?>";
+								const instId = "<?= $clg[0]['id'] ?>";
+								const base_url = "<?= base_url() ?>";
 
-    if (month && empCode && instId) {
-        fetch(base_url + "Admin_Dashboard/get_emp_attendance_summary?emp_code=" + empCode + "&inst_id=" + instId + "&month=" + month)
-        .then(res => res.json())
-        .then(data => {
-            if (data.status) {
-                document.querySelector('input[name="total_days"]').value = data.total_days;
-                document.querySelector('input[name="present"]').value = data.present_days;
-                document.querySelector('input[name="leaves"]').value = data.absent_days;
-                document.querySelector('input[name="cuting_days"]').value = data.absent_days;
-                document.querySelector('input[name="late"]').value = data.late_days;
+								if (month && empCode && instId) {
+									fetch(base_url + "Admin_Dashboard/get_emp_attendance_summary?emp_code=" + empCode + "&inst_id=" + instId + "&month=" + month)
+										.then(res => res.json())
+										.then(data => {
+											if (data.status) {
+												document.querySelector('input[name="total_days"]').value = data.total_days;
+												document.querySelector('input[name="present"]').value = data.present_days;
+												document.querySelector('input[name="leaves"]').value = data.absent_days;
+												document.querySelector('input[name="cuting_days"]').value = data.absent_days;
+												document.querySelector('input[name="late"]').value = data.late_days;
 
-                calculateDeductedSalary(); // now this will work
-            } else {
-                alert("No attendance data found.");
-            }
-        })
-        .catch(err => {
-            console.error("Error:", err);
-            alert("Failed to fetch attendance data.");
-        });
-    }
-}
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
-    const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
+												calculateDeductedSalary(); // now this will work
+											} else {
+												alert("No attendance data found.");
+											}
+										})
+										.catch(err => {
+											console.error("Error:", err);
+											alert("Failed to fetch attendance data.");
+										});
+								}
+							}
+						</script>
+						<script>
+							document.addEventListener('DOMContentLoaded', function () {
+								const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
+								const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
 
-    cuttingDaysInput.addEventListener('input', calculateDeductedSalary);
-    penaltyCheckboxes.forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
-});
-</script>
+								cuttingDaysInput.addEventListener('input', calculateDeductedSalary);
+								penaltyCheckboxes.forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
+							});
+						</script>
 
 
 						<script>
@@ -1020,6 +2366,261 @@ document.addEventListener('DOMContentLoaded', function () {
 
 						<script src="../../cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js"
 							data-cf-settings="c437fe80f96e304f0c16e4c8-|49" defer></script>
+						<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+						<script>
+							document.addEventListener("DOMContentLoaded", function () {
+								<?php foreach ($class as $row):
+									$timetable = $this->CommonModal->getRowById('timetable', 'id', $row['id']);
+									$selectedCourseId = isset($timetable[0]['course_id']) ? $timetable[0]['course_id'] : '';
+									$selectedSubjectId = isset($timetable[0]['subject_id']) ? $timetable[0]['subject_id'] : '';
+									?>
+									function loadSubjects<?= $row['id'] ?>(courseId, selectedSubjectId = '') {
+										if (courseId !== 'N/A' && courseId !== '') {
+											const xhr = new XMLHttpRequest();
+											xhr.open("POST", "<?= base_url('Admin_Dashboard/get_subjects_by_course') ?>", true);
+											xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+											xhr.onreadystatechange = function () {
+												if (xhr.readyState === 4 && xhr.status === 200) {
+													const subjectSelect = document.getElementById('subject_id_<?= $row['id'] ?>');
+													subjectSelect.innerHTML = xhr.responseText;
+
+													// Pre-select subject in edit mode
+													if (selectedSubjectId !== '') {
+														subjectSelect.value = selectedSubjectId;
+													}
+												}
+											};
+											xhr.send("course_id=" + encodeURIComponent(courseId));
+										} else {
+											document.getElementById('subject_id_<?= $row['id'] ?>').innerHTML = '<option value="N/A">Choose Subject</option>';
+										}
+									}
+
+									const courseSelect<?= $row['id'] ?> = document.getElementById('course_id_<?= $row['id'] ?>');
+									courseSelect<?= $row['id'] ?>.addEventListener('change', function () {
+										loadSubjects<?= $row['id'] ?>(this.value);
+									});
+
+									// Load subjects on page load for edit modal
+									if (courseSelect<?= $row['id'] ?>.value) {
+										loadSubjects<?= $row['id'] ?>(courseSelect<?= $row['id'] ?>.value, "<?= $selectedSubjectId ?>");
+									}
+								<?php endforeach; ?>
+							});
+						</script>
+						<script>
+							document.addEventListener("DOMContentLoaded", function () {
+								function loadSubjects(courseId, selectedSubjectId = '') {
+									if (courseId !== 'N/A' && courseId !== '') {
+										const xhr = new XMLHttpRequest();
+										xhr.open("POST", "<?= base_url('Admin_Dashboard/get_subjects_by_course') ?>", true);
+										xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+										xhr.onreadystatechange = function () {
+											if (xhr.readyState === 4 && xhr.status === 200) {
+												const subjectSelect = document.getElementById('subject_id');
+												subjectSelect.innerHTML = xhr.responseText;
+
+												// Pre-select subject in edit mode
+												if (selectedSubjectId !== '') {
+													subjectSelect.value = selectedSubjectId;
+												}
+											}
+										};
+										xhr.send("course_id=" + encodeURIComponent(courseId));
+									} else {
+										document.getElementById('subject_id').innerHTML = '<option value="N/A">Choose Subject</option>';
+									}
+								}
+
+								const courseSelect = document.getElementById('course_id');
+								const subjectSelect = document.getElementById('subject_id');
+
+								// Edit mode subject id (blank in add mode)
+								const selectedCourseId = courseSelect.value;
+								const selectedSubjectId = "<?= isset($timetable[0]['subject_id']) ? $timetable[0]['subject_id'] : '' ?>";
+
+								// Load subject list on page load (both add and edit)
+								if (selectedCourseId) {
+									loadSubjects(selectedCourseId, selectedSubjectId);
+								}
+
+								// Also load when user manually changes course
+								courseSelect.addEventListener('change', function () {
+									loadSubjects(this.value);
+								});
+							});
+						</script>
+						<script>
+							document.addEventListener("DOMContentLoaded", function () {
+								function loadSubjects(courseId, selectedSubjectId = '') {
+									if (courseId !== 'N/A' && courseId !== '') {
+										const xhr = new XMLHttpRequest();
+										xhr.open("POST", "<?= base_url('Admin_Dashboard/get_subjects_by_course') ?>", true);
+										xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+										xhr.onreadystatechange = function () {
+											if (xhr.readyState === 4 && xhr.status === 200) {
+												const subjectSelect = document.getElementById('subjectt_id');
+												subjectSelect.innerHTML = xhr.responseText;
+
+												// Pre-select subject in edit mode
+												if (selectedSubjectId !== '') {
+													subjectSelect.value = selectedSubjectId;
+												}
+											}
+										};
+										xhr.send("course_id=" + encodeURIComponent(courseId));
+									} else {
+										document.getElementById('subjectt_id').innerHTML = '<option value="N/A">Choose Subject</option>';
+									}
+								}
+
+								const courseSelect = document.getElementById('coursee_id');
+								const subjectSelect = document.getElementById('subjectt_id');
+
+								// Edit mode subject id (blank in add mode)
+								const selectedCourseId = courseSelect.value;
+								const selectedSubjectId = "<?= isset($liveclass[0]['subject_id']) ? $liveclass[0]['subject_id'] : '' ?>";
+
+								// Load subject list on page load (both add and edit)
+								if (selectedCourseId) {
+									loadSubjects(selectedCourseId, selectedSubjectId);
+								}
+
+								// Also load when user manually changes course
+								courseSelect.addEventListener('change', function () {
+									loadSubjects(this.value);
+								});
+							});
+						</script>
+						<script>
+							document.addEventListener("DOMContentLoaded", function () {
+								<?php foreach ($liveclasss as $row):
+									$liveclass = $this->CommonModal->getRowById('liveclass', 'id', $row['id']);
+									$selectedCourseId = isset($liveclass[0]['course_id']) ? $liveclass[0]['course_id'] : '';
+									$selectedSubjectId = isset($liveclass[0]['subject_id']) ? $liveclass[0]['subject_id'] : '';
+									?>
+									function loadSubjects<?= $row['id'] ?>(courseId, selectedSubjectId = '') {
+										if (courseId !== 'N/A' && courseId !== '') {
+											const xhr = new XMLHttpRequest();
+											xhr.open("POST", "<?= base_url('Admin_Dashboard/get_subjects_by_course') ?>", true);
+											xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+											xhr.onreadystatechange = function () {
+												if (xhr.readyState === 4 && xhr.status === 200) {
+													const subjectSelect = document.getElementById('subjectt_id_<?= $row['id'] ?>');
+													subjectSelect.innerHTML = xhr.responseText;
+
+													// Pre-select subject in edit mode
+													if (selectedSubjectId !== '') {
+														subjectSelect.value = selectedSubjectId;
+													}
+												}
+											};
+											xhr.send("course_id=" + encodeURIComponent(courseId));
+										} else {
+											document.getElementById('subjectt_id_<?= $row['id'] ?>').innerHTML = '<option value="N/A">Choose Subject</option>';
+										}
+									}
+
+									const courseSelect<?= $row['id'] ?> = document.getElementById('coursee_id_<?= $row['id'] ?>');
+									courseSelect<?= $row['id'] ?>.addEventListener('change', function () {
+										loadSubjects<?= $row['id'] ?>(this.value);
+									});
+
+									// Load subjects on page load for edit modal
+									if (courseSelect<?= $row['id'] ?>.value) {
+										loadSubjects<?= $row['id'] ?>(courseSelect<?= $row['id'] ?>.value, "<?= $selectedSubjectId ?>");
+									}
+								<?php endforeach; ?>
+							});
+						</script>
+						<script>
+							document.addEventListener("DOMContentLoaded", function () {
+								function loadSubjects(courseId, selectedSubjectId = '') {
+									if (courseId !== 'N/A' && courseId !== '') {
+										const xhr = new XMLHttpRequest();
+										xhr.open("POST", "<?= base_url('Admin_Dashboard/get_subjects_by_course') ?>", true);
+										xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+										xhr.onreadystatechange = function () {
+											if (xhr.readyState === 4 && xhr.status === 200) {
+												const subjectSelect = document.getElementById('subjecttt_id');
+												subjectSelect.innerHTML = xhr.responseText;
+
+												// Pre-select subject in edit mode
+												if (selectedSubjectId !== '') {
+													subjectSelect.value = selectedSubjectId;
+												}
+											}
+										};
+										xhr.send("course_id=" + encodeURIComponent(courseId));
+									} else {
+										document.getElementById('subjecttt_id').innerHTML = '<option value="N/A">Choose Subject</option>';
+									}
+								}
+
+								const courseSelect = document.getElementById('courseee_id');
+								const subjectSelect = document.getElementById('subjecttt_id');
+
+								// Edit mode subject id (blank in add mode)
+								const selectedCourseId = courseSelect.value;
+								const selectedSubjectId = "<?= isset($assignment[0]['subject_id']) ? $assignment[0]['subject_id'] : '' ?>";
+
+								// Load subject list on page load (both add and edit)
+								if (selectedCourseId) {
+									loadSubjects(selectedCourseId, selectedSubjectId);
+								}
+
+								// Also load when user manually changes course
+								courseSelect.addEventListener('change', function () {
+									loadSubjects(this.value);
+								});
+							});
+						</script>
+						<script>
+document.addEventListener("DOMContentLoaded", function () {
+	<?php foreach ($assignments as $row):
+		$assignment = $this->CommonModal->getRowById('assignment', 'id', $row['id']);
+		$selectedCourseId = isset($assignment[0]['course_id']) ? $assignment[0]['course_id'] : '';
+		$selectedSubjectId = isset($assignment[0]['subject_id']) ? $assignment[0]['subject_id'] : '';
+		?>
+
+		function loadSubjectsForAssignment<?= $row['id'] ?>(courseId, selectedSubjectId = '') {
+			if (courseId && courseId !== 'N/A') {
+				const xhr = new XMLHttpRequest();
+				xhr.open("POST", "<?= base_url('Admin_Dashboard/get_subjects_by_course') ?>", true);
+				xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4 && xhr.status === 200) {
+						const subjectSelect = document.getElementById('subjectttt_id<?= $row['id'] ?>');
+						subjectSelect.innerHTML = xhr.responseText;
+
+						// Pre-select subject
+						if (selectedSubjectId) {
+							subjectSelect.value = selectedSubjectId;
+						}
+					}
+				};
+				xhr.send("course_id=" + encodeURIComponent(courseId));
+			} else {
+				document.getElementById('subjectttt_id<?= $row['id'] ?>').innerHTML = '<option value="N/A">Choose Subject</option>';
+			}
+		}
+
+		const courseSelect<?= $row['id'] ?> = document.getElementById('courseeee_id<?= $row['id'] ?>');
+		if (courseSelect<?= $row['id'] ?>) {
+			courseSelect<?= $row['id'] ?>.addEventListener('change', function () {
+				loadSubjectsForAssignment<?= $row['id'] ?>(this.value);
+			});
+
+			// Load subjects on page load
+			if (courseSelect<?= $row['id'] ?>.value) {
+				loadSubjectsForAssignment<?= $row['id'] ?>(courseSelect<?= $row['id'] ?>.value, "<?= $selectedSubjectId ?>");
+			}
+		}
+	<?php endforeach; ?>
+});
+</script>
+
+
 </body>
 
 

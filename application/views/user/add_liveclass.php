@@ -124,9 +124,7 @@
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
                                                                <label class="col-form-label">Select Platform</label>
-											<a href="javascript:void(0);" data-bs-toggle="modal"
-												data-bs-target="#add_department" class="com-add"><i
-													class="ti ti-circle-plus me-1"></i>Add New</a>
+									
                                                             <select class="select2 form-control" name="platform"
                                                                 >
                                                                 <option value="N/A" <?= ($tag == 'edit' && isset($liveclass[0]['platform']) && $liveclass[0]['platform'] == 'N/A') ? 'selected' : '' ?>
