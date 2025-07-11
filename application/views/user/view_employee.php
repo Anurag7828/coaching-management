@@ -136,6 +136,7 @@
                                                 <th>Gender</th>
                                                 <th>Branch</th>
                                                 <th>Shift</th>
+                                                <th>Classes</th>
 
                                                 <th>Status</th>
                                                 <!-- <th>Add By</th> -->
@@ -164,7 +165,13 @@
                                                         <?php $shift = $this->CommonModal->getRowById('shifts', 'id', $row['shift_id']); ?>
 
                                                         <td><?= $shift[0]['name']; ?></td>
-
+                                                        <td>  <a class="dropdown-item"
+                                                                        href="<?php echo base_url() . 'Admin_Dashboard/view_timetable/' . encryptId($row['id']) . '/' . encryptId($user[0]['id']).'?tag=emp'; ?>">
+                                                                <span class="badge badge-pill badge-status  bg-success">
+                                                             Classes 
+                                                                </span>
+                                                            </a>
+                                                        </td>
 
                                                         <td> <?php if ($row['status'] == '0') { ?>
                                                                 <span class="badge badge-pill badge-status  bg-success">

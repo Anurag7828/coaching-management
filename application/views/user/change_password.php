@@ -24,6 +24,7 @@
 							<div class="row align-items-center">
 								<div class="col-sm-4">
 									<h4 class="page-title">Settings</h4>
+                                    						      
 								</div>
 								<div class="col-sm-8 text-sm-end">
 									<div class="head-icons">
@@ -34,6 +35,19 @@
 												class="ti ti-chevrons-up"></i></a>
 									</div>
 								</div>
+                                 <?php if ($this->session->flashdata('msgsuccess')): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= $this->session->flashdata('msgsuccess'); ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<?php if ($this->session->flashdata('msgerror')): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= $this->session->flashdata('msgerror'); ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
 							</div>
 						</div>
 						<!-- /Page Header -->
