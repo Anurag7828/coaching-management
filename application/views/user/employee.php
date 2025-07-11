@@ -239,7 +239,7 @@
 									</li>
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#attendence" class="nav-link"><i
-										class="ti ti-notes me-1"></i>Attendance Report</a>
+												class="ti ti-notes me-1"></i>Attendance Report</a>
 									</li>
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#timetable" class="nav-link"><i
@@ -369,28 +369,44 @@
 
 																	<th class="text-end">Total Amount</th>
 																	<th class="text-end">Status</th>
-
+<th class="text-end">Salary Slip</th>
 																</tr>
 															</thead>
 															<tbody>
-																<?php
-																$total_amount = 0; // Initialize total amount
-																?>
-																<tr>
-																	<td><?= $employee[0]['salary'] ?> Rs</td>
+																<?php if (!empty($salary_list)) : ?>
+																	<?php foreach ($salary_list as $salary): ?>
+																		<?php
+																		$monthly_salary = $employee[0]['salary'];
+																		$leaves = $salary['leaves'];
+																		$less_salary = ($leaves > 0) ? round(($monthly_salary / 30) * $leaves, 2) : 0;
+																		$net_salary = $monthly_salary - $less_salary;
+																		?>
+																		<tr>
+																			<td><?= $salary['month'] ?></td>
+																			<td><?= $monthly_salary ?> Rs</td>
+																			<td><?= $leaves ?></td>
+																			<td><?= $less_salary ?> Rs</td>
+																			<td class="text-end"><?= $net_salary ?> Rs</td>
+																			<td class="text-end"><?= $salary['status'] ?></td>
+																			<td class="text-end">
+																				<?php if ($salary['status'] == 'Paid'): ?>
+																					<a href="<?= base_url('Admin_Dashboard/salary_slip/' . encryptId($salary['employee_id'])) ?>" class="btn btn-sm btn-success" target="_blank">
+																						Download Slip
+																					</a>
 
-																	<td><?= $employee[0]['salary'] ?> Rs</td>
-																	<td>4</td>
-																	<?php $less = $employee[0]['salary'] / 4 ?>
-																	<td><?= $less ?> Rs</td>
+																				<?php else: ?>
+																					<?= $salary['status'] ?>
+																				<?php endif; ?>
+																			</td>
+																		</tr>
 
-																	<td class="text-end">
-																		<?= $employee[0]['salary'] - $less ?> Rs
-																	</td>
-																	<td class="text-end">Due
-																	</td>
-																</tr>
 
+																	<?php endforeach; ?>
+																<?php else: ?>
+																	<tr>
+																		<td colspan="6" class="text-center">No salary record found.</td>
+																	</tr>
+																<?php endif; ?>
 															</tbody>
 														</table>
 
@@ -422,7 +438,7 @@
 												if (!empty($emails)) {
 													foreach ($emails as $email) {
 														$i++;
-														?>
+												?>
 														<div class="row align-items-center">
 															<div class="col-md-8">
 																<div class="mb-3">
@@ -437,7 +453,7 @@
 																</div>
 															</div>
 														</div>
-														<?php
+												<?php
 													}
 												}
 												?>
@@ -645,6 +661,8 @@
 																	value="<?= $employee[0]['emp_code'] ?>">
 																<input type="hidden" class="form-control" name="inst_id"
 																	value="<?= $user[0]['id'] ?>" required>
+                                                              <input type="hidden" class="form-control" name="id"
+																	value="<?= $employee[0]['id'] ?>" required>
 
 															</div>
 														</div>
@@ -672,10 +690,11 @@
 																<label class="col-form-label">Salary Month <span
 																		class="text-danger">*</span></label>
 																<select class="select2 form-control" name="month"
-																	required onchange="fetchAttendanceData()" id="salary_month" >
-																	<?php 
+																	required onchange="fetchAttendanceData()" id="salary_month">
+																	<?php
 																	$currentMonth = date('Y-m'); // This gives 2025-05
-																	$prevMonth = date('Y-m', strtotime('-1 month'));foreach ($months as $key => $month): ?>
+																	$prevMonth = date('Y-m', strtotime('-1 month'));
+																	foreach ($months as $key => $month): ?>
 																		<option value="<?= $key ?>" <?= ($tag == 'edit' && isset($shift[0]['salary_month']) && $shift[0]['salary_month'] == $key) || (!isset($shift[0]['salary_month']) && $key == $currentMonth) ? 'selected' : '' ?>>
 
 																			<?= $month ?>
@@ -779,17 +798,17 @@
 
 
 
-														
+
 														?>
 
 														<?php foreach ($reward as $item): ?>
 
 
 															<div class="form-check">
-															<input class="form-check-input reward-checkbox" name="reward[]" type="checkbox" value="<?= $item['id'] ?>">
-															<?= $item['name'] ?>
+																<input class="form-check-input reward-checkbox" name="reward[]" type="checkbox" value="<?= $item['id'] ?>">
+																<?= $item['name'] ?>
 
-																
+
 
 															</div>
 														<?php endforeach; ?>
@@ -806,70 +825,70 @@
 															</div>
 														</div>
 														<div class="col-md-12">
-                                                        <div class="mb-3">
-                                                            <div
-                                                                class="d-flex align-items-center justify-content-between">
-                                                                <label class="col-form-label">Payment Mode</label>
+															<div class="mb-3">
+																<div
+																	class="d-flex align-items-center justify-content-between">
+																	<label class="col-form-label">Payment Mode</label>
 
-                                                            </div>
-                                                            <select class="select" name="mode" id="paymentType" required
-                                                                onchange="handlePaymentChange()">
-                                                                <option Value="N/A">Choose</option>
-                                                                <option Value="Cash" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cash') ? 'selected' : '' ?>>Cash</option>
-                                                                <option value="UPI" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'UPI') ? 'selected' : '' ?>>UPI</option>
-                                                                <option value="Card" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Card') ? 'selected' : '' ?>>Created/Debit Card</option>
+																</div>
+																<select class="select" name="mode" id="paymentType" required
+																	onchange="handlePaymentChange()">
+																	<option Value="N/A">Choose</option>
+																	<option Value="Cash" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cash') ? 'selected' : '' ?>>Cash</option>
+																	<option value="UPI" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'UPI') ? 'selected' : '' ?>>UPI</option>
+																	<option value="Card" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Card') ? 'selected' : '' ?>>Created/Debit Card</option>
 
-                                                                <option value="Bank" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Bank') ? 'selected' : '' ?>>Bank</option>
-                                                                <option value="Cheque" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cheque') ? 'selected' : '' ?>>Cheque</option>
-                                                                <option value="None" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'None') ? 'selected' : '' ?>>None</option>
-
-
-                                                            </select>
-                                                        </div>
-                                                    </div>
- <div class="col-md-12 d-none" id="bankDetails">
-                                                        <div class="mb-3">
-                                                            <label class="col-form-label">Bank Name<span
-                                                                    class="text-danger"> *</span></label>
-                                                            <select class="form-control" name="account_id"
-                                                                id="bankName">
-                                                                <option>Choose</option>
-
-                                                                <?php
+																	<option value="Bank" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Bank') ? 'selected' : '' ?>>Bank</option>
+																	<option value="Cheque" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cheque') ? 'selected' : '' ?>>Cheque</option>
+																	<option value="None" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'None') ? 'selected' : '' ?>>None</option>
 
 
-                                                                foreach ($account as $account_info) { ?>
-                                                                    <option value="<?= $account_info['id'] ?>"
-                                                                        <?= ($tag == 'edit' && isset($Student_payment[0]['account_id']) && $Student_payment[0]['account_id'] == $account_info['id']) ? 'selected' : '' ?>>
-                                                                        <?= $account_info['bank_name'] ?>-<?= $account_info['account_no'] ?>
-                                                                    </option>
-                                                                <?php } ?>
-                                                            </select>
-                                                        </div>
-                                                    </div>
+																</select>
+															</div>
+														</div>
+														<div class="col-md-12 d-none" id="bankDetails">
+															<div class="mb-3">
+																<label class="col-form-label">Bank Name<span
+																		class="text-danger"> *</span></label>
+																<select class="form-control" name="account_id"
+																	id="bankName">
+																	<option>Choose</option>
+
+																	<?php
 
 
-                                                    <div class="col-md-12 d-none" id="chequeDetails">
-                                                        <div class="mb-3">
-                                                            <label class="col-form-label">Cheque Number<span
-                                                                    class="text-danger"> *</span></label>
-                                                            <input type="text" class="form-control" name="cheque_no"
-                                                                id="chequeNumber"
-                                                                value="<?= $Student_payment[0]['cheque_no'] ?>">
-                                                        </div>
+																	foreach ($account as $account_info) { ?>
+																		<option value="<?= $account_info['id'] ?>"
+																			<?= ($tag == 'edit' && isset($Student_payment[0]['account_id']) && $Student_payment[0]['account_id'] == $account_info['id']) ? 'selected' : '' ?>>
+																			<?= $account_info['bank_name'] ?>-<?= $account_info['account_no'] ?>
+																		</option>
+																	<?php } ?>
+																</select>
+															</div>
+														</div>
 
-                                                    </div>
-													 <div class="col-md-12">
-                                                        <div class="mb-3">
-                                                            <label class="col-form-label">paid Amount<span
-                                                                    class="text-danger"> *</span></label>
-                                                            <input type="number" class="form-control" name="paid"
-                                                                id="paid" value="<?= $Student_payment[0]['paid'] ?>"
-                                                                required oninput="validatePaidAmount()">
-                                                            <input type="hidden" name="p_id"
-                                                                value="<?= $Student_payment[0]['id'] ?>">
-                                                        </div>
-                                                    </div>
+
+														<div class="col-md-12 d-none" id="chequeDetails">
+															<div class="mb-3">
+																<label class="col-form-label">Cheque Number<span
+																		class="text-danger"> *</span></label>
+																<input type="text" class="form-control" name="cheque_no"
+																	id="chequeNumber"
+																	value="<?= $Student_payment[0]['cheque_no'] ?>">
+															</div>
+
+														</div>
+														<div class="col-md-12">
+															<div class="mb-3">
+																<label class="col-form-label">paid Amount<span
+																		class="text-danger"> *</span></label>
+																<input type="number" class="form-control" name="paid"
+																	id="paid" value="<?= $Student_payment[0]['paid'] ?>"
+																	required oninput="validatePaidAmount()">
+																<input type="hidden" name="p_id"
+																	value="<?= $Student_payment[0]['id'] ?>">
+															</div>
+														</div>
 													</div>
 
 
@@ -921,118 +940,126 @@
 						<script>
 							CKEDITOR.replace('editor'); // Initialize CKEditor
 						</script>
-					<script>
-document.addEventListener('DOMContentLoaded', function () {
-    fetchAttendanceData(); // Triggers attendance fetch for the default-selected option
-});
-</script>
+						<script>
+							document.addEventListener('DOMContentLoaded', function() {
+								fetchAttendanceData(); // Triggers attendance fetch for the default-selected option
+							});
+						</script>
 						<!-- /Main Wrapper -->
 						<script>
-function calculateDeductedSalary() {
-    const salaryInput = document.querySelector('input[name="salary"]');
-    const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
-    const lessSalaryInput = document.querySelector('input[name="less_salary"]');
-    const totalSalaryInput = document.querySelector('input[name="total_salary"]');
-    const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
-    const rewardCheckboxes = document.querySelectorAll('.reward-checkbox');
-    const base_url = "<?= base_url() ?>";
+							function calculateDeductedSalary() {
+								const salaryInput = document.querySelector('input[name="salary"]');
+								const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
+								const lessSalaryInput = document.querySelector('input[name="less_salary"]');
+								const totalSalaryInput = document.querySelector('input[name="total_salary"]');
+								const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
+								const rewardCheckboxes = document.querySelectorAll('.reward-checkbox');
+								const base_url = "<?= base_url() ?>";
 
-    const monthlySalary = parseFloat(salaryInput.value) || 0;
-    const deductedDays = parseFloat(cuttingDaysInput.value) || 0;
-    const perDaySalary = monthlySalary / 30;
-    let deductedAmount = deductedDays * perDaySalary;
+								const monthlySalary = parseFloat(salaryInput.value) || 0;
+								const deductedDays = parseFloat(cuttingDaysInput.value) || 0;
+								const perDaySalary = monthlySalary / 30;
+								let deductedAmount = deductedDays * perDaySalary;
 
-    const selectedPenaltyIds = Array.from(penaltyCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
+								const selectedPenaltyIds = Array.from(penaltyCheckboxes)
+									.filter(cb => cb.checked)
+									.map(cb => cb.value);
 
-    const selectedRewardIds = Array.from(rewardCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
+								const selectedRewardIds = Array.from(rewardCheckboxes)
+									.filter(cb => cb.checked)
+									.map(cb => cb.value);
 
-    let totalReward = 0;
+								let totalReward = 0;
 
-    function updateTotalSalary() {
-        const finalSalary = monthlySalary - deductedAmount + totalReward;
-        lessSalaryInput.value = deductedAmount.toFixed(2);
-        totalSalaryInput.value = finalSalary.toFixed(2);
-    }
+								function updateTotalSalary() {
+									const finalSalary = monthlySalary - deductedAmount + totalReward;
+									lessSalaryInput.value = deductedAmount.toFixed(2);
+									totalSalaryInput.value = finalSalary.toFixed(2);
+								}
 
-    const fetchPenalty = selectedPenaltyIds.length > 0
-        ? fetch(base_url + 'Admin_Dashboard/get_penalty_amounts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ids: selectedPenaltyIds })
-        }).then(res => res.json()).then(data => {
-            if (data.status) {
-                deductedAmount += data.total_penalty;
-            }
-        }) : Promise.resolve();
+								const fetchPenalty = selectedPenaltyIds.length > 0 ?
+									fetch(base_url + 'Admin_Dashboard/get_penalty_amounts', {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json'
+										},
+										body: JSON.stringify({
+											ids: selectedPenaltyIds
+										})
+									}).then(res => res.json()).then(data => {
+										if (data.status) {
+											deductedAmount += data.total_penalty;
+										}
+									}) : Promise.resolve();
 
-    const fetchReward = selectedRewardIds.length > 0
-        ? fetch(base_url + 'Admin_Dashboard/get_reward_amounts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ids: selectedRewardIds })
-        }).then(res => res.json()).then(data => {
-            if (data.status) {
-                totalReward = data.total_reward;
-            }
-        }) : Promise.resolve();
+								const fetchReward = selectedRewardIds.length > 0 ?
+									fetch(base_url + 'Admin_Dashboard/get_reward_amounts', {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json'
+										},
+										body: JSON.stringify({
+											ids: selectedRewardIds
+										})
+									}).then(res => res.json()).then(data => {
+										if (data.status) {
+											totalReward = data.total_reward;
+										}
+									}) : Promise.resolve();
 
-    Promise.all([fetchPenalty, fetchReward]).then(updateTotalSalary).catch(err => {
-        console.error("Error fetching data", err);
-        updateTotalSalary();
-    });
-}
+								Promise.all([fetchPenalty, fetchReward]).then(updateTotalSalary).catch(err => {
+									console.error("Error fetching data", err);
+									updateTotalSalary();
+								});
+							}
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('input[name="cuting_days"]').addEventListener('input', calculateDeductedSalary);
-    document.querySelectorAll('.fee-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
-    document.querySelectorAll('.reward-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
-});
-</script>
+							document.addEventListener('DOMContentLoaded', function() {
+								document.querySelector('input[name="cuting_days"]').addEventListener('input', calculateDeductedSalary);
+								document.querySelectorAll('.fee-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
+								document.querySelectorAll('.reward-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
+							});
+						</script>
 
 
-<script>
-function fetchAttendanceData() {
-    const month = document.getElementById('salary_month').value;
-    const empCode = "<?= $employee[0]['id'] ?>";
-    const instId = "<?= $user[0]['id'] ?>";
-    const base_url = "<?= base_url() ?>";
+						<script>
+							function fetchAttendanceData() {
+								const month = document.getElementById('salary_month').value;
+								const empCode = "<?= $employee[0]['id'] ?>";
+								const instId = "<?= $user[0]['id'] ?>";
+								const base_url = "<?= base_url() ?>";
 
-    if (month && empCode && instId) {
-        fetch(base_url + "Admin_Dashboard/get_emp_attendance_summary?emp_code=" + empCode + "&inst_id=" + instId + "&month=" + month)
-        .then(res => res.json())
-        .then(data => {
-            if (data.status) {
-                document.querySelector('input[name="total_days"]').value = data.total_days;
-                document.querySelector('input[name="present"]').value = data.present_days;
-                document.querySelector('input[name="leaves"]').value = data.absent_days;
-                document.querySelector('input[name="cuting_days"]').value = data.absent_days;
-                document.querySelector('input[name="late"]').value = data.late_days;
+								if (month && empCode && instId) {
+									fetch(base_url + "Admin_Dashboard/get_emp_attendance_summary?emp_code=" + empCode + "&inst_id=" + instId + "&month=" + month)
+										.then(res => res.json())
+										.then(data => {
+											if (data.status) {
+												document.querySelector('input[name="total_days"]').value = data.total_days;
+												document.querySelector('input[name="present"]').value = data.present_days;
+												document.querySelector('input[name="leaves"]').value = data.absent_days;
+												document.querySelector('input[name="cuting_days"]').value = data.absent_days;
+												document.querySelector('input[name="late"]').value = data.late_days;
 
-                calculateDeductedSalary(); // now this will work
-            } else {
-                alert("No attendance data found.");
-            }
-        })
-        .catch(err => {
-            console.error("Error:", err);
-            alert("Failed to fetch attendance data.");
-        });
-    }
-}
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
-    const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
+												calculateDeductedSalary(); // now this will work
+											} else {
+												alert("No attendance data found.");
+											}
+										})
+										.catch(err => {
+											console.error("Error:", err);
+											alert("Failed to fetch attendance data.");
+										});
+								}
+							}
+						</script>
+						<script>
+							document.addEventListener('DOMContentLoaded', function() {
+								const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
+								const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
 
-    cuttingDaysInput.addEventListener('input', calculateDeductedSalary);
-    penaltyCheckboxes.forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
-});
-</script>
+								cuttingDaysInput.addEventListener('input', calculateDeductedSalary);
+								penaltyCheckboxes.forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
+							});
+						</script>
 
 
 						<script>

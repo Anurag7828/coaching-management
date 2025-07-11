@@ -243,7 +243,7 @@
 									</li>
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#notes" class="nav-link"><i
-												class="ti ti-notes me-1"></i>Calculate Salary</a>
+												class="ti ti-notes me-1"></i>View Salary</a>
 									</li>
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#email" class="nav-link"><i
@@ -352,11 +352,9 @@
 								<div class="card">
 									<div
 										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
-										<h4 class="fw-semibold">Calculate This Month Salary</h4>
+										<h4 class="fw-semibold">View This Month Salary</h4>
 										<div class="d-inline-flex align-items-center">
-											<a href="javascript:void(0);" data-bs-toggle="modal"
-												data-bs-target="#add_notes" class="btn btn-danger"><i
-													class="ti ti-circle-plus me-1"></i>Calculate Salary</a>
+
 										</div>
 									</div>
 									<div class="card-body">
@@ -377,28 +375,45 @@
 
 																	<th class="text-end">Total Amount</th>
 																	<th class="text-end">Status</th>
+																	<th class="text-end">Download</th>
 
 																</tr>
 															</thead>
 															<tbody>
-																<?php
-																$total_amount = 0; // Initialize total amount
-																?>
-																<tr>
-																	<td><?= $user[0]['salary'] ?> Rs</td>
+																<?php if (!empty($salary_list)) : ?>
+																	<?php foreach ($salary_list as $salary): ?>
+																		<?php
+																		$monthly_salary = $user[0]['salary'];
+																		$leaves = $salary['leaves'];
+																		$less_salary = ($leaves > 0) ? round(($monthly_salary / 30) * $leaves, 2) : 0;
+																		$net_salary = $monthly_salary - $less_salary;
+																		?>
+																		<tr>
+																			<td><?= $salary['month'] ?></td>
+																			<td><?= $monthly_salary ?> Rs</td>
+																			<td><?= $leaves ?></td>
+																			<td><?= $less_salary ?> Rs</td>
+																			<td class="text-end"><?= $net_salary ?> Rs</td>
+																			<td class="text-end"><?= $salary['status'] ?></td>
+																			<td class="text-end">
+																				<?php if ($salary['status'] == 'Paid'): ?>
+																					<a href="<?= base_url('Admin_Dashboard/salary_slip/' . encryptId($salary['employee_id'])) ?>" class="btn btn-sm btn-success" target="_blank">
+																						Download Slip
+																					</a>
 
-																	<td><?= $user[0]['salary'] ?> Rs</td>
-																	<td>4</td>
-																	<?php $less = $user[0]['salary'] / 4 ?>
-																	<td><?= $less ?> Rs</td>
+																				<?php else: ?>
+																					<?= $salary['status'] ?>
+																				<?php endif; ?>
+																			</td>
+																		</tr>
 
-																	<td class="text-end">
-																		<?= $user[0]['salary'] - $less ?> Rs
-																	</td>
-																	<td class="text-end">Due
-																	</td>
-																</tr>
 
+																	<?php endforeach; ?>
+																<?php else: ?>
+																	<tr>
+																		<td colspan="6" class="text-center">No salary record found.</td>
+																	</tr>
+																<?php endif; ?>
 															</tbody>
 														</table>
 

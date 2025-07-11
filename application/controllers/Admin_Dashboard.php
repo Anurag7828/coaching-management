@@ -1372,59 +1372,59 @@ $message .= "The " . $inst[0]['name'] . " Team";
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
- public function pay_fees_payment($id)
-{
-    $tid = decryptId($id);
+    public function pay_fees_payment($id)
+    {
+        $tid = decryptId($id);
 
-    if ($this->input->post()) {
-        $post = $this->input->post();
+        if ($this->input->post()) {
+            $post = $this->input->post();
 
-        // Calculate updated due
-        $post['due'] = $post['due'] - $post['paid'];
+            // Calculate updated due
+            $post['due'] = $post['due'] - $post['paid'];
 
-        // Generate unique transaction ID
-        $post['transaction_id'] = $this->CommonModal->generate_transaction_id($post['inst_id'], $post['student_id']);
+            // Generate unique transaction ID
+            $post['transaction_id'] = $this->CommonModal->generate_transaction_id($post['inst_id'], $post['student_id']);
 
-        // Insert payment row and get ID
-        $payment_id = $this->CommonModal->insertRowReturnId('fees_payment', $post);
+            // Insert payment row and get ID
+            $payment_id = $this->CommonModal->insertRowReturnId('fees_payment', $post);
 
-        // ✅ FIX: Check if insertion was successful before redirect
-        if ($payment_id) {
-            // Redirect to slip page
-            redirect(base_url('Admin_Dashboard/fee_slip/' . encryptId($payment_id)));
-        } else {
-            // Handle insertion error (optional logging)
-            show_error('Payment could not be saved.');
+            // ✅ FIX: Check if insertion was successful before redirect
+            if ($payment_id) {
+                // Redirect to slip page
+                redirect(base_url('Admin_Dashboard/fee_slip/' . encryptId($payment_id)));
+            } else {
+                // Handle insertion error (optional logging)
+                show_error('Payment could not be saved.');
+            }
         }
     }
-}
-public function fee_slip($id)
-{
-    $payment_id = decryptId($id);
+    public function fee_slip($id)
+    {
+        $payment_id = decryptId($id);
 
-    // Get payment detail
-    $payment_detail = $this->CommonModal->getRowById('fees_payment', 'id', $payment_id);
-    if (empty($payment_detail)) {
-        show_404();
+        // Get payment detail
+        $payment_detail = $this->CommonModal->getRowById('fees_payment', 'id', $payment_id);
+        if (empty($payment_detail)) {
+            show_404();
+        }
+
+        // Load related info
+        $student = $this->CommonModal->getRowById('students', 'id', $payment_detail[0]['student_id']);
+        $clg = $this->CommonModal->getRowById('institutions', 'id', $payment_detail[0]['inst_id']);
+        $course = $this->CommonModal->getRowById('courses', 'id', $student[0]['course_id']);
+        $fees_type = $this->CommonModal->getRowById('student_fees', 'student_id', $payment_detail[0]['student_id']);
+
+        $data = [
+            'payment_detail' => $payment_detail[0],
+            'user' => $student[0],
+            'clg' => $clg,
+            'course' => $course,
+            'fees_type' => $fees_type
+        ];
+
+        // Load the slip view
+        $this->load->view('branch/fee_slip', $data);
     }
-
-    // Load related info
-    $student = $this->CommonModal->getRowById('students', 'id', $payment_detail[0]['student_id']);
-    $clg = $this->CommonModal->getRowById('institutions', 'id', $payment_detail[0]['inst_id']);
-    $course = $this->CommonModal->getRowById('courses', 'id', $student[0]['course_id']);
-    $fees_type = $this->CommonModal->getRowById('student_fees', 'student_id', $payment_detail[0]['student_id']);
-
-    $data = [
-        'payment_detail' => $payment_detail[0],
-        'user' => $student[0],
-        'clg' => $clg,
-        'course' => $course,
-        'fees_type' => $fees_type
-    ];
-
-    // Load the slip view
-    $this->load->view('branch/fee_slip', $data);
-}
 
     public function view_batch($id)
     {
@@ -2526,13 +2526,17 @@ $data['course'] =  $cid;
         $data['title'] = "View employee";
         $tid = decryptId($id);
         $uid = decryptId($uid);
+
         $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $uid);
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $uid);
         $data['employee'] = $this->CommonModal->getRowByMultitpleId('employees', 'id', $tid, 'inst_id', $uid, 'id', 'DESC');
+
+        $data['salary_list'] = $this->CommonModal->getRowById('employee_salary', 'employee_id', $tid);
         $data['class'] = $this->CommonModal->getRowByMultitpleId('timetable', 'emp_id', $tid, 'inst_id', $uid, 'id', 'DESC');
 
         $this->load->view('user/employee', $data);
     }
+
     public function view_employee($id)
     {
         $data['title'] = "View employee";
@@ -3018,7 +3022,7 @@ $message .= "The " . $inst[0]['name'] . " Team";
         $post = $this->input->post();
 
         // Sanitize and extract form values
-        $employee_id = $post['inst_id'];
+        $employee_id = $post['id'];
         $month = $post['month'];
         $salary = $post['salary'];
         $total_days = $post['total_days'];
@@ -3086,8 +3090,11 @@ $message .= "The " . $inst[0]['name'] . " Team";
         ];
         $this->CommonModal->insertRow('employee_payment', $payment_data);
 
-        $this->session->set_flashdata('msg', 'Salary added successfully!');
-        redirect('Admin_Dashboard/employee_salary_list'); // Update with your route
+        // $this->session->set_flashdata('msg', 'Salary added successfully!');
+        // redirect('Admin_Dashboard/employee_salary_list'); 
+      $this->session->set_flashdata('msg', 'Salary added successfully!');
+redirect('Admin_Dashboard/employee/' . encryptId($employee_id) . '/' . encryptId($inst_id) . '?tab=notes');
+
     }
 
     public function get_penalty_amounts()
@@ -3297,63 +3304,90 @@ $message .= "The " . $inst[0]['name'] . " Team";
         $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $teacher[0]['inst_id']);
         $data['clg'] = $this->CommonModal->getRowById('institutions', 'id', $teacher[0]['inst_id']);
         $data['user'] = $this->CommonModal->getRowByMultitpleId('employees', 'id', $tid, 'inst_id', $teacher[0]['inst_id'], 'id', 'DESC');
+        $data['salary_list'] = $this->CommonModal->getRowById('employee_salary', 'employee_id', $tid);
 
         $this->load->view('branch/teacher_dashboard', $data);
     }
-    public function View_teacher_attendance($id)
+
+    public function salary_slip($salary_id)
 {
-    $data['title'] = "View Employee Attendance";
+    $salary_id = decryptId($salary_id); // If ID is encrypted
+    $salary = $this->CommonModal->getRowById('employee_salary', 'employee_id', $salary_id);
+// Convert YYYY-MM to "Month Year" format
+$monthYear = date("F Y", strtotime($salary[0]['month']));
+$data['month_year'] = $monthYear;
 
-    $tid = decryptId($id);  // yeh employee (teacher) ka ID hai
-
-    // Fetch employee data
-    $data['user'] = $this->CommonModal->getRowById('employees', 'id', $tid);
-    $employee = $data['user'];
-
-    // Fetch institution ID from employee
-    $inst_id = $employee[0]['inst_id'];
-
-    // Department list for this institution (for filter dropdown, if needed)
-    $data['department'] = $this->CommonModal->getRowByMultitpleId('department', 'status', '0', 'inst_id', $inst_id, 'id', 'DESC');
-
-    // Default values
-    $start_date = date('Y-m-d', strtotime('-1 day')); // Yesterday
-    $end_date = date('Y-m-d'); // Today
-    $department_id = $employee[0]['department_id']; // default to employee's own department
-
-    if ($this->input->post()) {
-        if (!empty($this->input->post('from'))) {
-            $start_date = date('Y-m-d', strtotime($this->input->post('from')));
-        }
-
-        if (!empty($this->input->post('to'))) {
-            $end_date = date('Y-m-d', strtotime($this->input->post('to')));
-        }
-
-        // Optional: override department filter
-        if (!empty($this->input->post('department_id'))) {
-            $department_id = $this->input->post('department_id');
-        }
+    if (!$salary) {
+        show_404(); // If no data found
     }
 
-    // ✅ Filter attendance only for selected employee (teacher)
-    $data['attendence'] = $this->CommonModal->get_attendence(
-        'emp_attendance',
-        'emp_id',
-        $employee[0]['id'], // only that employee's data
-        'department_id',
-        $department_id,
-        'date',
-        $start_date,
-        $end_date
-    );
+    $employee = $this->CommonModal->getRowById('employees', 'id', $salary[0]['employee_id']);
+    $institution = $this->CommonModal->getRowById('institutions', 'id', $employee[0]['inst_id']);
+   $department = $this->CommonModal->getRowById('department', 'id', $employee[0]['department']);
+    $department_name = !empty($department) ? $department[0]['name'] : 'N/A';
 
-    // Pass to view
-    $data['start'] = $start_date;
-    $data['end'] = $end_date;
-    $data['selected_department'] = $department_id;
+    $employee[0]['department_name'] = $department_name;
+    $data['salary'] = $salary[0];
+    $data['employee'] = $employee[0];
+    $data['institution'] = $institution[0];
 
-    $this->load->view('branch/view_teacher_attendance', $data);
+    $this->load->view('branch/salary_slip', $data); // Create this file
 }
+
+    public function View_teacher_attendance($id)
+    {
+        $data['title'] = "View Employee Attendance";
+
+        $tid = decryptId($id);  // yeh employee (teacher) ka ID hai
+
+        // Fetch employee data
+        $data['user'] = $this->CommonModal->getRowById('employees', 'id', $tid);
+        $employee = $data['user'];
+
+        // Fetch institution ID from employee
+        $inst_id = $employee[0]['inst_id'];
+
+        // Department list for this institution (for filter dropdown, if needed)
+        $data['department'] = $this->CommonModal->getRowByMultitpleId('department', 'status', '0', 'inst_id', $inst_id, 'id', 'DESC');
+
+        // Default values
+        $start_date = date('Y-m-d', strtotime('-1 day')); // Yesterday
+        $end_date = date('Y-m-d'); // Today
+        $department_id = $employee[0]['department_id']; // default to employee's own department
+
+        if ($this->input->post()) {
+            if (!empty($this->input->post('from'))) {
+                $start_date = date('Y-m-d', strtotime($this->input->post('from')));
+            }
+
+            if (!empty($this->input->post('to'))) {
+                $end_date = date('Y-m-d', strtotime($this->input->post('to')));
+            }
+
+            // Optional: override department filter
+            if (!empty($this->input->post('department_id'))) {
+                $department_id = $this->input->post('department_id');
+            }
+        }
+
+        // ✅ Filter attendance only for selected employee (teacher)
+        $data['attendence'] = $this->CommonModal->get_attendence(
+            'emp_attendance',
+            'emp_id',
+            $employee[0]['id'], // only that employee's data
+            'department_id',
+            $department_id,
+            'date',
+            $start_date,
+            $end_date
+        );
+
+        // Pass to view
+        $data['start'] = $start_date;
+        $data['end'] = $end_date;
+        $data['selected_department'] = $department_id;
+
+        $this->load->view('branch/view_teacher_attendance', $data);
+    }
 
 }

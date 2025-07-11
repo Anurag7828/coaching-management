@@ -7,11 +7,19 @@
 
 			<!-- Logo -->
 			<div class="header-left active">
+<<<<<<< HEAD
+				<a href="<?= base_url('Admin_Dashboard/index/'. encryptId($user[0]['id']))?>" class="logo logo-normal">
+                    <img src="<?= base_url()?>assets/img/logo.svg" alt="Logo">
+                    <img src="<?= base_url()?>assets/img/white-logo.svg" class="white-logo" alt="Logo">
+                </a>
+				<a href="<<?= base_url('Admin_Dashboard/index/'. encryptId($user[0]['id']))?>" class="logo-small">
+=======
 				<a href="" class="logo logo-normal">
                     <img src="<?= base_url()?>assets/img/logo.svg" alt="Logo">
                     <img src="<?= base_url()?>assets/img/white-logo.svg" class="white-logo" alt="Logo">
                 </a>
 				<a href="" class="logo-small">
+>>>>>>> 3d96471111eda6e65a10b43e0d633d14ff16c011
 					<img src="<?= base_url()?>assets/img/logo-small.svg" alt="Logo">
 				</a>
 				<a id="toggle_btn" href="javascript:void(0);">
@@ -679,7 +687,7 @@
 						</a>
 						<div class="dropdown-menu menu-drop-user">
 							<div class="profilename">
-								<a class="dropdown-item" href="<?= base_url()?>">
+								<a class="dropdown-item" href="<?= base_url('Admin_Dashboard/index/'. encryptId($user[0]['id']))?>">
 									<i class="ti ti-layout-2"></i> Dashboard
 								</a>
 								<a class="dropdown-item" href="<?= base_url('Admin_Dashboard/profile/'.encryptId($user[0]['id']))?>">
@@ -700,13 +708,17 @@
 			<div class="dropdown mobile-user-menu">
 				<a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
 				<div class="dropdown-menu">
+<<<<<<< HEAD
+					<a class="dropdown-item" href="<?= base_url()?>">
+=======
 					<a class="dropdown-item" href="index-2.">
+>>>>>>> 3d96471111eda6e65a10b43e0d633d14ff16c011
 						<i class="ti ti-layout-2"></i> Dashboard
 					</a>
-					<a class="dropdown-item" href="profile.html">
+					<a class="dropdown-item" href="<?= base_url('Admin_Dashboard/profile/'.encryptId($user[0]['id']))?>">
 						<i class="ti ti-user-pin"></i> My Profile
 					</a>
-					<a class="dropdown-item" href="login.html">
+					<a class="dropdown-item" href="<?= base_url('Admin/logout')?>">
 						<i class="ti ti-lock"></i> Logout
 					</a>
 				</div>
