@@ -113,7 +113,43 @@
 
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">Higher Education<span
+                                                                    class="text-danger">*</span></label>
+                                                            <select class="select2 form-control" name="qualification"
+                                                                required>
+                                                                <option value="N/A" <?= ($tag == 'edit' && isset($employee[0]['qualification']) && $employee[0]['qualification'] == 'N/A') ? 'selected' : '' ?>
+                                                                    data-display="Please select">Choose</option>
+                                                            
+                                                                    <option value="Bachelor" <?= ($tag == 'edit' && isset($employee[0]['qualification']) && $employee[0]['qualification'] == 'Bachelor') ? 'selected' : '' ?>>Bachelor's Degree</option>
+                                                                    <option value="Master" <?= ($tag == 'edit' && isset($employee[0]['qualification']) && $employee[0]['qualification'] == 'Master') ? 'selected' : '' ?>>Master's Degree</option>
+                                                                
+
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">Joining Date <span
+                                                                    class="text-danger">*</span></label>
+                                                            <input type="date" class="form-control" name="joining_date"
+                                                                value="<?= ($tag == 'edit' && isset($employee[0]['date'])) ? htmlspecialchars($employee[0]['date']) : date('Y-m-d') ?>"
+                                                                required>
+
+                                                        </div>
+                                                    </div>
+                                                     <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label class="col-form-label">Salary<span
+                                                                    class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" name="salary"
+                                                                value="<?= ($tag == 'edit' && isset($employee[0]['salary'])) ? htmlspecialchars($employee[0]['salary']) : '' ?>"
+                                                                required>
+                                                        </div>
+                                                    </div>
+<div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label class="col-form-label">Shift<span
                                                                     class="text-danger">*</span></label>
@@ -136,34 +172,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <div class="mb-3">
-                                                            <label class="col-form-label">Higher Education<span
-                                                                    class="text-danger">*</span></label>
-                                                            <select class="select2 form-control" name="qualification"
-                                                                required>
-                                                                <option value="N/A" <?= ($tag == 'edit' && isset($employee[0]['qualification']) && $employee[0]['qualification'] == 'N/A') ? 'selected' : '' ?>
-                                                                    data-display="Please select">Choose</option>
-                                                            
-                                                                    <option value="Bachelor" <?= ($tag == 'edit' && isset($employee[0]['qualification']) && $employee[0]['qualification'] == 'Bachelor') ? 'selected' : '' ?>>Bachelor's Degree</option>
-                                                                    <option value="Master" <?= ($tag == 'edit' && isset($employee[0]['qualification']) && $employee[0]['qualification'] == 'Master') ? 'selected' : '' ?>>Master's Degree</option>
-                                                                
-
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label class="col-form-label">Joining Date <span
-                                                                    class="text-danger">*</span></label>
-                                                            <input type="date" class="form-control" name="joining_date"
-                                                                value="<?= ($tag == 'edit' && isset($employee[0]['date'])) ? htmlspecialchars($employee[0]['date']) : date('Y-m-d') ?>"
-                                                                required>
-
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label class="col-form-label">Department<span
                                                                     class="text-danger">*</span></label>
@@ -186,7 +195,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label class="col-form-label">Designation<span
                                                                     class="text-danger">*</span></label>
@@ -210,15 +219,6 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label class="col-form-label">Salary<span
-                                                                    class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" name="salary"
-                                                                value="<?= ($tag == 'edit' && isset($employee[0]['salary'])) ? htmlspecialchars($employee[0]['salary']) : '' ?>"
-                                                                required>
-                                                        </div>
-                                                    </div>
 
                                                 </div>
                                             </div>

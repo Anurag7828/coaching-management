@@ -55,6 +55,19 @@
                             <div class="mb-4">
                                 <h4 class="mb-2 fs-20">Sign In</h4>
                                 <p>Access the CMS panel using your email and password.</p>
+                                <?php if ($this->session->flashdata('success')): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= $this->session->flashdata('success'); ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<?php if ($this->session->flashdata('error')): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= $this->session->flashdata('error'); ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
                             </div>
                             <div class="mb-3">
                                 <label class="col-form-label">Email Address</label>
@@ -81,7 +94,9 @@
                                     </label>
                                 </div>
                                 <div class="text-end">
-                                    <a href="#" class="text-primary fw-medium link-hover">Forgot
+                                    
+                                        	<a href="javascript:void(0);" class="text-primary fw-medium link-hover"
+												data-bs-toggle="modal" data-bs-target="#forget">Forgot
                                         Password?</a>
                                 </div>
                             </div>
@@ -104,7 +119,39 @@
 
     </div>
     <!-- /Main Wrapper -->
+	<div class="modal custom-modal fade" id="forget" role="dialog">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Forgot Password?</h5>
+											<button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+												<i class="ti ti-x"></i>
+											</button>
+										</div>
+										<div class="modal-body">
+											<form
+												action="<?= base_url('Admin/forget_password') ?>"
+												method="post">
 
+												<div class="mb-3">
+                                <label class="col-form-label">Enter Registered Email</label>
+
+													<input type="text" name="email" placeholder="Enter your email"
+														class="form-control">
+												</div>
+												
+												<div class="mb-3">
+													<div class="text-center">
+														<button class="btn btn-primary"><span>Submit</span><i
+																class="fa-solid fa-paper-plane ms-1"></i></button>
+
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
     <!-- jQuery -->
     <script src="assets/js/jquery-3.7.1.min.js" ></script>
 

@@ -183,15 +183,15 @@ class Admin_Dashboard extends CI_Controller
             $category_id = $this->CommonModal->updateRowById('institutions', 'id', $tid, $post);
 
             if ($category_id) {
-                echo "<script>alert(' Updated successfully');</script>";
+               
 
-                $this->session->set_userdata('msg', '<div class="alert alert-success">member Updated successfully</div>');
+                 $this->session->set_flashdata('msgsuccess', 'Password updated successfully');
             } else {
-                echo "<script>alert('Error To Updated');</script>";
+               
 
-                $this->session->set_userdata('msg', '<div class="alert alert-success">Error successfully</div>');
+                 $this->session->set_flashdata('msgerror', 'Error To Updated Password');
             }
-            redirect(base_url('Admin_Dashboard/profile/' . $id));
+            redirect(base_url('Admin_Dashboard/change_password/' . $id));
         } else {
             $this->load->view('user/change_password', $data);
         }
@@ -694,6 +694,8 @@ class Admin_Dashboard extends CI_Controller
         $data['tag'] = "add";
         $tid = decryptId($id);
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $inst = $this->CommonModal->getRowById('institutions', 'id', $tid);
+
         $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $tid);
         $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
         $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
@@ -729,7 +731,38 @@ class Admin_Dashboard extends CI_Controller
 
             // **Insert student and get ID**
             $student_id = $this->CommonModal->insertRowReturnId('students', $post);
+            if($student_id) {
+             
+         
+            $this->load->library('email');
 
+            // Email configuration
+            $config['mailtype'] = 'text';  // Use plain text instead of HTML
+            $this->email->initialize($config);
+
+            $this->email->from('venusglamour@krishnawireandcables.com', $inst[0]['name']);  // Use institution name as sender
+            $this->email->to($post['email']);  // Send to user's email
+            $this->email->subject('Registration Successfully');
+            
+            // Construct email message in plain text format
+           $message = "Dear " . htmlspecialchars($post['name']) . ",\n\n";
+$message .= "We are pleased to inform you that your registration for our institution " . $inst[0]['name'] . " has been successfully completed. Below are your login credentials:\n\n";
+$message .= "Username: " . htmlspecialchars($post['email']) . "\n";
+$message .= "Password: " . htmlspecialchars($post['password']) . "\n\n";
+$message .= "Please keep your login credentials secure and do not share them with anyone.\n\n";
+$message .= "You can log in to the software using the following link: " . base_url() . "\n\n";
+$message .= "If you encounter any issues, please feel free to contact our support team.\n\n";
+$message .= "Thank you for choosing our institution!\n\n";
+$message .= "Best regards,\n";
+$message .= "The " . $inst[0]['name'] . " Team";
+
+            $this->email->message($message);  // Use plain text message
+
+            // Check if email was sent successfully
+            if (!$this->email->send()) {
+                log_message('error', 'Email could not be sent to ' . $post['email']);
+            }
+   }
             // **Insert student fees**
             $items = [];
             if (!empty($fees_type) && is_array($fees_type)) {
@@ -1339,59 +1372,59 @@ class Admin_Dashboard extends CI_Controller
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
- public function pay_fees_payment($id)
-{
-    $tid = decryptId($id);
+    public function pay_fees_payment($id)
+    {
+        $tid = decryptId($id);
 
-    if ($this->input->post()) {
-        $post = $this->input->post();
+        if ($this->input->post()) {
+            $post = $this->input->post();
 
-        // Calculate updated due
-        $post['due'] = $post['due'] - $post['paid'];
+            // Calculate updated due
+            $post['due'] = $post['due'] - $post['paid'];
 
-        // Generate unique transaction ID
-        $post['transaction_id'] = $this->CommonModal->generate_transaction_id($post['inst_id'], $post['student_id']);
+            // Generate unique transaction ID
+            $post['transaction_id'] = $this->CommonModal->generate_transaction_id($post['inst_id'], $post['student_id']);
 
-        // Insert payment row and get ID
-        $payment_id = $this->CommonModal->insertRowReturnId('fees_payment', $post);
+            // Insert payment row and get ID
+            $payment_id = $this->CommonModal->insertRowReturnId('fees_payment', $post);
 
-        // ✅ FIX: Check if insertion was successful before redirect
-        if ($payment_id) {
-            // Redirect to slip page
-            redirect(base_url('Admin_Dashboard/fee_slip/' . encryptId($payment_id)));
-        } else {
-            // Handle insertion error (optional logging)
-            show_error('Payment could not be saved.');
+            // ✅ FIX: Check if insertion was successful before redirect
+            if ($payment_id) {
+                // Redirect to slip page
+                redirect(base_url('Admin_Dashboard/fee_slip/' . encryptId($payment_id)));
+            } else {
+                // Handle insertion error (optional logging)
+                show_error('Payment could not be saved.');
+            }
         }
     }
-}
-public function fee_slip($id)
-{
-    $payment_id = decryptId($id);
+    public function fee_slip($id)
+    {
+        $payment_id = decryptId($id);
 
-    // Get payment detail
-    $payment_detail = $this->CommonModal->getRowById('fees_payment', 'id', $payment_id);
-    if (empty($payment_detail)) {
-        show_404();
+        // Get payment detail
+        $payment_detail = $this->CommonModal->getRowById('fees_payment', 'id', $payment_id);
+        if (empty($payment_detail)) {
+            show_404();
+        }
+
+        // Load related info
+        $student = $this->CommonModal->getRowById('students', 'id', $payment_detail[0]['student_id']);
+        $clg = $this->CommonModal->getRowById('institutions', 'id', $payment_detail[0]['inst_id']);
+        $course = $this->CommonModal->getRowById('courses', 'id', $student[0]['course_id']);
+        $fees_type = $this->CommonModal->getRowById('student_fees', 'student_id', $payment_detail[0]['student_id']);
+
+        $data = [
+            'payment_detail' => $payment_detail[0],
+            'user' => $student[0],
+            'clg' => $clg,
+            'course' => $course,
+            'fees_type' => $fees_type
+        ];
+
+        // Load the slip view
+        $this->load->view('branch/fee_slip', $data);
     }
-
-    // Load related info
-    $student = $this->CommonModal->getRowById('students', 'id', $payment_detail[0]['student_id']);
-    $clg = $this->CommonModal->getRowById('institutions', 'id', $payment_detail[0]['inst_id']);
-    $course = $this->CommonModal->getRowById('courses', 'id', $student[0]['course_id']);
-    $fees_type = $this->CommonModal->getRowById('student_fees', 'student_id', $payment_detail[0]['student_id']);
-
-    $data = [
-        'payment_detail' => $payment_detail[0],
-        'user' => $student[0],
-        'clg' => $clg,
-        'course' => $course,
-        'fees_type' => $fees_type
-    ];
-
-    // Load the slip view
-    $this->load->view('branch/fee_slip', $data);
-}
 
     public function view_batch($id)
     {
@@ -1497,6 +1530,483 @@ public function fee_slip($id)
 
         redirect(base_url('Admin_Dashboard/view_batch/' . $uid));
     }
+     public function view_timetable($id,$uid)
+    {
+        $data['title'] = "View Time Table";
+        $tid = decryptId($uid);
+        $eid = decryptId($id);
+        $data['tag'] = $this->input->get('tag');
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $data['emp_id'] = $eid;
+        $tag = $data['tag'];
+        $BdID = $this->input->get('BdID');
+
+
+        if ($BdID) {
+            $this->CommonModal->deleteRowById('timetable', array('id' => $BdID));
+
+                redirect(base_url('Admin_Dashboard/view_timetable/' . $id . '/'.$uid));
+            
+        }
+        if ($tag =="emp"){
+    
+            $data['class'] = $this->CommonModal->getRowByMultitpleId('timetable', 'emp_id', $eid, 'inst_id', $tid, 'id', 'DESC');
+        } else {
+            $data['class'] = $this->CommonModal->getRowByMultitpleId('timetable', 'batch_id', $eid, 'inst_id', $tid, 'id', 'DESC');
+        }
+        $this->load->view('user/view_timetable', $data);
+    }
+    public function add_timetable($id,$eid, $page = null)
+    {
+
+        $data['title'] = "Add Class";
+        $data['tag'] = "add";
+        $data['tag2'] = $this->input->get('tag');
+$tag2 = $data['tag2'];
+        $tid = decryptId($id);
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        if($tag2=='emp'){
+        $data['emp_id'] = decryptId($eid);
+        } else {
+            $data['batch_id'] = decryptId($eid);
+        }
+            $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+            $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+            $data['employee'] = $this->CommonModal->getRowByMultitpleId('employees', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+             $batch_id = $_POST['batch_id'];
+    $emp_id = $_POST['emp_id'];
+    $start_time = $_POST['starting_time'];
+    $end_time = $_POST['ending_time'];
+
+    // 1. Get Employee Shift Timing
+    $emp_shift = $this->CommonModal->getRowById('employees', 'id', $emp_id);
+    $shift_id = $emp_shift[0]['shift_id']; // example: 09:00:00
+    $shift = $this->CommonModal->getRowById('shifts', 'id', $shift_id);
+    $shift_start = $shift[0]['starting_time']; // example: 09:00:00
+    $shift_end = $shift[0]['ending_time'];     // example: 17:00:00
+
+    // 2. Get Batch Timing
+    $batch_info = $this->CommonModal->getRowById('batchs', 'id', $batch_id);
+    $batch_start = $batch_info[0]['starting_time'];
+    $batch_end = $batch_info[0]['ending_time'];
+
+    // 3. Validation
+   if (
+    $start_time < $shift_start || $end_time > $shift_end ||
+    $start_time < $batch_start || $end_time > $batch_end
+) {
+    $this->session->set_flashdata('error', 'Class timing should be within Employee Shift and Batch Timings.');
+    redirect($_SERVER['HTTP_REFERER']);  // go back to the form
+} else {
+
+
+        // Proceed to insert or update the class
+    
+
+            $inst_id = $this->CommonModal->insertRowReturnId('timetable', $post);
+
+    }
+            if (!empty($page) && $page == '1') {
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                 if($tag2=='emp'){
+                redirect(base_url('Admin_Dashboard/view_timetable/'.$eid.'/' . $id.'?tag=emp'));
+                 } else {
+                     redirect(base_url('Admin_Dashboard/view_timetable/'.$id.'/' . $eid));
+                 }
+            }
+        } else {
+
+            $this->load->view('user/add_timetable', $data);
+        }
+    }
+
+  public function update_timetable($id, $uid)
+{
+    $data['title'] = 'Update Class';
+    $data['tag'] = 'edit';
+    $data['tag2'] = $this->input->get('tag');
+    $tag2 = $data['tag2'];
+
+    $tid = decryptId($uid);
+    $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+    $data['timetable'] = $this->CommonModal->getRowById('timetable', 'id', $id);
+
+    $course_id = $data['timetable'][0]['course_id'];
+    $data['subjects'] = $this->CommonModal->getRowById('subjects', 'course_id', $course_id);
+    $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
+    $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
+    $data['employee'] = $this->CommonModal->getRowByMultitpleId('employees', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
+
+    if ($this->input->post()) {
+
+        $post = $this->input->post();
+
+        $batch_id = $post['batch_id'];
+        $emp_id = $post['emp_id'];
+        $start_time = $post['starting_time'];
+        $end_time = $post['ending_time'];
+
+        // 1. Get Employee Shift Timing
+        $emp_shift = $this->CommonModal->getRowById('employees', 'id', $emp_id);
+        $shift_id = $emp_shift[0]['shift_id'];
+        $shift = $this->CommonModal->getRowById('shifts', 'id', $shift_id);
+        $shift_start = $shift[0]['starting_time'];
+        $shift_end = $shift[0]['ending_time'];
+
+        // 2. Get Batch Timing
+        $batch_info = $this->CommonModal->getRowById('batchs', 'id', $batch_id);
+        $batch_start = $batch_info[0]['starting_time'];
+        $batch_end = $batch_info[0]['ending_time'];
+
+        // 3. Validation
+        if (
+            $start_time < $shift_start || $end_time > $shift_end ||
+            $start_time < $batch_start || $end_time > $batch_end
+        ) {
+            $this->session->set_flashdata('error', 'Class timing should be within Employee Shift and Batch Timings.');
+            redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            $category_id = $this->CommonModal->updateRowById('timetable', 'id', $id, $post);
+
+            if ($category_id) {
+                $this->session->set_flashdata('msg', '<div class="alert alert-success">Updated successfully</div>');
+            } else {
+                $this->session->set_flashdata('msg', '<div class="alert alert-danger">Update failed. Please try again.</div>');
+            }
+
+            // Redirect
+            $redirect_url = 'Admin_Dashboard/view_timetable/' . encryptId($emp_id) . '/' . $uid;
+            if ($tag2 == 'emp') {
+                $redirect_url .= '?tag=emp';
+            }
+            redirect(base_url($redirect_url));
+        }
+
+    } else {
+        // Show update form
+        $this->load->view('user/add_timetable', $data);
+    }
+}
+
+
+    public function deactivetimetable($id, $uid)
+    {
+        $data['status'] = 1;
+        $status_id = $this->CommonModal->updateRowById('timetable', 'id', $id, $data);
+        $timetable = $this->CommonModal->getRowById('timetable', 'id', $id);
+
+        redirect(base_url('Admin_Dashboard/view_timetable/' . $uid . '?tag=deactive'));
+    }
+    public function activetimetable($id, $uid)
+    {
+        $data['status'] = 0;
+        $status_id = $this->CommonModal->updateRowById('timetable', 'id', $id, $data);
+        $data['timetable'] = $this->CommonModal->getRowById('timetable', 'id', $id);
+        $timetable = $this->CommonModal->getRowById('timetable', 'id', $id);
+
+
+        redirect(base_url('Admin_Dashboard/view_timetable/' . $uid));
+    }
+      public function view_assignment($uid)
+    {
+       
+        $data['title'] = "View Document";
+        $tid = decryptId($uid);
+    
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+      
+        $BdID = $this->input->get('BdID');
+
+
+        if ($BdID) {
+            $this->CommonModal->deleteRowById('assignment', array('id' => $BdID));
+
+                redirect(base_url('Admin_Dashboard/view_assignment/' .$uid));
+            
+        }
+        
+            $data['assignment'] = $this->CommonModal->getRowByMultitpleId('assignment', 'status','0','inst_id', $tid, 'id', 'DESC');
+      
+        $this->load->view('user/view_assignment', $data);
+    }
+    public function add_assignment($id, $page = null)
+    {
+
+        $data['title'] = "Add Document";
+        $data['tag'] = "add";
+        
+        $tid = decryptId($id);
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+       
+            $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+            $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+          
+     $post['file'] = pdfUpload('file', 'uploads/assignment/');
+
+            $inst_id = $this->CommonModal->insertRowReturnId('assignment', $post);
+
+            if ($inst_id) {
+                $this->session->set_userdata('msg', 'Added successfully');
+            } else {
+                $this->session->set_userdata('msg', ' Error ');
+            }
+            if (!empty($page) && $page == '1') {
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                redirect(base_url('Admin_Dashboard/view_assignment/'.encryptId($post['inst_id'])));
+            }
+        } else {
+
+            $this->load->view('user/add_assignment', $data);
+        }
+    }
+
+    public function update_assignment($id,$uid)
+    {
+
+        $data['title'] = 'Update Document';
+        $data['tag'] = 'edit';
+        $data['tag2'] = $this->input->get('tag');
+
+$tid = decryptId($uid);
+$eid = decryptId($id);
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+
+        $data['assignment'] = $this->CommonModal->getRowById('assignment', 'id', $eid);
+        $course_id = $data['assignment'][0]['course_id'];
+        $data['subjects'] = $this->CommonModal->getRowById('subjects', 'course_id', $course_id);
+        $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+        $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+            $existing_pdf = $post['file'];
+
+       if ($_FILES['file']['name'] != '') {
+    $pdf = pdfUpload('file', 'uploads/assignment/');
+    $post['file'] = $pdf;  // Save the new PDF file name
+    if ($existing_pdf != "") {
+        // Remove old PDF if it exists
+        unlink('uploads/assignment/' . $existing_pdf);
+    }
+}
+
+
+            $category_id = $this->CommonModal->updateRowById('assignment', 'id', $eid, $post);
+
+            if ($category_id) {
+                $this->session->set_userdata('msg', 'Updated Successfully');
+            } else {
+                $this->session->set_userdata('msg', ' Error ');
+            }
+          
+                redirect(base_url('Admin_Dashboard/view_assignment/' . $uid ));
+        
+        } else {
+
+            $this->load->view('user/add_assignment', $data);
+        }
+    }
+      public function view_liveclass($uid)
+    {
+       
+        $data['title'] = "View Classes";
+        $tid = decryptId($uid);
+    
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+      
+        $BdID = $this->input->get('BdID');
+
+
+        if ($BdID) {
+            $this->CommonModal->deleteRowById('liveclass', array('id' => $BdID));
+
+                redirect(base_url('Admin_Dashboard/view_liveclass/' .$uid));
+            
+        }
+        
+            $data['liveclass'] = $this->CommonModal->getRowByMultitpleId('liveclass', 'status','0','inst_id', $tid, 'id', 'DESC');
+      
+        $this->load->view('user/view_liveclass', $data);
+    }
+    public function add_liveclass($id, $page = null)
+    {
+
+        $data['title'] = "Add Class";
+        $data['tag'] = "add";
+        
+        $tid = decryptId($id);
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+       
+            $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+            $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+            $data['employee'] = $this->CommonModal->getRowByMultitpleId('employees', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+          
+
+            $inst_id = $this->CommonModal->insertRowReturnId('liveclass', $post);
+
+            if ($inst_id) {
+                $this->session->set_userdata('msg', 'Added successfully');
+            } else {
+                $this->session->set_userdata('msg', ' Error ');
+            }
+            if (!empty($page) && $page == '1') {
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                redirect(base_url('Admin_Dashboard/view_liveclass/'.encryptId($post['inst_id'])));
+            }
+        } else {
+
+            $this->load->view('user/add_liveclass', $data);
+        }
+    }
+
+    public function update_liveclass($id,$uid)
+    {
+
+        $data['title'] = 'Update Document';
+        $data['tag'] = 'edit';
+        $data['tag2'] = $this->input->get('tag');
+
+$tid = decryptId($uid);
+$eid = decryptId($id);
+
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+
+        $data['liveclass'] = $this->CommonModal->getRowById('liveclass', 'id', $eid);
+  $course_id = $data['liveclass'][0]['course_id'];
+    $data['subjects'] = $this->CommonModal->getRowById('subjects', 'course_id', $course_id);
+
+         $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+            $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+            $data['employee'] = $this->CommonModal->getRowByMultitpleId('employees', 'status','0', 'inst_id', $tid, 'id', 'DESC');
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+
+
+
+            $category_id = $this->CommonModal->updateRowById('liveclass', 'id', $eid, $post);
+
+            if ($category_id) {
+                $this->session->set_userdata('msg', 'Updated Successfully');
+            } else {
+                $this->session->set_userdata('msg', ' Error ');
+            }
+          
+                redirect(base_url('Admin_Dashboard/view_liveclass/' . $uid ));
+        
+        } else {
+
+            $this->load->view('user/add_liveclass', $data);
+        }
+    }
+      public function view_subject($id,$uid)
+    {
+       
+        $data['title'] = "View Subject";
+        $tid = decryptId($uid);
+    $cid = decryptId($id);  
+$data['course'] =  $cid;
+        $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+      
+        $BdID = $this->input->get('BdID');
+
+
+        if ($BdID) {
+            $this->CommonModal->deleteRowById('subjects', array('id' => $BdID));
+
+                redirect(base_url('Admin_Dashboard/view_subject/'.$id.'/' .$uid));
+            
+        }
+        
+            $data['subject'] = $this->CommonModal->getRowByMultitpleId('subjects', 'course_id',$cid,'inst_id', $tid, 'id', 'DESC');
+      
+        $this->load->view('user/view_subject', $data);
+    }
+    public function add_subject($id, $page = null)
+    {
+        
+        
+
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+          
+
+            $inst_id = $this->CommonModal->insertRowReturnId('subjects', $post);
+
+            if ($inst_id) {
+                $this->session->set_userdata('msg', 'Added successfully');
+            } else {
+                $this->session->set_userdata('msg', ' Error ');
+            }
+            if (!empty($page) && $page == '1') {
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                redirect(base_url('Admin_Dashboard/view_subject/'.encryptId($post['course_id']).'/'.encryptId($post['inst_id'])));
+            }
+        }
+    }
+
+    public function edit_subject($id)
+    {
+        if (count($_POST) > 0) {
+
+            $post = $this->input->post();
+
+
+
+            $category_id = $this->CommonModal->updateRowById('subjects', 'id', $id, $post);
+
+            if ($category_id) {
+                $this->session->set_userdata('msg', 'Updated Successfully');
+            } else {
+                $this->session->set_userdata('msg', ' Error ');
+            }
+
+                redirect(base_url('Admin_Dashboard/view_subject/' . encryptId($post['course_id'] ).'/'. encryptId($post['inst_id'] )));
+            
+        }
+    }
+    public function get_subjects_by_course()
+{
+    $course_id = $this->input->post('course_id');
+    $subjects = $this->CommonModal->getRowById('subjects', 'course_id', $course_id);
+
+    echo '<option value="N/A">Choose Subject</option>';
+    if (!empty($subjects)) {
+        foreach ($subjects as $subject) {
+            echo '<option value="' . $subject['id'] . '">' . $subject['subject'] . '</option>';
+        }
+    } else {
+        echo '<option value="N/A">No subjects found</option>';
+    }
+}
+
+
     public function view_course($id)
     {
         $data['title'] = "View course";
@@ -2016,11 +2526,20 @@ public function fee_slip($id)
         $data['title'] = "View employee";
         $tid = decryptId($id);
         $uid = decryptId($uid);
+
         $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $uid);
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $uid);
         $data['employee'] = $this->CommonModal->getRowByMultitpleId('employees', 'id', $tid, 'inst_id', $uid, 'id', 'DESC');
+<<<<<<< HEAD
+
+        $data['salary_list'] = $this->CommonModal->getRowById('employee_salary', 'employee_id', $tid);
+=======
+        $data['class'] = $this->CommonModal->getRowByMultitpleId('timetable', 'emp_id', $tid, 'inst_id', $uid, 'id', 'DESC');
+>>>>>>> 3d96471111eda6e65a10b43e0d633d14ff16c011
+
         $this->load->view('user/employee', $data);
     }
+
     public function view_employee($id)
     {
         $data['title'] = "View employee";
@@ -2057,6 +2576,8 @@ public function fee_slip($id)
         $data['tag'] = "add";
         $tid = decryptId($id);
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $tid);
+        $inst= $this->CommonModal->getRowById('institutions', 'id', $tid);
+
 
         $data['shift'] = $this->CommonModal->getRowByMultitpleId('shifts', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
         $data['department'] = $this->CommonModal->getRowByMultitpleId('department', 'status', '0', 'inst_id', $tid, 'id', 'DESC');
@@ -2079,11 +2600,42 @@ public function fee_slip($id)
             // Generate random password
             $password = bin2hex(random_bytes(8));
             $post['password'] = $password;
+            
             $post['image'] = imageUpload('image', 'uploads/employee/');
 
             // **Insert employee and get ID**
             $employee_id = $this->CommonModal->insertRowReturnId('employees', $post);
+if($employee_id) {
 
+            $this->load->library('email');
+
+            // Email configuration
+            $config['mailtype'] = 'text';  // Use plain text instead of HTML
+            $this->email->initialize($config);
+
+            $this->email->from('venusglamour@krishnawireandcables.com', $inst[0]['name']);  // Use institution name as sender
+            $this->email->to($post['email']);  // Send to user's email
+            $this->email->subject('Registration Successfully');
+            
+            // Construct email message in plain text format
+           $message = "Dear " . htmlspecialchars($post['name']) . ",\n\n";
+$message .= "We are pleased to inform you that you are the part of our institution " . $inst[0]['name'] . ". Below are your login credentials:\n\n";
+$message .= "Username: " . htmlspecialchars($post['email']) . "\n";
+$message .= "Password: " . htmlspecialchars($post['password']) . "\n\n";
+$message .= "Please keep your login credentials secure and do not share them with anyone.\n\n";
+$message .= "You can log in to the software using the following link: " . base_url() . "\n\n";
+$message .= "If you encounter any issues, please feel free to contact our support team.\n\n";
+$message .= "Thank you for choosing our institution!\n\n";
+$message .= "Best regards,\n";
+$message .= "The " . $inst[0]['name'] . " Team";
+
+            $this->email->message($message);  // Use plain text message
+
+            // Check if email was sent successfully
+            if (!$this->email->send()) {
+                log_message('error', 'Email could not be sent to ' . $post['email']);
+            }
+   }
             redirect(base_url('Admin_Dashboard/view_employee/' . $id));
         } else {
             $this->load->view('user/add_employee', $data);
@@ -2473,7 +3025,7 @@ public function fee_slip($id)
         $post = $this->input->post();
 
         // Sanitize and extract form values
-        $employee_id = $post['inst_id'];
+        $employee_id = $post['id'];
         $month = $post['month'];
         $salary = $post['salary'];
         $total_days = $post['total_days'];
@@ -2541,8 +3093,11 @@ public function fee_slip($id)
         ];
         $this->CommonModal->insertRow('employee_payment', $payment_data);
 
-        $this->session->set_flashdata('msg', 'Salary added successfully!');
-        redirect('Admin_Dashboard/employee_salary_list'); // Update with your route
+        // $this->session->set_flashdata('msg', 'Salary added successfully!');
+        // redirect('Admin_Dashboard/employee_salary_list'); 
+      $this->session->set_flashdata('msg', 'Salary added successfully!');
+redirect('Admin_Dashboard/employee/' . encryptId($employee_id) . '/' . encryptId($inst_id) . '?tab=notes');
+
     }
 
     public function get_penalty_amounts()
@@ -2752,63 +3307,90 @@ public function fee_slip($id)
         $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $teacher[0]['inst_id']);
         $data['clg'] = $this->CommonModal->getRowById('institutions', 'id', $teacher[0]['inst_id']);
         $data['user'] = $this->CommonModal->getRowByMultitpleId('employees', 'id', $tid, 'inst_id', $teacher[0]['inst_id'], 'id', 'DESC');
+        $data['salary_list'] = $this->CommonModal->getRowById('employee_salary', 'employee_id', $tid);
 
         $this->load->view('branch/teacher_dashboard', $data);
     }
-    public function View_teacher_attendance($id)
+
+    public function salary_slip($salary_id)
 {
-    $data['title'] = "View Employee Attendance";
+    $salary_id = decryptId($salary_id); // If ID is encrypted
+    $salary = $this->CommonModal->getRowById('employee_salary', 'employee_id', $salary_id);
+// Convert YYYY-MM to "Month Year" format
+$monthYear = date("F Y", strtotime($salary[0]['month']));
+$data['month_year'] = $monthYear;
 
-    $tid = decryptId($id);  // yeh employee (teacher) ka ID hai
-
-    // Fetch employee data
-    $data['user'] = $this->CommonModal->getRowById('employees', 'id', $tid);
-    $employee = $data['user'];
-
-    // Fetch institution ID from employee
-    $inst_id = $employee[0]['inst_id'];
-
-    // Department list for this institution (for filter dropdown, if needed)
-    $data['department'] = $this->CommonModal->getRowByMultitpleId('department', 'status', '0', 'inst_id', $inst_id, 'id', 'DESC');
-
-    // Default values
-    $start_date = date('Y-m-d', strtotime('-1 day')); // Yesterday
-    $end_date = date('Y-m-d'); // Today
-    $department_id = $employee[0]['department_id']; // default to employee's own department
-
-    if ($this->input->post()) {
-        if (!empty($this->input->post('from'))) {
-            $start_date = date('Y-m-d', strtotime($this->input->post('from')));
-        }
-
-        if (!empty($this->input->post('to'))) {
-            $end_date = date('Y-m-d', strtotime($this->input->post('to')));
-        }
-
-        // Optional: override department filter
-        if (!empty($this->input->post('department_id'))) {
-            $department_id = $this->input->post('department_id');
-        }
+    if (!$salary) {
+        show_404(); // If no data found
     }
 
-    // ✅ Filter attendance only for selected employee (teacher)
-    $data['attendence'] = $this->CommonModal->get_attendence(
-        'emp_attendance',
-        'emp_id',
-        $employee[0]['id'], // only that employee's data
-        'department_id',
-        $department_id,
-        'date',
-        $start_date,
-        $end_date
-    );
+    $employee = $this->CommonModal->getRowById('employees', 'id', $salary[0]['employee_id']);
+    $institution = $this->CommonModal->getRowById('institutions', 'id', $employee[0]['inst_id']);
+   $department = $this->CommonModal->getRowById('department', 'id', $employee[0]['department']);
+    $department_name = !empty($department) ? $department[0]['name'] : 'N/A';
 
-    // Pass to view
-    $data['start'] = $start_date;
-    $data['end'] = $end_date;
-    $data['selected_department'] = $department_id;
+    $employee[0]['department_name'] = $department_name;
+    $data['salary'] = $salary[0];
+    $data['employee'] = $employee[0];
+    $data['institution'] = $institution[0];
 
-    $this->load->view('branch/view_teacher_attendance', $data);
+    $this->load->view('branch/salary_slip', $data); // Create this file
 }
+
+    public function View_teacher_attendance($id)
+    {
+        $data['title'] = "View Employee Attendance";
+
+        $tid = decryptId($id);  // yeh employee (teacher) ka ID hai
+
+        // Fetch employee data
+        $data['user'] = $this->CommonModal->getRowById('employees', 'id', $tid);
+        $employee = $data['user'];
+
+        // Fetch institution ID from employee
+        $inst_id = $employee[0]['inst_id'];
+
+        // Department list for this institution (for filter dropdown, if needed)
+        $data['department'] = $this->CommonModal->getRowByMultitpleId('department', 'status', '0', 'inst_id', $inst_id, 'id', 'DESC');
+
+        // Default values
+        $start_date = date('Y-m-d', strtotime('-1 day')); // Yesterday
+        $end_date = date('Y-m-d'); // Today
+        $department_id = $employee[0]['department_id']; // default to employee's own department
+
+        if ($this->input->post()) {
+            if (!empty($this->input->post('from'))) {
+                $start_date = date('Y-m-d', strtotime($this->input->post('from')));
+            }
+
+            if (!empty($this->input->post('to'))) {
+                $end_date = date('Y-m-d', strtotime($this->input->post('to')));
+            }
+
+            // Optional: override department filter
+            if (!empty($this->input->post('department_id'))) {
+                $department_id = $this->input->post('department_id');
+            }
+        }
+
+        // ✅ Filter attendance only for selected employee (teacher)
+        $data['attendence'] = $this->CommonModal->get_attendence(
+            'emp_attendance',
+            'emp_id',
+            $employee[0]['id'], // only that employee's data
+            'department_id',
+            $department_id,
+            'date',
+            $start_date,
+            $end_date
+        );
+
+        // Pass to view
+        $data['start'] = $start_date;
+        $data['end'] = $end_date;
+        $data['selected_department'] = $department_id;
+
+        $this->load->view('branch/view_teacher_attendance', $data);
+    }
 
 }

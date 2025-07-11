@@ -6,7 +6,6 @@
 </head>
 
 <body>
-
     <div class="main-wrapper">
         <?php include('includes/header.php') ?>
         <?php include('includes/sidebar.php') ?>
@@ -165,7 +164,7 @@
             <div class="col-md-6">
                 <div class="mb-3 mb-md-0">
                     <label class="col-form-label">Contact No.</label>
-                    <input type="tel" class="form-control" name="contact_person_phone"  value="<?= ($tag == 'edit' && isset($institution[0]['contact_person_phone'])) ? htmlspecialchars($institution[0]['contact_person_phone']) : '' ?>">
+                    <input type="tel" class="form-control" name="contact_person_phone"  value="<?= ($tag == 'edit' && isset($institution[0]['contact_person_phone'])) ? htmlspecialchars($institution[0]['contact_person_phone']) : '' ?>" pattern="[0-9]{10}">
                 </div>
             </div>
             <div class="col-md-6">

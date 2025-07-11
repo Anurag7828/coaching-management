@@ -131,6 +131,8 @@
             <th>Fees</th>
            
             <th>Duration</th>
+            <th>Subject</th>
+
             <th>Date</th>
           
             <th>Status</th>
@@ -151,7 +153,13 @@
                     <td><?= $row['duration']; ?> <?= $row['duration_type']; ?></td>
                     <td><?= $row['date']; ?></td>
 
-                
+                  <td>  <a class="dropdown-item"
+                                                                        href="<?php echo base_url() . 'Admin_Dashboard/view_subject/' . encryptId($row['id']) . '/' . encryptId($user[0]['id']).'?tag=emp'; ?>">
+                                                                <span class="badge badge-pill badge-status  bg-success">
+                                                             Subjects 
+                                                                </span>
+                                                            </a>
+                                                        </td>
 
                     <td> <?php if($row['status'] == '0') { ?>
                     <span class="badge badge-pill badge-status  bg-success">

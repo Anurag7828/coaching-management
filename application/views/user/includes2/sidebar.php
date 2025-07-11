@@ -9,7 +9,7 @@
 				<div id="sidebar-menu" class="sidebar-menu">
 					<ul>
 						<li class="clinicdropdown">
-							<a href="<?= base_url()?>">
+							<a href="">
 								<img src="<?= base_url()?>uploads/institution/<?= $user[0]['logo']?>" class="img-fluid" alt="Profile">
 								<div class="user-names">
 									<h5><?= $user[0]['name']?></h5>
@@ -68,6 +68,34 @@
 										<li><a href="<?= base_url('Admin_Dashboard/add_Course/'. encryptId($user[0]['id']))?>">Add Courses</a></li>
 										<li><a href="<?= base_url('Admin_Dashboard/view_Course/'. encryptId($user[0]['id']))?>">Active Courses</a></li>
 										<li><a href="<?= base_url('Admin_Dashboard/view_Course/'. encryptId($user[0]['id']).'?tag=deactive')?>">Deactive Courses</a></li>
+
+			
+
+									
+									</ul>
+								</li>
+								<li class="submenu">
+									<a href="#" >
+										<i class="ti ti-user-star"></i><span>Academic Resources</span>
+										<span class="menu-arrow"></span>
+									</a>
+									<ul>
+										<li><a href="<?= base_url('Admin_Dashboard/add_assignment/'. encryptId($user[0]['id']))?>">Add Academic Resource</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_assignment/'. encryptId($user[0]['id']))?>">View Academic Resource</a></li>
+
+			
+
+									
+									</ul>
+								</li>
+								<li class="submenu">
+									<a href="#" >
+										<i class="ti ti-user-star"></i><span>Live Classes</span>
+										<span class="menu-arrow"></span>
+									</a>
+									<ul>
+										<li><a href="<?= base_url('Admin_Dashboard/add_liveclass/'. encryptId($user[0]['id']))?>">Add Live Class</a></li>
+										<li><a href="<?= base_url('Admin_Dashboard/view_liveclass/'. encryptId($user[0]['id']))?>">View Live Class</a></li>
 
 			
 
