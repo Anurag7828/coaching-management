@@ -409,7 +409,7 @@
 										<h4 class="fw-semibold">View Payments</h4>
 										<div class="d-inline-flex align-items-center">
 											<a href="javascript:void(0);" data-bs-toggle="modal"
-												data-bs-target="#create_call" class="com-add"><i
+												data-bs-target="#add_notes" class="com-add"><i
 													class="ti ti-circle-plus me-1"></i>Pay Due</a>
 										</div>
 									</div>
@@ -457,17 +457,13 @@
 													<table class="table">
 														<thead class="thead-light">
 															<tr>
-																<th class="">S.No</th>
-
-																<th class="">Payment Date</th>
-																<th class="">Tran. Id</th>
-
-																<th class="">Paid Amount</th>
-																<th class="">Payment Mode</th>
-																<th class="">Bank/Cheque</th>
-
-
-
+																<th>S.No</th>
+																<th>Payment Date</th>
+																<th>Tran. Id</th>
+																<th>Paid Amount</th>
+																<th>Payment Mode</th>
+																<th>Bank/Cheque</th>
+																<th>Slip</th> <!-- New column -->
 															</tr>
 														</thead>
 														<tbody>
@@ -478,37 +474,44 @@
 															if (!empty($paymentall)) {
 																foreach ($paymentall as $row1) {
 																	$i++;
+																	$encrypted_id = encryptId($row1['id']); // Encrypt payment ID
 															?>
 																	<tr>
 																		<td><?= $i ?></td>
 																		<td><?= $row1['date'] ?></td>
 																		<td><?= $row1['transaction_id'] ?></td>
-
 																		<td><?= $row1['paid'] ?> Rs</td>
 																		<td><?= $row1['mode'] ?></td>
-
-																		<?php
-																		$bank_name = "-"; // Default value agar koi bank info na mile
-																		if (!empty($row1['account_id'])) {
-																			$bank = $this->CommonModal->getRowByMultitpleId('account', 'id', $row1['account_id'], 'inst_id', $clg[0]['id'], 'id', 'DESC');
-																			if (!empty($bank)) {
-																				$bank_name = $bank[0]['bank_name'];
+																		<td>
+																			<?php
+																			$bank_name = "-";
+																			if (!empty($row1['account_id'])) {
+																				$bank = $this->CommonModal->getRowByMultitpleId('account', 'id', $row1['account_id'], 'inst_id', $clg[0]['id'], 'id', 'DESC');
+																				if (!empty($bank)) {
+																					$bank_name = $bank[0]['bank_name'];
+																				}
+																			} elseif (!empty($row1['cheque_no'])) {
+																				$bank_name = $row1['cheque_no'];
+																			} else {
+																				$bank_name = $row1['mode'];
 																			}
-																		} elseif (!empty($row1['cheque_no'])) {
-																			$bank_name = $row1['cheque_no']; // Corrected this line
-																		} else {
-																			$bank_name = $row1['mode'];
-																		}
-																		?>
+																			echo $bank_name;
+																			?>
+																		</td>
 
-																		<td><?= $bank_name ?></td>
+																		<!-- View Slip Button -->
+																		<td>
+																			<a href="<?= base_url('Admin_Dashboard/fee_slip/' . $encrypted_id); ?>" target="_blank" class="btn btn-sm btn-outline-primary">
+																				View Slip
+																			</a>
+																		</td>
 																	</tr>
 															<?php
 																}
 															}
 															?>
-
 														</tbody>
+
 													</table>
 
 												</div>
