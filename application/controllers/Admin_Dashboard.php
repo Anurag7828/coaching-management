@@ -2530,12 +2530,9 @@ $data['course'] =  $cid;
         $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $uid);
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $uid);
         $data['employee'] = $this->CommonModal->getRowByMultitpleId('employees', 'id', $tid, 'inst_id', $uid, 'id', 'DESC');
-<<<<<<< HEAD
 
         $data['salary_list'] = $this->CommonModal->getRowById('employee_salary', 'employee_id', $tid);
-=======
         $data['class'] = $this->CommonModal->getRowByMultitpleId('timetable', 'emp_id', $tid, 'inst_id', $uid, 'id', 'DESC');
->>>>>>> 3d96471111eda6e65a10b43e0d633d14ff16c011
 
         $this->load->view('user/employee', $data);
     }
