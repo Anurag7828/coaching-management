@@ -2528,13 +2528,20 @@ class Admin_Dashboard extends CI_Controller
         $data['title'] = "View employee";
         $tid = decryptId($id);
         $uid = decryptId($uid);
+
         $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $uid);
         $data['user'] = $this->CommonModal->getRowById('institutions', 'id', $uid);
         $data['employee'] = $this->CommonModal->getRowByMultitpleId('employees', 'id', $tid, 'inst_id', $uid, 'id', 'DESC');
+<<<<<<< HEAD
+
+        $data['salary_list'] = $this->CommonModal->getRowById('employee_salary', 'employee_id', $tid);
+=======
         $data['class'] = $this->CommonModal->getRowByMultitpleId('timetable', 'emp_id', $tid, 'inst_id', $uid, 'id', 'DESC');
+>>>>>>> 3d96471111eda6e65a10b43e0d633d14ff16c011
 
         $this->load->view('user/employee', $data);
     }
+
     public function view_employee($id)
     {
         $data['title'] = "View employee";
@@ -3023,7 +3030,7 @@ class Admin_Dashboard extends CI_Controller
         $post = $this->input->post();
 
         // Sanitize and extract form values
-        $employee_id = $post['inst_id'];
+        $employee_id = $post['id'];
         $month = $post['month'];
         $salary = $post['salary'];
         $total_days = $post['total_days'];
@@ -3091,8 +3098,11 @@ class Admin_Dashboard extends CI_Controller
         ];
         $this->CommonModal->insertRow('employee_payment', $payment_data);
 
-        $this->session->set_flashdata('msg', 'Salary added successfully!');
-        redirect('Admin_Dashboard/employee_salary_list'); // Update with your route
+        // $this->session->set_flashdata('msg', 'Salary added successfully!');
+        // redirect('Admin_Dashboard/employee_salary_list'); 
+      $this->session->set_flashdata('msg', 'Salary added successfully!');
+redirect('Admin_Dashboard/employee/' . encryptId($employee_id) . '/' . encryptId($inst_id) . '?tab=notes');
+
     }
 
     public function get_penalty_amounts()
@@ -3302,8 +3312,12 @@ class Admin_Dashboard extends CI_Controller
         $data['account'] = $this->CommonModal->getRowById('account', 'inst_id', $teacher[0]['inst_id']);
         $data['clg'] = $this->CommonModal->getRowById('institutions', 'id', $teacher[0]['inst_id']);
         $data['user'] = $this->CommonModal->getRowByMultitpleId('employees', 'id', $tid, 'inst_id', $teacher[0]['inst_id'], 'id', 'DESC');
+<<<<<<< HEAD
         $data['class'] = $this->CommonModal->getRowByMultitpleId('timetable', 'emp_id', $tid, 'inst_id', $teacher[0]['inst_id'], 'id', 'DESC');
         $data['liveclasss'] = $this->CommonModal->getRowByMultitpleId('liveclass', 'emp_id', $tid, 'inst_id', $teacher[0]['inst_id'], 'id', 'DESC');
+=======
+        $data['salary_list'] = $this->CommonModal->getRowById('employee_salary', 'employee_id', $tid);
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 
         $data['batch'] = $this->CommonModal->getRowByMultitpleId('batchs', 'status', '0', 'inst_id', $teacher[0]['inst_id'], 'id', 'DESC');
         $data['course'] = $this->CommonModal->getRowByMultitpleId('courses', 'status', '0', 'inst_id', $teacher[0]['inst_id'], 'id', 'DESC');
@@ -3311,6 +3325,7 @@ class Admin_Dashboard extends CI_Controller
         
         $this->load->view('branch/teacher_dashboard', $data);
     }
+<<<<<<< HEAD
     public function View_teacher_attendance($id)
     {
         $data['title'] = "View Employee Attendance";
@@ -3624,6 +3639,89 @@ class Admin_Dashboard extends CI_Controller
             }
 
         } 
+    }
+=======
+
+    public function salary_slip($salary_id)
+{
+    $salary_id = decryptId($salary_id); // If ID is encrypted
+    $salary = $this->CommonModal->getRowById('employee_salary', 'employee_id', $salary_id);
+// Convert YYYY-MM to "Month Year" format
+$monthYear = date("F Y", strtotime($salary[0]['month']));
+$data['month_year'] = $monthYear;
+
+    if (!$salary) {
+        show_404(); // If no data found
+    }
+
+    $employee = $this->CommonModal->getRowById('employees', 'id', $salary[0]['employee_id']);
+    $institution = $this->CommonModal->getRowById('institutions', 'id', $employee[0]['inst_id']);
+   $department = $this->CommonModal->getRowById('department', 'id', $employee[0]['department']);
+    $department_name = !empty($department) ? $department[0]['name'] : 'N/A';
+
+    $employee[0]['department_name'] = $department_name;
+    $data['salary'] = $salary[0];
+    $data['employee'] = $employee[0];
+    $data['institution'] = $institution[0];
+
+    $this->load->view('branch/salary_slip', $data); // Create this file
+}
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
+
+    public function View_teacher_attendance($id)
+    {
+        $data['title'] = "View Employee Attendance";
+
+        $tid = decryptId($id);  // yeh employee (teacher) ka ID hai
+
+        // Fetch employee data
+        $data['user'] = $this->CommonModal->getRowById('employees', 'id', $tid);
+        $employee = $data['user'];
+
+        // Fetch institution ID from employee
+        $inst_id = $employee[0]['inst_id'];
+
+        // Department list for this institution (for filter dropdown, if needed)
+        $data['department'] = $this->CommonModal->getRowByMultitpleId('department', 'status', '0', 'inst_id', $inst_id, 'id', 'DESC');
+
+        // Default values
+        $start_date = date('Y-m-d', strtotime('-1 day')); // Yesterday
+        $end_date = date('Y-m-d'); // Today
+        $department_id = $employee[0]['department_id']; // default to employee's own department
+
+        if ($this->input->post()) {
+            if (!empty($this->input->post('from'))) {
+                $start_date = date('Y-m-d', strtotime($this->input->post('from')));
+            }
+
+            if (!empty($this->input->post('to'))) {
+                $end_date = date('Y-m-d', strtotime($this->input->post('to')));
+            }
+
+            // Optional: override department filter
+            if (!empty($this->input->post('department_id'))) {
+                $department_id = $this->input->post('department_id');
+            }
+        }
+
+        // ✅ Filter attendance only for selected employee (teacher)
+        $data['attendence'] = $this->CommonModal->get_attendence(
+            'emp_attendance',
+            'emp_id',
+            $employee[0]['id'], // only that employee's data
+            'department_id',
+            $department_id,
+            'date',
+            $start_date,
+            $end_date
+        );
+
+        // Pass to view
+        $data['start'] = $start_date;
+        $data['end'] = $end_date;
+        $data['selected_department'] = $department_id;
+
+        $this->load->view('branch/view_teacher_attendance', $data);
     }
 
 }

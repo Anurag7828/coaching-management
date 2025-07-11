@@ -131,10 +131,7 @@
 												</div>
 											</div>
 
-											<!-- <div class="border-bottom mb-3 pb-3">
-												<h5 class="fw-semibold mb-1">Company Images</h5>
-												<p>Provide the company images</p>
-											</div> -->
+										
 											<div class="border-bottom mb-3">
 												<div class="row">
 													<!-- <div class="col-md-4">

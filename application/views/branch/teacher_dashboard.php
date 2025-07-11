@@ -250,13 +250,18 @@
 									</li>
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#notes" class="nav-link"><i
+<<<<<<< HEAD
 												class="ti ti-notes me-1"></i>Salary</a>
+=======
+												class="ti ti-notes me-1"></i>View Salary</a>
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 									</li>
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#email" class="nav-link"><i
 												class="ti ti-mail-check me-1"></i>Email</a>
 									</li>
 									<li class="nav-item" role="presentation">
+<<<<<<< HEAD
 										<a href="#" data-bs-toggle="tab" data-bs-target="#attendence"
 											class="nav-link"><i class="ti ti-notes me-1"></i>Attendance Report</a>
 									</li>
@@ -271,6 +276,10 @@
 									<li class="nav-item" role="presentation">
 										<a href="#" data-bs-toggle="tab" data-bs-target="#assignment" class="nav-link"><i
 												class="ti ti-notes me-1"></i>Acadmic Resource</a>
+=======
+										<a href="#" data-bs-toggle="tab" data-bs-target="#attendence" class="nav-link"><i
+												class="ti ti-notes me-1"></i>Attendance Report</a>
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 									</li>
 								</ul>
 							</div>
@@ -372,7 +381,11 @@
 								<div class="card">
 									<div
 										class="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
+<<<<<<< HEAD
 										<h4 class="fw-semibold">Month Salary</h4>
+=======
+										<h4 class="fw-semibold">View This Month Salary</h4>
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 										<div class="d-inline-flex align-items-center">
 
 										</div>
@@ -395,28 +408,45 @@
 
 																	<th class="text-end">Total Amount</th>
 																	<th class="text-end">Status</th>
+																	<th class="text-end">Download</th>
 
 																</tr>
 															</thead>
 															<tbody>
-																<?php
-																$total_amount = 0; // Initialize total amount
-																?>
-																<tr>
-																	<td><?= $user[0]['salary'] ?> Rs</td>
+																<?php if (!empty($salary_list)) : ?>
+																	<?php foreach ($salary_list as $salary): ?>
+																		<?php
+																		$monthly_salary = $user[0]['salary'];
+																		$leaves = $salary['leaves'];
+																		$less_salary = ($leaves > 0) ? round(($monthly_salary / 30) * $leaves, 2) : 0;
+																		$net_salary = $monthly_salary - $less_salary;
+																		?>
+																		<tr>
+																			<td><?= $salary['month'] ?></td>
+																			<td><?= $monthly_salary ?> Rs</td>
+																			<td><?= $leaves ?></td>
+																			<td><?= $less_salary ?> Rs</td>
+																			<td class="text-end"><?= $net_salary ?> Rs</td>
+																			<td class="text-end"><?= $salary['status'] ?></td>
+																			<td class="text-end">
+																				<?php if ($salary['status'] == 'Paid'): ?>
+																					<a href="<?= base_url('Admin_Dashboard/salary_slip/' . encryptId($salary['employee_id'])) ?>" class="btn btn-sm btn-success" target="_blank">
+																						Download Slip
+																					</a>
 
-																	<td><?= $user[0]['salary'] ?> Rs</td>
-																	<td>4</td>
-																	<?php $less = $user[0]['salary'] / 4 ?>
-																	<td><?= $less ?> Rs</td>
+																				<?php else: ?>
+																					<?= $salary['status'] ?>
+																				<?php endif; ?>
+																			</td>
+																		</tr>
 
-																	<td class="text-end">
-																		<?= $user[0]['salary'] - $less ?> Rs
-																	</td>
-																	<td class="text-end">Due
-																	</td>
-																</tr>
 
+																	<?php endforeach; ?>
+																<?php else: ?>
+																	<tr>
+																		<td colspan="6" class="text-center">No salary record found.</td>
+																	</tr>
+																<?php endif; ?>
 															</tbody>
 														</table>
 
@@ -448,7 +478,7 @@
 												if (!empty($emails)) {
 													foreach ($emails as $email) {
 														$i++;
-														?>
+												?>
 														<div class="row align-items-center">
 															<div class="col-md-8">
 																<div class="mb-3">
@@ -463,7 +493,7 @@
 																</div>
 															</div>
 														</div>
-														<?php
+												<?php
 													}
 												}
 												?>
@@ -1485,8 +1515,12 @@
 																<label class="col-form-label">Salary Month <span
 																		class="text-danger">*</span></label>
 																<select class="select2 form-control" name="month"
+<<<<<<< HEAD
 																	required onchange="fetchAttendanceData()"
 																	id="salary_month">
+=======
+																	required onchange="fetchAttendanceData()" id="salary_month">
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 																	<?php
 																	$currentMonth = date('Y-m'); // This gives 2025-05
 																	$prevMonth = date('Y-m', strtotime('-1 month'));
@@ -1604,9 +1638,13 @@
 
 
 															<div class="form-check">
+<<<<<<< HEAD
 																<input class="form-check-input reward-checkbox"
 																	name="reward[]" type="checkbox"
 																	value="<?= $item['id'] ?>">
+=======
+																<input class="form-check-input reward-checkbox" name="reward[]" type="checkbox" value="<?= $item['id'] ?>">
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 																<?= $item['name'] ?>
 
 
@@ -1632,8 +1670,13 @@
 																	<label class="col-form-label">Payment Mode</label>
 
 																</div>
+<<<<<<< HEAD
 																<select class="select" name="mode" id="paymentType"
 																	required onchange="handlePaymentChange()">
+=======
+																<select class="select" name="mode" id="paymentType" required
+																	onchange="handlePaymentChange()">
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 																	<option Value="N/A">Choose</option>
 																	<option Value="Cash" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'Cash') ? 'selected' : '' ?>>Cash</option>
 																	<option value="UPI" <?= ($tag == 'edit' && isset($Student_payment[0]['mode']) && $Student_payment[0]['mode'] == 'UPI') ? 'selected' : '' ?>>UPI</option>
@@ -2172,7 +2215,11 @@
 							CKEDITOR.replace('editor'); // Initialize CKEditor
 						</script>
 						<script>
+<<<<<<< HEAD
 							document.addEventListener('DOMContentLoaded', function () {
+=======
+							document.addEventListener('DOMContentLoaded', function() {
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 								fetchAttendanceData(); // Triggers attendance fetch for the default-selected option
 							});
 						</script>
@@ -2208,22 +2255,46 @@
 									totalSalaryInput.value = finalSalary.toFixed(2);
 								}
 
+<<<<<<< HEAD
 								const fetchPenalty = selectedPenaltyIds.length > 0
 									? fetch(base_url + 'Admin_Dashboard/get_penalty_amounts', {
 										method: 'POST',
 										headers: { 'Content-Type': 'application/json' },
 										body: JSON.stringify({ ids: selectedPenaltyIds })
+=======
+								const fetchPenalty = selectedPenaltyIds.length > 0 ?
+									fetch(base_url + 'Admin_Dashboard/get_penalty_amounts', {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json'
+										},
+										body: JSON.stringify({
+											ids: selectedPenaltyIds
+										})
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 									}).then(res => res.json()).then(data => {
 										if (data.status) {
 											deductedAmount += data.total_penalty;
 										}
 									}) : Promise.resolve();
 
+<<<<<<< HEAD
 								const fetchReward = selectedRewardIds.length > 0
 									? fetch(base_url + 'Admin_Dashboard/get_reward_amounts', {
 										method: 'POST',
 										headers: { 'Content-Type': 'application/json' },
 										body: JSON.stringify({ ids: selectedRewardIds })
+=======
+								const fetchReward = selectedRewardIds.length > 0 ?
+									fetch(base_url + 'Admin_Dashboard/get_reward_amounts', {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json'
+										},
+										body: JSON.stringify({
+											ids: selectedRewardIds
+										})
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 									}).then(res => res.json()).then(data => {
 										if (data.status) {
 											totalReward = data.total_reward;
@@ -2236,7 +2307,11 @@
 								});
 							}
 
+<<<<<<< HEAD
 							document.addEventListener('DOMContentLoaded', function () {
+=======
+							document.addEventListener('DOMContentLoaded', function() {
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 								document.querySelector('input[name="cuting_days"]').addEventListener('input', calculateDeductedSalary);
 								document.querySelectorAll('.fee-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
 								document.querySelectorAll('.reward-checkbox').forEach(cb => cb.addEventListener('change', calculateDeductedSalary));
@@ -2275,7 +2350,11 @@
 							}
 						</script>
 						<script>
+<<<<<<< HEAD
 							document.addEventListener('DOMContentLoaded', function () {
+=======
+							document.addEventListener('DOMContentLoaded', function() {
+>>>>>>> efb1f70f566f639ffa57e9e99c4f6960d2be50a5
 								const cuttingDaysInput = document.querySelector('input[name="cuting_days"]');
 								const penaltyCheckboxes = document.querySelectorAll('.fee-checkbox');
 
